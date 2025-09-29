@@ -1,0 +1,6 @@
+@Foot2site_V1_HostAddress = http://localhost:5078
+
+GET {{Foot2site_V1_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
