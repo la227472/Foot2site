@@ -34,7 +34,7 @@ namespace Foot2site_V1.Controllers
         {
             var taille = await _context.Taille.FindAsync(id);
 
-            if (taille == null)
+            if (taille != null)
             {
                 return NotFound();
             }
