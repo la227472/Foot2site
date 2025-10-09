@@ -2,5 +2,11 @@
 {
     public class Taille
     {
+        public int Id { get; set; }
+
+        public string taille { get; set; }
+
+        public List<Produit> ProduitList { get; set; }
+
     }
 }

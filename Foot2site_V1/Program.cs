@@ -1,4 +1,9 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Foot2site_V1.Data;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<Foot2site_V1Context>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Foot2site_V1Context") ?? throw new InvalidOperationException("Connection string 'Foot2site_V1Context' not found.")));
 
 // Add services to the container.
 
