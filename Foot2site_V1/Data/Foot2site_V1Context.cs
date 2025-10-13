@@ -50,6 +50,14 @@ namespace Foot2site_V1.Data
                     nom_produit = "Maillot Barcelone 2017",
                     description_produit = "le maillot du barcelone à domicile de 2017", 
                     prix_unitaire_produit = 65.00
+                },
+
+                new Produit
+                {
+                    Id = 2,
+                    nom_produit = "Maillot Real Madrid 2014",
+                    description_produit = "le maillot du Real Madrid à l'extérieur de 2014",
+                    prix_unitaire_produit = 80.00
                 }
 
             );
@@ -58,7 +66,10 @@ namespace Foot2site_V1.Data
             modelBuilder.Entity<Taille>().HasData(
                 new Taille { Id = 1, taille = "XS" },
                 new Taille { Id = 2, taille = "S" },
-                new Taille { Id = 3, taille = "M" }
+                new Taille { Id = 3, taille = "M" },
+                new Taille { Id = 4, taille = "L" },
+                new Taille { Id = 5, taille = "XL" },
+                new Taille { Id = 6, taille = "XLL" }
             );
 
             // Ajouter des stocks
@@ -68,8 +79,24 @@ namespace Foot2site_V1.Data
                     Id = 1,
                     quantite = 10,
                     id_PRODUIT = 1,  // Maillot Barcelone 
-                    id_TAILLE = 2,  // Taille S
+                    id_TAILLE = 2  // Taille S
 
+                },
+
+                new Stock_produit
+                {
+                    Id = 2,
+                    quantite = 20,
+                    id_PRODUIT = 1,  // Maillot Barcelone 
+                    id_TAILLE = 1  // Taille XS
+                },
+
+                new Stock_produit
+                {
+                    Id = 3,
+                    quantite = 20,
+                    id_PRODUIT = 2,  // Maillot Real Madrid 
+                    id_TAILLE = 4  // Taille L 
                 }
             );
         }

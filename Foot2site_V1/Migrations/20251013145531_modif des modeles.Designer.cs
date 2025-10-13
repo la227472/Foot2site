@@ -3,6 +3,7 @@ using Foot2site_V1.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Foot2site_V1.Migrations
 {
     [DbContext(typeof(Foot2site_V1Context))]
-    partial class Foot2site_V1ContextModelSnapshot : ModelSnapshot
+    [Migration("20251013145531_modif des modeles")]
+    partial class modifdesmodeles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,13 +54,6 @@ namespace Foot2site_V1.Migrations
                             description_produit = "le maillot du barcelone à domicile de 2017",
                             nom_produit = "Maillot Barcelone 2017",
                             prix_unitaire_produit = 65.0
-                        },
-                        new
-                        {
-                            Id = 2,
-                            description_produit = "le maillot du Real Madrid à l'extérieur de 2014",
-                            nom_produit = "Maillot Real Madrid 2014",
-                            prix_unitaire_produit = 80.0
                         });
                 });
 
@@ -100,13 +96,6 @@ namespace Foot2site_V1.Migrations
                             id_PRODUIT = 1,
                             id_TAILLE = 1,
                             quantite = 20
-                        },
-                        new
-                        {
-                            Id = 3,
-                            id_PRODUIT = 2,
-                            id_TAILLE = 4,
-                            quantite = 20
                         });
                 });
 
@@ -141,21 +130,6 @@ namespace Foot2site_V1.Migrations
                         {
                             Id = 3,
                             taille = "M"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            taille = "L"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            taille = "XL"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            taille = "XLL"
                         });
                 });
 
