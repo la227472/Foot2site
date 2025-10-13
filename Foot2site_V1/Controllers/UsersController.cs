@@ -12,47 +12,47 @@ namespace Foot2site_V1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProduitsController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly Foot2site_V1Context _context;
 
-        public ProduitsController(Foot2site_V1Context context)
+        public UsersController(Foot2site_V1Context context)
         {
             _context = context;
         }
 
-        // GET: api/Produits
+        // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Produit>>> GetProduit()
+        public async Task<ActionResult<IEnumerable<User>>> GetUser()
         {
-            return await _context.Produit.Include(p => p.stocks).ThenInclude(s => s.taille).ToListAsync();
+            return await _context.User.ToListAsync();
         }
 
-        // GET: api/Produits/5
+        // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Produit>> GetProduit(int id)
+        public async Task<ActionResult<User>> GetUser(int id)
         {
-            var produit = await _context.Produit.FindAsync(id);
+            var user = await _context.User.FindAsync(id);
 
-            if (produit == null)
+            if (user == null)
             {
                 return NotFound();
             }
 
-            return produit;
+            return user;
         }
 
-        // PUT: api/Produits/5
+        // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduit(int id, Produit produit)
+        public async Task<IActionResult> PutUser(int id, User user)
         {
-            if (id != produit.Id)
+            if (id != user.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(produit).State = EntityState.Modified;
+            _context.Entry(user).State = EntityState.Modified;
 
             try
             {
@@ -60,7 +60,7 @@ namespace Foot2site_V1.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProduitExists(id))
+                if (!UserExists(id))
                 {
                     return NotFound();
                 }
@@ -73,36 +73,36 @@ namespace Foot2site_V1.Controllers
             return NoContent();
         }
 
-        // POST: api/Produits
+        // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Produit>> PostProduit(Produit produit)
+        public async Task<ActionResult<User>> PostUser(User user)
         {
-            _context.Produit.Add(produit);
+            _context.User.Add(user);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProduit", new { id = produit.Id }, produit);
+            return CreatedAtAction("GetUser", new { id = user.Id }, user);
         }
 
-        // DELETE: api/Produits/5
+        // DELETE: api/Users/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProduit(int id)
+        public async Task<IActionResult> DeleteUser(int id)
         {
-            var produit = await _context.Produit.FindAsync(id);
-            if (produit == null)
+            var user = await _context.User.FindAsync(id);
+            if (user == null)
             {
                 return NotFound();
             }
 
-            _context.Produit.Remove(produit);
+            _context.User.Remove(user);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool ProduitExists(int id)
+        private bool UserExists(int id)
         {
-            return _context.Produit.Any(e => e.Id == id);
+            return _context.User.Any(e => e.Id == id);
         }
     }
 }

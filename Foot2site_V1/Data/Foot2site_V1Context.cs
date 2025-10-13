@@ -15,32 +15,91 @@ namespace Foot2site_V1.Data
         }
 
         public DbSet<Foot2site_V1.Modele.Taille> Taille { get; set; } = default!;
-
+        public DbSet<Foot2site_V1.Modele.Stock_produit> Stock_produit { get; set; } = default!;
+        public DbSet<Foot2site_V1.Modele.User> User { get; set; } = default!;
+        public DbSet<Foot2site_V1.Modele.Produit> Produit { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Produit>()
                 .HasMany(produits => produits.stocks)
-                .WithOne(stock => stock.produit);
+                .WithOne(stock => stock.produit)
+                .HasForeignKey(stock => stock.id_PRODUIT); // Spécifier la clé étrangère
 
-           /* modelBuilder.Entity<Cours>()
-                        .HasOne(cours => cours.Enseignant)
-                        .WithMany(e => e.cours);
+            modelBuilder.Entity<Stock_produit>()
+                .HasOne(stock => stock.taille)
+                .WithMany(tailles => tailles.Stock_Produits_List)
+                .HasForeignKey(stock => stock.id_TAILLE); // Spécifier la clé étrangère
 
-            modelBuilder.Entity<Enseignant>()
+
+            /*modelBuilder.Entity<Enseignant>()
                         .HasMany(e => e.cours)
                         .WithOne(c => c.Enseignant);
 
             modelBuilder.Entity<Etudiant>()
                         .HasMany(e => e.cours)
-                        .WithMany(c => c.etudiants);
+                        .WithMany(c => c.etudiants);*/
 
-            modelBuilder.Entity<Enseignant>().HasData(
-                new Enseignant { Id = 1, Nom = "Brunquers", Prenom = "Benjamin", Email = "brunquersb@helha.be" },
-                new Enseignant { Id = 2, Nom = "Alary", Prenom = "Philippe", Email = "alaryp@helha.be" }
-            );*/
+
+            // Ajouter des produits
+            modelBuilder.Entity<Produit>().HasData(
+                new Produit 
+                { 
+                    Id = 1,
+                    nom_produit = "Maillot Barcelone 2017",
+                    description_produit = "le maillot du barcelone à domicile de 2017", 
+                    prix_unitaire_produit = 65.00
+                },
+
+                new Produit
+                {
+                    Id = 2,
+                    nom_produit = "Maillot Real Madrid 2014",
+                    description_produit = "le maillot du Real Madrid à l'extérieur de 2014",
+                    prix_unitaire_produit = 80.00
+                }
+
+            );
+
+            // Ajouter des tailles
+            modelBuilder.Entity<Taille>().HasData(
+                new Taille { Id = 1, taille = "XS" },
+                new Taille { Id = 2, taille = "S" },
+                new Taille { Id = 3, taille = "M" },
+                new Taille { Id = 4, taille = "L" },
+                new Taille { Id = 5, taille = "XL" },
+                new Taille { Id = 6, taille = "XLL" }
+            );
+
+            // Ajouter des stocks
+            modelBuilder.Entity<Stock_produit>().HasData(
+                new Stock_produit
+                {
+                    Id = 1,
+                    quantite = 10,
+                    id_PRODUIT = 1,  // Maillot Barcelone 
+                    id_TAILLE = 2  // Taille S
+
+                },
+
+                new Stock_produit
+                {
+                    Id = 2,
+                    quantite = 20,
+                    id_PRODUIT = 1,  // Maillot Barcelone 
+                    id_TAILLE = 1  // Taille XS
+                },
+
+                new Stock_produit
+                {
+                    Id = 3,
+                    quantite = 20,
+                    id_PRODUIT = 2,  // Maillot Real Madrid 
+                    id_TAILLE = 4  // Taille L 
+                }
+            );
         }
-        public DbSet<Foot2site_V1.Modele.Produit> Produit { get; set; } = default!;
+      
     }
 }

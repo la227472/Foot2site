@@ -1,4 +1,6 @@
-﻿namespace Foot2site_V1.Modele
+﻿using System.Text.Json.Serialization;
+
+namespace Foot2site_V1.Modele
 {
     public class Taille
     {
@@ -6,7 +8,8 @@
 
         public string taille { get; set; }
 
-        public List<Produit> ProduitList { get; set; }
+        [JsonIgnore]
+        public List<Stock_produit> Stock_Produits_List { get; set; }
 
     }
 }
