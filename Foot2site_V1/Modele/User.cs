@@ -14,5 +14,8 @@
         public string Adresse { get; set; }
 
         public double Credit { get; set; }
+
+        public virtual List<Commande> commandes { get; set; }
+
     }
 }
