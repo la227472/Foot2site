@@ -18,6 +18,8 @@ namespace Foot2site_V1.Data
         public DbSet<Foot2site_V1.Modele.Stock_produit> Stock_produit { get; set; } = default!;
         public DbSet<Foot2site_V1.Modele.User> User { get; set; } = default!;
         public DbSet<Foot2site_V1.Modele.Produit> Produit { get; set; } = default!;
+        public DbSet<Foot2site_V1.Modele.Transaction> Transaction { get; set; } = default!;
+        public DbSet<Foot2site_V1.Modele.Type_Operation> Type_Operation { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,6 +33,22 @@ namespace Foot2site_V1.Data
                 .HasOne(stock => stock.taille)
                 .WithMany(tailles => tailles.Stock_Produits_List)
                 .HasForeignKey(stock => stock.id_TAILLE); // Spécifier la clé étrangère
+
+            modelBuilder.Entity<Transaction>()
+                .HasOne(t => t.Utilisateur)
+                .WithMany(u => u.Transactions)
+                .HasForeignKey(t => t.Id_User);
+
+            modelBuilder.Entity<Transaction>()
+            .Property(t => t.Montant_operation)
+            .HasColumnType("decimal(10,2)");
+
+
+            modelBuilder.Entity<Transaction>()
+                .HasOne(t => t.TypeOperation)
+                .WithMany(to => to.Transactions)
+                .HasForeignKey(t => t.Id_TYPE_OPERATION);
+
 
 
             /*modelBuilder.Entity<Enseignant>()
@@ -99,7 +117,12 @@ namespace Foot2site_V1.Data
                     id_TAILLE = 4  // Taille L 
                 }
             );
+
+            modelBuilder.Entity<Type_Operation>().HasData(
+            new Type_Operation { Id_Type_Operation = 1, Nom_Type_Operation = "RECHARGE" },
+            new Type_Operation { Id_Type_Operation = 2, Nom_Type_Operation = "DEBIT" }
+            );
         }
-      
+
     }
 }
