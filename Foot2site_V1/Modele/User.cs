@@ -1,7 +1,10 @@
-﻿namespace Foot2site_V1.Modele
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Foot2site_V1.Modele
 {
     public class User
     {
+        [Key]
         public int Id { get; set; } 
         public string Name { get; set; }
 
@@ -12,6 +15,9 @@
         public string Password { get; set; }
 
         public string Adresse { get; set; }
+
+        // Relation avec les transactions
+        public List<Transaction> Transactions { get; set; } = new List<Transaction>(); 
 
     }
 }

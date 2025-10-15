@@ -25,7 +25,7 @@ namespace Foot2site_V1.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Produit>>> GetProduit()
         {
-            return await _context.Produit.ToListAsync();
+            return await _context.Produit.Include(p => p.stocks).ThenInclude(s => s.taille).ToListAsync();
         }
 
         // GET: api/Produits/5

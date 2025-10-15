@@ -3,6 +3,7 @@ using Foot2site_V1.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Foot2site_V1.Migrations
 {
     [DbContext(typeof(Foot2site_V1Context))]
-    partial class Foot2site_V1ContextModelSnapshot : ModelSnapshot
+    [Migration("20251013151813_modifi")]
+    partial class modifi
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,6 +46,22 @@ namespace Foot2site_V1.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Produit");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            description_produit = "le maillot du barcelone à domicile de 2017",
+                            nom_produit = "Maillot Barcelone 2017",
+                            prix_unitaire_produit = 65.0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            description_produit = "le maillot du Real Madrid à l'extérieur de 2014",
+                            nom_produit = "Maillot Real Madrid 2014",
+                            prix_unitaire_produit = 80.0
+                        });
                 });
 
             modelBuilder.Entity("Foot2site_V1.Modele.Stock_produit", b =>
@@ -69,6 +88,29 @@ namespace Foot2site_V1.Migrations
                     b.HasIndex("id_TAILLE");
 
                     b.ToTable("Stock_produit");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            id_PRODUIT = 1,
+                            id_TAILLE = 2,
+                            quantite = 10
+                        },
+                        new
+                        {
+                            Id = 2,
+                            id_PRODUIT = 1,
+                            id_TAILLE = 1,
+                            quantite = 20
+                        },
+                        new
+                        {
+                            Id = 3,
+                            id_PRODUIT = 2,
+                            id_TAILLE = 4,
+                            quantite = 20
+                        });
                 });
 
             modelBuilder.Entity("Foot2site_V1.Modele.Taille", b =>
@@ -102,65 +144,21 @@ namespace Foot2site_V1.Migrations
                         {
                             Id = 3,
                             taille = "M"
-                        });
-                });
-
-            modelBuilder.Entity("Foot2site_V1.Modele.Transaction", b =>
-                {
-                    b.Property<int>("Id_Transaction")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id_Transaction"));
-
-                    b.Property<string>("Description_transaction")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Id_TYPE_OPERATION")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Id_User")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Montant_operation")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.HasKey("Id_Transaction");
-
-                    b.HasIndex("Id_TYPE_OPERATION");
-
-                    b.HasIndex("Id_User");
-
-                    b.ToTable("Transaction");
-                });
-
-            modelBuilder.Entity("Foot2site_V1.Modele.Type_Operation", b =>
-                {
-                    b.Property<int>("Id_Type_Operation")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id_Type_Operation"));
-
-                    b.Property<string>("Nom_Type_Operation")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id_Type_Operation");
-
-                    b.ToTable("Type_Operation");
-
-                    b.HasData(
-                        new
-                        {
-                            Id_Type_Operation = 1,
-                            Nom_Type_Operation = "RECHARGE"
                         },
                         new
                         {
-                            Id_Type_Operation = 2,
-                            Nom_Type_Operation = "DEBIT"
+                            Id = 4,
+                            taille = "L"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            taille = "XL"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            taille = "XLL"
                         });
                 });
 
@@ -175,6 +173,9 @@ namespace Foot2site_V1.Migrations
                     b.Property<string>("Adresse")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Credit")
+                        .HasColumnType("float");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -216,25 +217,6 @@ namespace Foot2site_V1.Migrations
                     b.Navigation("taille");
                 });
 
-            modelBuilder.Entity("Foot2site_V1.Modele.Transaction", b =>
-                {
-                    b.HasOne("Foot2site_V1.Modele.Type_Operation", "TypeOperation")
-                        .WithMany("Transactions")
-                        .HasForeignKey("Id_TYPE_OPERATION")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Foot2site_V1.Modele.User", "Utilisateur")
-                        .WithMany("Transactions")
-                        .HasForeignKey("Id_User")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TypeOperation");
-
-                    b.Navigation("Utilisateur");
-                });
-
             modelBuilder.Entity("Foot2site_V1.Modele.Produit", b =>
                 {
                     b.Navigation("stocks");
@@ -243,16 +225,6 @@ namespace Foot2site_V1.Migrations
             modelBuilder.Entity("Foot2site_V1.Modele.Taille", b =>
                 {
                     b.Navigation("Stock_Produits_List");
-                });
-
-            modelBuilder.Entity("Foot2site_V1.Modele.Type_Operation", b =>
-                {
-                    b.Navigation("Transactions");
-                });
-
-            modelBuilder.Entity("Foot2site_V1.Modele.User", b =>
-                {
-                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

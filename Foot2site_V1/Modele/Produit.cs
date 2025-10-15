@@ -7,7 +7,7 @@
         public string description_produit { get; set; }
         public double prix_unitaire_produit { get; set; }
 
-        public List<Stock_produit> stocks { get; set; }
+        public List<Stock_produit>? stocks { get; set; }
 
     }
 }
