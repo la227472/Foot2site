@@ -5,7 +5,7 @@ namespace Foot2site_V1.Modele
     public class User
     {
         [Key]
-        public int Id { get; set; } 
+        public int Id_User { get; set; } 
         public string Name { get; set; }
 
         public string Firstname { get; set; }

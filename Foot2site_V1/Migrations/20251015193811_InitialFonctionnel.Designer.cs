@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Foot2site_V1.Migrations
 {
     [DbContext(typeof(Foot2site_V1Context))]
-    [Migration("20251014211646_modifs du modele de taille")]
-    partial class modifsdumodeledetaille
+    [Migration("20251015193811_InitialFonctionnel")]
+    partial class InitialFonctionnel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,62 @@ namespace Foot2site_V1.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Foot2site_V1.Modele.Commande", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Id_UTILISATEUR")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Paye")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("prixTotal")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id_UTILISATEUR");
+
+                    b.ToTable("Commande");
+                });
+
+            modelBuilder.Entity("Foot2site_V1.Modele.Ligne_Commande", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Id_COMMANDE")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id_STOCK_PRODUIT")
+                        .HasColumnType("int");
+
+                    b.Property<double>("prixUnitaire")
+                        .HasColumnType("float");
+
+                    b.Property<int>("quantite")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id_COMMANDE");
+
+                    b.HasIndex("Id_STOCK_PRODUIT");
+
+                    b.ToTable("Ligne_Commande");
+                });
 
             modelBuilder.Entity("Foot2site_V1.Modele.Produit", b =>
                 {
@@ -130,17 +186,11 @@ namespace Foot2site_V1.Migrations
                     b.Property<decimal>("Montant_operation")
                         .HasColumnType("decimal(10,2)");
 
-                    b.Property<int?>("TypeOperationId_Type_Operation")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UtilisateurId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id_Transaction");
 
-                    b.HasIndex("TypeOperationId_Type_Operation");
+                    b.HasIndex("Id_TYPE_OPERATION");
 
-                    b.HasIndex("UtilisateurId");
+                    b.HasIndex("Id_User");
 
                     b.ToTable("Transaction");
                 });
@@ -176,15 +226,18 @@ namespace Foot2site_V1.Migrations
 
             modelBuilder.Entity("Foot2site_V1.Modele.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("Id_User")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id_User"));
 
                     b.Property<string>("Adresse")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Credit")
+                        .HasColumnType("float");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -202,9 +255,39 @@ namespace Foot2site_V1.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id_User");
 
                     b.ToTable("User");
+                });
+
+            modelBuilder.Entity("Foot2site_V1.Modele.Commande", b =>
+                {
+                    b.HasOne("Foot2site_V1.Modele.User", "utilisateur")
+                        .WithMany("commandes")
+                        .HasForeignKey("Id_UTILISATEUR")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("utilisateur");
+                });
+
+            modelBuilder.Entity("Foot2site_V1.Modele.Ligne_Commande", b =>
+                {
+                    b.HasOne("Foot2site_V1.Modele.Commande", "commande")
+                        .WithMany("lignes_Commande")
+                        .HasForeignKey("Id_COMMANDE")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Foot2site_V1.Modele.Stock_produit", "stock_Produit")
+                        .WithMany("lignesCommande")
+                        .HasForeignKey("Id_STOCK_PRODUIT")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("commande");
+
+                    b.Navigation("stock_Produit");
                 });
 
             modelBuilder.Entity("Foot2site_V1.Modele.Stock_produit", b =>
@@ -230,20 +313,34 @@ namespace Foot2site_V1.Migrations
                 {
                     b.HasOne("Foot2site_V1.Modele.Type_Operation", "TypeOperation")
                         .WithMany("Transactions")
-                        .HasForeignKey("TypeOperationId_Type_Operation");
+                        .HasForeignKey("Id_TYPE_OPERATION")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Foot2site_V1.Modele.User", "Utilisateur")
                         .WithMany("Transactions")
-                        .HasForeignKey("UtilisateurId");
+                        .HasForeignKey("Id_User")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("TypeOperation");
 
                     b.Navigation("Utilisateur");
                 });
 
+            modelBuilder.Entity("Foot2site_V1.Modele.Commande", b =>
+                {
+                    b.Navigation("lignes_Commande");
+                });
+
             modelBuilder.Entity("Foot2site_V1.Modele.Produit", b =>
                 {
                     b.Navigation("stocks");
+                });
+
+            modelBuilder.Entity("Foot2site_V1.Modele.Stock_produit", b =>
+                {
+                    b.Navigation("lignesCommande");
                 });
 
             modelBuilder.Entity("Foot2site_V1.Modele.Taille", b =>
@@ -259,6 +356,8 @@ namespace Foot2site_V1.Migrations
             modelBuilder.Entity("Foot2site_V1.Modele.User", b =>
                 {
                     b.Navigation("Transactions");
+
+                    b.Navigation("commandes");
                 });
 #pragma warning restore 612, 618
         }

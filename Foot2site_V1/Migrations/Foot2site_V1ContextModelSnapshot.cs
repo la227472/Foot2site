@@ -223,11 +223,11 @@ namespace Foot2site_V1.Migrations
 
             modelBuilder.Entity("Foot2site_V1.Modele.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("Id_User")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id_User"));
 
                     b.Property<string>("Adresse")
                         .IsRequired()
@@ -252,7 +252,7 @@ namespace Foot2site_V1.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id_User");
 
                     b.ToTable("User");
                 });
