@@ -47,7 +47,7 @@ namespace Foot2site_V1.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, User user)
         {
-            if (id != user.Id)
+            if (id != user.Id_User)
             {
                 return BadRequest();
             }
@@ -81,7 +81,7 @@ namespace Foot2site_V1.Controllers
             _context.User.Add(user);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            return CreatedAtAction("GetUser", new { id = user.Id_User }, user);
         }
 
         // DELETE: api/Users/5
@@ -102,7 +102,7 @@ namespace Foot2site_V1.Controllers
 
         private bool UserExists(int id)
         {
-            return _context.User.Any(e => e.Id == id);
+            return _context.User.Any(e => e.Id_User == id);
         }
     }
 }

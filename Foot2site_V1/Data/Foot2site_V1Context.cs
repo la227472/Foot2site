@@ -19,10 +19,10 @@ namespace Foot2site_V1.Data
         public DbSet<Foot2site_V1.Modele.Taille> Taille { get; set; } = default!;
         public DbSet<Foot2site_V1.Modele.Stock_produit> Stock_produit { get; set; } = default!;
         public DbSet<Foot2site_V1.Modele.User> User { get; set; } = default!;
+        public DbSet<Foot2site_V1.Modele.Role> Role { get; set; } = default!;
         public DbSet<Foot2site_V1.Modele.Produit> Produit { get; set; } = default!;
         public DbSet<Foot2site_V1.Modele.Transaction> Transaction { get; set; } = default!;
         public DbSet<Foot2site_V1.Modele.Type_Operation> Type_Operation { get; set; } = default!;
-
         public DbSet<Foot2site_V1.Modele.Commande> Commande { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -40,8 +40,7 @@ namespace Foot2site_V1.Data
 
         
            // Configuration de la table COMMANDE
-            // Relation Commande -> Utilisateur (Many-to-One)
-            
+           // Relation Commande -> Utilisateur (Many-to-One)
             modelBuilder.Entity<Commande>()
                 .HasOne(commande => commande.utilisateur)
                 .WithMany(utilisateur => utilisateur.commandes)
@@ -52,20 +51,29 @@ namespace Foot2site_V1.Data
                 .HasMany(commande => commande.lignes_Commande)
                 .WithOne(ligne => ligne.commande)
                 .HasForeignKey(ligne => ligne.Id_COMMANDE);
+
+            // Configuration de la table TRANSACTION
+            // Relation Transaction -> Utilisateur
             modelBuilder.Entity<Transaction>()
-              .HasOne(t => t.Utilisateur)
-              .WithMany(u => u.Transactions)
-              .HasForeignKey(t => t.Id_User);
-
+                .HasOne(t => t.Utilisateur)
+                .WithMany(u => u.Transactions)
+                .HasForeignKey(t => t.Id_User);
             modelBuilder.Entity<Transaction>()
-            .Property(t => t.Montant_operation)
-            .HasColumnType("decimal(10,2)");
+                .Property(t => t.Montant_operation)
+                .HasColumnType("decimal(10,2)");
 
-
+            // Relation Transaction -> Type_Operation
             modelBuilder.Entity<Transaction>()
                 .HasOne(t => t.TypeOperation)
                 .WithMany(to => to.Transactions)
                 .HasForeignKey(t => t.Id_TYPE_OPERATION);
+
+            // Configuration de la table USER
+            // Relation User -> Role
+            modelBuilder.Entity<User>()
+                .HasOne(user => user.Role)
+                .WithMany(role => role.User)
+                .HasForeignKey(user => user.Id_Role);
 
 
             /*modelBuilder.Entity<Enseignant>()
@@ -97,16 +105,7 @@ namespace Foot2site_V1.Data
 
             );*/
 
-            // Ajouter des tailles
-            modelBuilder.Entity<Taille>().HasData(
-                new Taille { Id = 1, taille = "XS" },
-                new Taille { Id = 2, taille = "S" },
-                new Taille { Id = 3, taille = "M" }
-                /*new Taille { Id = 4, taille = "L" },
-                new Taille { Id = 5, taille = "XL" },
-                new Taille { Id = 6, taille = "XLL" }*/
-            );
-
+            
             // Ajouter des stocks
            /* modelBuilder.Entity<Stock_produit>().HasData(
                 new Stock_produit
@@ -139,6 +138,21 @@ namespace Foot2site_V1.Data
            new Type_Operation { Id_Type_Operation = 1, Nom_Type_Operation = "RECHARGE" },
            new Type_Operation { Id_Type_Operation = 2, Nom_Type_Operation = "DEBIT" }
            );
+
+            modelBuilder.Entity<Role>().HasData(
+           new Role { Id_Role = 1, NomRole = "ADMIN" },
+           new Role { Id_Role = 2, NomRole = "CLINET" }
+           );
+
+            // Ajouter des tailles
+            modelBuilder.Entity<Taille>().HasData(
+                new Taille { Id = 1, taille = "XS" },
+                new Taille { Id = 2, taille = "S" },
+                new Taille { Id = 3, taille = "M" }
+                /*new Taille { Id = 4, taille = "L" },
+                new Taille { Id = 5, taille = "XL" },
+                new Taille { Id = 6, taille = "XLL" }*/
+            );
         }
         public DbSet<Foot2site_V1.Modele.Ligne_Commande> Ligne_Commande { get; set; } = default!;
       
