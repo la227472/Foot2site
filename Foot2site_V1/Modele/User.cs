@@ -16,6 +16,9 @@ namespace Foot2site_V1.Modele
 
         public string Adresse { get; set; }
 
+        public double Credit { get; set; }
+
+        public virtual List<Commande> commandes { get; set; }
         // Relation avec les transactions
         public List<Transaction> Transactions { get; set; } = new List<Transaction>(); 
 
