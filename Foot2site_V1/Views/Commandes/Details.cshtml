@@ -1,4 +1,4 @@
-﻿@model Foot2site_V1.Modele.Ligne_Commande
+﻿@model Foot2site_V1.Modele.Commande
 
 @{
     ViewData["Title"] = "Details";
@@ -7,32 +7,32 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Ligne_Commande</h4>
+    <h4>Commande</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.quantite)
+            @Html.DisplayNameFor(model => model.Date)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.quantite)
+            @Html.DisplayFor(model => model.Date)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.prixUnitaire)
+            @Html.DisplayNameFor(model => model.prixTotal)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.prixUnitaire)
+            @Html.DisplayFor(model => model.prixTotal)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.commande)
+            @Html.DisplayNameFor(model => model.Paye)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.commande.Id)
+            @Html.DisplayFor(model => model.Paye)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.stock_Produit)
+            @Html.DisplayNameFor(model => model.utilisateur)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.stock_Produit.Id)
+            @Html.DisplayFor(model => model.utilisateur.Id)
         </dd>
     </dl>
 </div>

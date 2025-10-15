@@ -24,6 +24,7 @@ namespace Foot2site_V1.Data
         public DbSet<Foot2site_V1.Modele.Type_Operation> Type_Operation { get; set; } = default!;
 
         public DbSet<Foot2site_V1.Modele.Commande> Commande { get; set; } = default!;
+        public DbSet<Foot2site_V1.Modele.Ligne_Commande> Ligne_Commande { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -38,8 +39,7 @@ namespace Foot2site_V1.Data
                 .WithMany(tailles => tailles.Stock_Produits_List)
                 .HasForeignKey(stock => stock.id_TAILLE); // Spécifier la clé étrangère
 
-        
-           // Configuration de la table COMMANDE
+
             // Relation Commande -> Utilisateur (Many-to-One)
             
             modelBuilder.Entity<Commande>()
@@ -52,6 +52,13 @@ namespace Foot2site_V1.Data
                 .HasMany(commande => commande.lignes_Commande)
                 .WithOne(ligne => ligne.commande)
                 .HasForeignKey(ligne => ligne.Id_COMMANDE);
+
+            // Relation LigneCommande -> StockProduit
+            modelBuilder.Entity<Ligne_Commande>()
+                .HasOne(ligne => ligne.stock_Produit)
+                .WithMany(stock => stock.lignesCommande)
+                .HasForeignKey(ligne => ligne.Id_STOCK_PRODUIT);    
+
             modelBuilder.Entity<Transaction>()
               .HasOne(t => t.Utilisateur)
               .WithMany(u => u.Transactions)
@@ -140,7 +147,7 @@ namespace Foot2site_V1.Data
            new Type_Operation { Id_Type_Operation = 2, Nom_Type_Operation = "DEBIT" }
            );
         }
-        public DbSet<Foot2site_V1.Modele.Ligne_Commande> Ligne_Commande { get; set; } = default!;
+       
       
       
     }

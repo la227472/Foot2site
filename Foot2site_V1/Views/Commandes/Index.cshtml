@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Foot2site_V1.Modele.Ligne_Commande>
+﻿@model IEnumerable<Foot2site_V1.Modele.Commande>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,16 +13,16 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.quantite)
+                @Html.DisplayNameFor(model => model.Date)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.prixUnitaire)
+                @Html.DisplayNameFor(model => model.prixTotal)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.commande)
+                @Html.DisplayNameFor(model => model.Paye)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.stock_Produit)
+                @Html.DisplayNameFor(model => model.utilisateur)
             </th>
             <th></th>
         </tr>
@@ -31,16 +31,16 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.quantite)
+                @Html.DisplayFor(modelItem => item.Date)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.prixUnitaire)
+                @Html.DisplayFor(modelItem => item.prixTotal)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.commande.Id)
+                @Html.DisplayFor(modelItem => item.Paye)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.stock_Produit.Id)
+                @Html.DisplayFor(modelItem => item.utilisateur.Id)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
