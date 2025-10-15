@@ -13,6 +13,5 @@
 
         public string Adresse { get; set; }
 
-        public double Credit { get; set; }
     }
 }
