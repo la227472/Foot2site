@@ -1,0 +1,91 @@
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace Foot2site_V1.Migrations
+{
+    /// <inheritdoc />
+    public partial class Modifcredit : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "Commande",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    prixTotal = table.Column<double>(type: "float", nullable: false),
+                    Paye = table.Column<bool>(type: "bit", nullable: false),
+                    Id_UTILISATEUR = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Commande", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Commande_User_Id_UTILISATEUR",
+                        column: x => x.Id_UTILISATEUR,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Ligne_Commande",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    quantite = table.Column<int>(type: "int", nullable: false),
+                    prixUnitaire = table.Column<double>(type: "float", nullable: false),
+                    Id_COMMANDE = table.Column<int>(type: "int", nullable: false),
+                    Id_STOCK_PRODUIT = table.Column<int>(type: "int", nullable: false),
+                    stock_ProduitId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ligne_Commande", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Ligne_Commande_Commande_Id_COMMANDE",
+                        column: x => x.Id_COMMANDE,
+                        principalTable: "Commande",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Ligne_Commande_Stock_produit_stock_ProduitId",
+                        column: x => x.stock_ProduitId,
+                        principalTable: "Stock_produit",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Commande_Id_UTILISATEUR",
+                table: "Commande",
+                column: "Id_UTILISATEUR");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ligne_Commande_Id_COMMANDE",
+                table: "Ligne_Commande",
+                column: "Id_COMMANDE");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ligne_Commande_stock_ProduitId",
+                table: "Ligne_Commande",
+                column: "stock_ProduitId");
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "Ligne_Commande");
+
+            migrationBuilder.DropTable(
+                name: "Commande");
+        }
+    }
+}
