@@ -35,7 +35,7 @@ namespace Foot2site_V1.Data
                 .HasForeignKey(stock => stock.id_TAILLE); // Spécifier la clé étrangère
 
         
-        .   // Configuration de la table COMMANDE
+           // Configuration de la table COMMANDE
             // Relation Commande -> Utilisateur (Many-to-One)
             
             modelBuilder.Entity<Commande>()
@@ -45,7 +45,7 @@ namespace Foot2site_V1.Data
 
             // Relation Commande -> LigneCommande
             modelBuilder.Entity<Commande>()
-                .HasMany(commande => commande.lignesCommande)
+                .HasMany(commande => commande.lignes_Commande)
                 .WithOne(ligne => ligne.commande)
                 .HasForeignKey(ligne => ligne.Id_COMMANDE);
 
