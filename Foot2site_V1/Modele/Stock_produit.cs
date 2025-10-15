@@ -16,5 +16,7 @@ namespace Foot2site_V1.Modele
         // Clé étrangère vers Taille
         public int id_TAILLE { get; set; }
         public Taille? taille { get; set; }
+
+        public List<Ligne_Commande> lignesCommande { get; set; }
     }
 }
