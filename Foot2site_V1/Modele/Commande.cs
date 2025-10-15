@@ -1,4 +1,6 @@
-﻿namespace Foot2site_V1.Modele
+﻿using System.Text.Json.Serialization;
+
+namespace Foot2site_V1.Modele
 {
     public class Commande
     {
@@ -9,8 +11,11 @@
         public Boolean Paye { get; set; }
         public int Id_UTILISATEUR { get; set; }
 
-        public virtual User utilisateur { get; set; }
-        public List<Ligne_Commande> lignes_Commande { get; set; }
+        [JsonIgnore]
+        public virtual User? utilisateur { get; set; }
+
+        [JsonIgnore]
+        public List<Ligne_Commande>? lignes_Commande { get; set; }
 
     }
 }
