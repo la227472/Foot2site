@@ -146,7 +146,7 @@ namespace Foot2site_V1.Data
 
             modelBuilder.Entity<Role>().HasData(
            new Role { Id_Role = 1, NomRole = "ADMIN" },
-           new Role { Id_Role = 2, NomRole = "CLINET" }
+           new Role { Id_Role = 2, NomRole = "CLIENT" }
            );
 
             // Ajouter des tailles

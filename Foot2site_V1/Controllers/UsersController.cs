@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Foot2site_V1.Data;
+using Foot2site_V1.Modele;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Foot2site_V1.Data;
-using Foot2site_V1.Modele;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Metadata;
+using System.Threading.Tasks;
 
 namespace Foot2site_V1.Controllers
 {
@@ -21,12 +22,14 @@ namespace Foot2site_V1.Controllers
             _context = context;
         }
 
+
         // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUser()
         {
             return await _context.User.ToListAsync();
         }
+
 
         // GET: api/Users/5
         [HttpGet("{id}")]
@@ -42,17 +45,61 @@ namespace Foot2site_V1.Controllers
             return user;
         }
 
+
+        // POST: api/Users
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<User>> PostUser(string Name, string Firstname, string Email, string Password, string Adresse, int Id_Role)
+        {
+            if (string.IsNullOrWhiteSpace(Name) ||
+                string.IsNullOrWhiteSpace(Firstname) ||
+                string.IsNullOrWhiteSpace(Email) ||
+                string.IsNullOrWhiteSpace(Password) ||
+                string.IsNullOrWhiteSpace(Adresse) ||
+                (Id_Role != 1 && Id_Role != 2))
+            {
+                return BadRequest(new { message = "Entrez des bonnes informations" });
+            }
+
+            var user = new User
+            {
+                Name = Name,
+                Firstname = Firstname,
+                Email = Email,
+                Password = Password,
+                Adresse = Adresse,
+                Id_Role = Id_Role
+            };
+
+            _context.User.Add(user);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetUser", new { id = user.Id_User }, user);
+        }
+
+
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        public async Task<IActionResult> PutUser(int id, string Name, string Firstname, string Email, string Password, string Adresse, int Id_Role)
         {
-            if (id != user.Id_User)
+            if (Id_Role != 1 && Id_Role != 2)
             {
-                return BadRequest();
+                return BadRequest(new { message = "Id_Role doit être 1 (admin) ou 2 (utilisateur)." });
             }
 
-            _context.Entry(user).State = EntityState.Modified;
+            var user = await _context.User.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            user.Name = Name;
+            user.Firstname = Firstname;
+            user.Email = Email;
+            user.Password = Password;
+            user.Adresse = Adresse;
+            user.Id_Role = Id_Role;
 
             try
             {
@@ -73,16 +120,6 @@ namespace Foot2site_V1.Controllers
             return NoContent();
         }
 
-        // POST: api/Users
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
-        {
-            _context.User.Add(user);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetUser", new { id = user.Id_User }, user);
-        }
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
@@ -91,7 +128,7 @@ namespace Foot2site_V1.Controllers
             var user = await _context.User.FindAsync(id);
             if (user == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Utilisateur non trouvé." });
             }
 
             _context.User.Remove(user);
