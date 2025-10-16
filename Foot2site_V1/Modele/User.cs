@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace Foot2site_V1.Modele
 {
@@ -16,11 +17,15 @@ namespace Foot2site_V1.Modele
 
         public string Adresse { get; set; }
 
-        public double Credit { get; set; }
 
+        // Relation avec les commandes
         public virtual List<Commande> commandes { get; set; }
         // Relation avec les transactions
-        public List<Transaction> Transactions { get; set; } = new List<Transaction>(); 
+        public List<Transaction> Transactions { get; set; } = new List<Transaction>();
 
+        // Clé étrangère vers le rôle
+        public int Id_Role { get; set; }
+        // Relation avec le rôle
+        public Role? Role { get; set; }
     }
 }
