@@ -10,13 +10,17 @@ namespace Foot2site_V1.Modele
 
         // Clé étrangère vers Produit
         public int id_PRODUIT { get; set; }
+
         [JsonIgnore]
         public Produit? produit { get; set; }
 
         // Clé étrangère vers Taille
         public int id_TAILLE { get; set; }
+
+        [JsonIgnore]
         public Taille? taille { get; set; }
 
-        public List<Ligne_Commande> lignesCommande { get; set; }
+        [JsonIgnore]
+        public List<Ligne_Commande>? lignesCommande { get; set; }
     }
 }

@@ -184,7 +184,10 @@ namespace Foot2site_V1.Migrations
                 {
                     { 1, "XS" },
                     { 2, "S" },
-                    { 3, "M" }
+                    { 3, "M" },
+                    { 4, "L" },
+                    { 5, "XL" },
+                    { 6, "XXL" }
                 });
 
             migrationBuilder.InsertData(

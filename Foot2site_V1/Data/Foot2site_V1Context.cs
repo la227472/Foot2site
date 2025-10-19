@@ -80,16 +80,6 @@ namespace Foot2site_V1.Data
                 .WithMany(role => role.User)
                 .HasForeignKey(user => user.Id_Role);
 
-
-            /*modelBuilder.Entity<Enseignant>()
-                        .HasMany(e => e.cours)
-                        .WithOne(c => c.Enseignant);
-
-            modelBuilder.Entity<Etudiant>()
-                        .HasMany(e => e.cours)
-                        .WithMany(c => c.etudiants);*/
-
-
             // Ajouter des produits
             /*modelBuilder.Entity<Produit>().HasData(
                 new Produit 
