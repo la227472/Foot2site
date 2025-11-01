@@ -1,5 +1,7 @@
 ﻿using Foot2site_V1.Data;
 using Foot2site_V1.Modele;
+using Foot2site_V1.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +23,12 @@ namespace Foot2site_V1.Controllers
         [HttpGet("solde/{userId}")]
         public ActionResult<decimal> GetSolde(int userId)
         {
+            // Verifie le token valide
+            var valid = new AuthorizationServices().IsTokenValid(this.Request.Headers.Authorization.ToString(), "user");
+            if (!valid)
+            {
+                return Unauthorized();
+            }
 
             // Vérifier que l'utilisateur existe
             var user = _context.User.Find(userId);

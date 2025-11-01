@@ -1,11 +1,15 @@
 ﻿using Foot2site_V1.Data;
 using Foot2site_V1.Modele;
+using Foot2site_V1.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Plugins;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Reflection.Metadata;
 using System.Threading.Tasks;
 
@@ -27,7 +31,9 @@ namespace Foot2site_V1.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUser()
         {
-            return await _context.User.ToListAsync();
+            return await _context.User
+                .Include(u => u.Role)
+                .ToListAsync();
         }
 
 
@@ -61,12 +67,16 @@ namespace Foot2site_V1.Controllers
                 return BadRequest(new { message = "Entrez des bonnes informations" });
             }
 
+            // Hash du mot de passe AVANT de créer l'utilisateur
+            var salt = BCrypt.Net.BCrypt.GenerateSalt();
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(Password, salt);
+
             var user = new User
             {
                 Name = Name,
                 Firstname = Firstname,
                 Email = Email,
-                Password = Password,
+                Password = hashedPassword,
                 Adresse = Adresse,
                 Id_Role = Id_Role
             };
@@ -107,7 +117,7 @@ namespace Foot2site_V1.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (!UserExistsByID(id))
                 {
                     return NotFound();
                 }
@@ -137,7 +147,38 @@ namespace Foot2site_V1.Controllers
             return NoContent();
         }
 
-        private bool UserExists(int id)
+        [HttpPost("/login")]
+        public async Task<ActionResult<LoginResponse>> Login([FromForm] string Email, [FromForm] string password)
+        {
+            var userExists = UserExists(Email, password);
+            if (userExists == null)
+            {
+                return BadRequest(new { message = "Email ou mot de passe incorrect" });
+            }
+            else
+            {
+                var token = new AuthorizationServices().CreateToken(userExists);
+                return Ok(new LoginResponse
+                {
+                    Token = token,
+                    Email = userExists.Email // ou d'autres infos utiles
+                });
+            }
+        }
+
+        private User UserExists(string Email, string password)
+        {
+            var user = _context.User
+                .Include(u => u.Role)
+                .FirstOrDefault(u => u.Email == Email);
+            if (user != null && BCrypt.Net.BCrypt.Verify(password, user.Password))
+            {
+                return user;
+            }
+            return null;
+        }
+
+        private bool UserExistsByID(int id)
         {
             return _context.User.Any(e => e.Id_User == id);
         }

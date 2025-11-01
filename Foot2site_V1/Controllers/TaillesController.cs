@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Foot2site_V1.Data;
 using Foot2site_V1.Modele;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 
 namespace Foot2site_V1.Controllers
 {
@@ -24,22 +25,62 @@ namespace Foot2site_V1.Controllers
         // GET: api/Tailles
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Taille>>> GetTaille()
-        {
-            return await _context.Taille.ToListAsync();
+        { 
+
+            try{
+
+                var taille = await _context.Taille.ToListAsync();
+
+                return Ok(taille);
+
+            }catch(Exception ex){
+                    {
+                        return StatusCode(500, new
+                        {
+                            message = "Erreur lors de la récupération des tailles",
+                            details = ex.Message
+                        });
+                    }
+                }
+         
         }
 
         // GET: api/Tailles/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Taille>> GetTaille(int id)
         {
-            var taille = await _context.Taille.FindAsync(id);
 
-            if (taille == null)
+            try
             {
-                return NotFound();
+                if (id <= 0)
+                {
+                    return BadRequest(new
+                    {
+                        message = "L'ID doit être un nombre positif"
+                    });
+                }
+
+                var taille = await _context.Taille.FindAsync(id);
+
+                if (taille == null)
+                {
+                    return NotFound(new {message = $"La taille avec l'ID {id} n'existe pas" 
+                    });
+                }
+
+                return Ok(taille);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    message = "Erreur lors de la récupération du produit",
+                    details = ex.Message
+                });
+               
             }
 
-            return taille;
+      
         }
 
         // PUT: api/Tailles/5
@@ -47,30 +88,75 @@ namespace Foot2site_V1.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTaille(int id, Taille taille)
         {
-            if (id != taille.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(taille).State = EntityState.Modified;
 
             try
             {
+                if (id <= 0)
+                {
+                    return BadRequest(new
+                    {
+                        message = "L'ID doit être un nombre positif"
+                    });
+                }
+
+                if (id != taille.Id)
+                {
+                    return BadRequest(new {message = "L'ID dans l'URL ne correspond pas à l'ID du produit" 
+                    });
+                }
+
+                // Validation des données
+                // Vérifier que la taille existe
+                if (!TailleExists(id))
+                {
+                    return NotFound(new
+                    {
+                        message = $"La taille avec l'ID {id} n'existe pas"
+                    });
+                }
+
+                if (string.IsNullOrWhiteSpace(taille.taille))
+                {
+                    return BadRequest(new { message = "La taille est requise" });
+                }
+
+                _context.Entry(taille).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
+
+                return NoContent();
             }
             catch (DbUpdateConcurrencyException)
             {
                 if (!TailleExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new { message = $"La taille avec l'ID {id} n'existe pas" });
                 }
                 else
                 {
-                    throw;
+                    return StatusCode(500, new
+                    {
+                        message = "Erreur de concurrence lors de la mise à jour"
+                    });
                 }
             }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, new
+                {
+                    message = "Erreur lors de la mise à jour en base de données",
+                    details = ex.InnerException?.Message ?? ex.Message
+                });
+            }
 
-            return NoContent();
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    message = "Erreur lors de la récupération de la taille",
+                    details = ex.Message
+                });
+
+            }
         }
 
         // POST: api/Tailles
@@ -78,26 +164,111 @@ namespace Foot2site_V1.Controllers
         [HttpPost]
         public async Task<ActionResult<Taille>> PostTaille(Taille taille)
         {
-            _context.Taille.Add(taille);
-            await _context.SaveChangesAsync();
+            try
+            {
+                // Validation des données
+                if (string.IsNullOrWhiteSpace(taille.taille))
+                {
+                    return BadRequest(new { message = "La taille est requise" });
+                }
 
-            return CreatedAtAction("GetTaille", new { id = taille.Id }, taille);
+                // Vérifier si une taille avec la même taille existe déjà
+                var tailleExistant = await _context.Taille
+                    .FirstOrDefaultAsync(t => t.taille == taille.taille);
+
+                if (tailleExistant != null)
+                {
+                    return Conflict(new
+                    {
+                        message = "Cette taille existe déjà",
+                        tailleExistanteId = tailleExistant.Id
+                    });
+                }
+
+                _context.Taille.Add(taille);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction(
+                    "GetTaille",
+                    new { id = taille.Id },
+                    taille
+                );
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, new
+                {
+                    message = "Erreur lors de l'ajout en base de données",
+                    details = ex.InnerException?.Message ?? ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    message = "Erreur lors de la création de la taille",
+                    details = ex.Message
+                });
+            }
         }
 
         // DELETE: api/Tailles/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTaille(int id)
         {
-            var taille = await _context.Taille.FindAsync(id);
-            if (taille == null)
+            try
             {
-                return NotFound();
+
+                // Validation de l'ID
+                if (id <= 0)
+                {
+                    return BadRequest(new { 
+                        message = "L'ID doit être un nombre positif" 
+                    });
+                }
+
+                var taille = await _context.Taille
+                    .Include(t => t.Stock_Produits_List)
+                    .FirstOrDefaultAsync(t => t.Id == id);
+
+                if (taille == null)
+                {
+                    return NotFound(new { 
+                        message = $"La taille avec l'ID {id} n'existe pas" 
+                    });
+                }
+                // Vérifier s'il y a des stocks associés
+                if (taille.Stock_Produits_List != null && taille.Stock_Produits_List.Any())
+                {
+                    return BadRequest(new
+                    {
+                        message = "Impossible de supprimer cette taille car elle possède des stocks associés",
+                        nombreStocks = taille.Stock_Produits_List.Count
+                    });
+                }
+                _context.Taille.Remove(taille);
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    message = $"La taille '{taille.taille}' a été supprimé avec succès"
+                });
+            }
+            catch (DbUpdateException ex){
+                return StatusCode(500, new
+                {
+                    message = "Erreur lors de la suppression en base de données",
+                    details = ex.InnerException?.Message ?? ex.Message
+                });
+            }
+            catch (Exception ex) {
+                return StatusCode(500,new
+                {
+                    message = "Erreur lors de la création de la taille",
+                    details = ex.Message
+                });
             }
 
-            _context.Taille.Remove(taille);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
         }
 
         private bool TailleExists(int id)

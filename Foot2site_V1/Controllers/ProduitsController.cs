@@ -56,7 +56,9 @@ namespace Foot2site_V1.Controllers
                 // Validation de l'ID
                 if (id <= 0)
                 {
-                    return BadRequest(new { message = "L'ID doit être un nombre positif" });
+                    return BadRequest(new 
+                    { message = "L'ID doit être un nombre positif" 
+                    });
                 }
 
                 var produit = await _context.Produit
