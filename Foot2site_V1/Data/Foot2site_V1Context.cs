@@ -144,10 +144,10 @@ namespace Foot2site_V1.Data
             modelBuilder.Entity<Taille>().HasData(
                 new Taille { Id = 1, taille = "XS" },
                 new Taille { Id = 2, taille = "S" },
-                new Taille { Id = 3, taille = "M" }
-                /*new Taille { Id = 4, taille = "L" },
+                new Taille { Id = 3, taille = "M" },
+                new Taille { Id = 4, taille = "L" },
                 new Taille { Id = 5, taille = "XL" },
-                new Taille { Id = 6, taille = "XLL" }*/
+                new Taille { Id = 6, taille = "XLL" }
             );
         }
        
