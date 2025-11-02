@@ -38,7 +38,6 @@ namespace Foot2site_V1.Data
                 .HasOne(stock => stock.taille)
                 .WithMany(tailles => tailles.Stock_Produits_List)
                 .HasForeignKey(stock => stock.id_TAILLE); // Spécifier la clé étrangère
-
         
            // Configuration de la table COMMANDE
            // Relation Commande -> Utilisateur (Many-to-One)
@@ -100,40 +99,42 @@ namespace Foot2site_V1.Data
 
             );*/
 
-            
+
             // Ajouter des stocks
-           /* modelBuilder.Entity<Stock_produit>().HasData(
-                new Stock_produit
-                {
-                    Id_User = 1,
-                    quantite = 10,
-                    id_PRODUIT = 1,  // Maillot Barcelone 
-                    id_TAILLE = 2  // Taille S
+            /* modelBuilder.Entity<Stock_produit>().HasData(
+                 new Stock_produit
+                 {
+                     Id_User = 1,
+                     quantite = 10,
+                     id_PRODUIT = 1,  // Maillot Barcelone 
+                     id_TAILLE = 2  // Taille S
 
-                },
+                 },
 
-                new Stock_produit
-                {
-                    Id_User = 2,
-                    quantite = 20,
-                    id_PRODUIT = 1,  // Maillot Barcelone 
-                    id_TAILLE = 1  // Taille XS
-                },
+                 new Stock_produit
+                 {
+                     Id_User = 2,
+                     quantite = 20,
+                     id_PRODUIT = 1,  // Maillot Barcelone 
+                     id_TAILLE = 1  // Taille XS
+                 },
 
-                new Stock_produit
-                {
-                    Id_User = 3,
-                    quantite = 20,
-                    id_PRODUIT = 2,  // Maillot Real Madrid 
-                    id_TAILLE = 4  // Taille L 
-                }
-            );*/
+                 new Stock_produit
+                 {
+                     Id_User = 3,
+                     quantite = 20,
+                     id_PRODUIT = 2,  // Maillot Real Madrid 
+                     id_TAILLE = 4  // Taille L 
+                 }
+             );*/
 
+            // Ajouter des types d'opérations
             modelBuilder.Entity<Type_Operation>().HasData(
            new Type_Operation { Id_Type_Operation = 1, Nom_Type_Operation = "RECHARGE" },
            new Type_Operation { Id_Type_Operation = 2, Nom_Type_Operation = "DEBIT" }
            );
 
+            // Ajouter des rôles
             modelBuilder.Entity<Role>().HasData(
            new Role { Id_Role = 1, NomRole = "ADMIN" },
            new Role { Id_Role = 2, NomRole = "CLIENT" }

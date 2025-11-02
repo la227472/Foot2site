@@ -10,6 +10,7 @@ namespace Foot2site_V1.Modele
         public int Id_Role { get; set; }
         public string NomRole { get; set; }
 
+
         [JsonIgnore]
         // Relation avec les utilisateurs
         public List<User> User { get; set; }

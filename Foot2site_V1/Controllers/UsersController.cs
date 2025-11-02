@@ -1,20 +1,23 @@
 ﻿using Foot2site_V1.Data;
 using Foot2site_V1.Modele;
-using Foot2site_V1.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Protocol.Plugins;
-using System;
-using System.Collections.Generic;
+using BCrypt.Net;
 using System.Linq;
-using System.Net;
-using System.Reflection.Metadata;
 using System.Threading.Tasks;
 
 namespace Foot2site_V1.Controllers
 {
+
+    /// <summary>
+    /// Controleur pour gérer les opération CRUD des utilisateurs.
+    /// Endpoint :
+    /// GET: api/Users            -> Récupère tous les utilisateurs.
+    /// GET: api/Users/{id}       -> Récupère un utilisateur par son ID.
+    /// PUT: api/Users/{id}       -> Met à jour un utilisateur existant.
+    /// POST: api/Users           -> Crée un nouveau utilisateur.
+    /// DELETE: api/Users/{id}    -> Supprime un utilisateur par son ID.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -27,21 +30,28 @@ namespace Foot2site_V1.Controllers
         }
 
 
+
+        /// <summary>
+        /// Permet de récupérer tous les utilisateurs avec leurs rôles associés.
+        /// </summary>
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUser()
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            return await _context.User
-                .Include(u => u.Role)
-                .ToListAsync();
+            return await _context.User.Include(u => u.Role).ToListAsync();
         }
 
 
+
+        /// <summary>
+        /// Permet de récupérer un utilisateur spécifique par son ID, incluant son rôle associé.
+        /// </summary>
+        /// <param name="id"></param>
         // GET: api/Users/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-            var user = await _context.User.FindAsync(id);
+            var user = await _context.User.Include(u => u.Role).FirstOrDefaultAsync(u => u.Id_User == id);
 
             if (user == null)
             {
@@ -52,64 +62,23 @@ namespace Foot2site_V1.Controllers
         }
 
 
-        // POST: api/Users
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<User>> PostUser(string Name, string Firstname, string Email, string Password, string Adresse, int Id_Role)
-        {
-            if (string.IsNullOrWhiteSpace(Name) ||
-                string.IsNullOrWhiteSpace(Firstname) ||
-                string.IsNullOrWhiteSpace(Email) ||
-                string.IsNullOrWhiteSpace(Password) ||
-                string.IsNullOrWhiteSpace(Adresse) ||
-                (Id_Role != 1 && Id_Role != 2))
-            {
-                return BadRequest(new { message = "Entrez des bonnes informations" });
-            }
 
-            // Hash du mot de passe AVANT de créer l'utilisateur
-            var salt = BCrypt.Net.BCrypt.GenerateSalt();
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(Password, salt);
-
-            var user = new User
-            {
-                Name = Name,
-                Firstname = Firstname,
-                Email = Email,
-                Password = hashedPassword,
-                Adresse = Adresse,
-                Id_Role = Id_Role
-            };
-
-            _context.User.Add(user);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetUser", new { id = user.Id_User }, user);
-        }
-
-
+        /// <summary>
+        /// Permet de mettre à jour un utilisateur existant.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="user"></param>
         // PUT: api/Users/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, string Name, string Firstname, string Email, string Password, string Adresse, int Id_Role)
+        public async Task<IActionResult> PutUser(int id, User user)
         {
-            if (Id_Role != 1 && Id_Role != 2)
+
+            if (id != user.Id_User)
             {
-                return BadRequest(new { message = "Id_Role doit être 1 (admin) ou 2 (utilisateur)." });
+                return BadRequest();
             }
 
-            var user = await _context.User.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            user.Name = Name;
-            user.Firstname = Firstname;
-            user.Email = Email;
-            user.Password = Password;
-            user.Adresse = Adresse;
-            user.Id_Role = Id_Role;
+            _context.Entry(user).State = EntityState.Modified;
 
             try
             {
@@ -117,7 +86,7 @@ namespace Foot2site_V1.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExistsByID(id))
+                if (!UserExists(id))
                 {
                     return NotFound();
                 }
@@ -131,6 +100,41 @@ namespace Foot2site_V1.Controllers
         }
 
 
+
+        /// <summary>
+        /// Permet de créer un nouvel utilisateur avec un mot de passe hashé.
+        /// </summary>
+        // POST: api/Users
+        [HttpPost]
+        public async Task<ActionResult<User>> PostUser(User user)
+        {
+            if (string.IsNullOrWhiteSpace(user.Name) ||
+                string.IsNullOrWhiteSpace(user.Firstname) ||
+                string.IsNullOrWhiteSpace(user.Email) ||
+                string.IsNullOrWhiteSpace(user.Password) ||
+                string.IsNullOrWhiteSpace(user.Adresse) ||
+                (user.Id_Role != 1 && user.Id_Role != 2))
+            {
+                return BadRequest(new { message = "Entrez des bonnes informations" });
+            }
+
+            // Hash du mot de passe AVANT de créer l'utilisateur
+            var salt = BCrypt.Net.BCrypt.GenerateSalt();
+            user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password, salt);
+
+            _context.User.Add(user);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetUser", new { id = user.Id_User }, user);
+        }
+
+
+
+        /// <summary>
+        /// Permet de supprimer un utilisateur par son ID.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
@@ -138,7 +142,7 @@ namespace Foot2site_V1.Controllers
             var user = await _context.User.FindAsync(id);
             if (user == null)
             {
-                return NotFound(new { message = "Utilisateur non trouvé." });
+                return NotFound();
             }
 
             _context.User.Remove(user);
@@ -147,38 +151,14 @@ namespace Foot2site_V1.Controllers
             return NoContent();
         }
 
-        [HttpPost("/login")]
-        public async Task<ActionResult<LoginResponse>> Login([FromForm] string Email, [FromForm] string password)
-        {
-            var userExists = UserExists(Email, password);
-            if (userExists == null)
-            {
-                return BadRequest(new { message = "Email ou mot de passe incorrect" });
-            }
-            else
-            {
-                var token = new AuthorizationServices().CreateToken(userExists);
-                return Ok(new LoginResponse
-                {
-                    Token = token,
-                    Email = userExists.Email // ou d'autres infos utiles
-                });
-            }
-        }
 
-        private User UserExists(string Email, string password)
-        {
-            var user = _context.User
-                .Include(u => u.Role)
-                .FirstOrDefault(u => u.Email == Email);
-            if (user != null && BCrypt.Net.BCrypt.Verify(password, user.Password))
-            {
-                return user;
-            }
-            return null;
-        }
 
-        private bool UserExistsByID(int id)
+        /// <summary>
+        /// Permet de vérifier si un utilisateur existe par son ID.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        private bool UserExists(int id)
         {
             return _context.User.Any(e => e.Id_User == id);
         }
