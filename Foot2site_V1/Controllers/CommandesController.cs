@@ -10,6 +10,16 @@ using Foot2site_V1.Modele;
 
 namespace Foot2site_V1.Controllers
 {
+
+    /// <summary>
+    /// Controlleur pour gérer les opérations CRUD sur les commandes.
+    /// Endpoint : 
+    /// GET   /api/Commandes          -> Récupérer toutes les commandes
+    /// GET   /api/Commandes/{id}     -> Récupérer une commande par ID
+    /// PUT   /api/Commandes/{id}     -> Mettre à jour une commande existante
+    /// POST  /api/Commandes          -> Créer une nouvelle commande
+    /// DELETE /api/Commandes/{id}     -> Supprimer une commande par ID
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class CommandesController : ControllerBase
@@ -22,6 +32,10 @@ namespace Foot2site_V1.Controllers
         }
 
         // GET: api/Commandes
+        /// <summary>
+        /// Permet de lister toutes les commandes.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Commande>>> GetCommande()
         {
@@ -29,6 +43,11 @@ namespace Foot2site_V1.Controllers
         }
 
         // GET: api/Commandes/5
+        /// <summary>
+        /// Permet de récupérer une commande par son ID.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Commande>> GetCommande(int id)
         {
@@ -43,6 +62,12 @@ namespace Foot2site_V1.Controllers
         }
 
         // PUT: api/Commandes/5
+        /// <summary>
+        /// Permet de mettre à jour une commande existante.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="commande"></param>
+        /// <returns></returns>
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCommande(int id, Commande commande)
@@ -74,6 +99,11 @@ namespace Foot2site_V1.Controllers
         }
 
         // POST: api/Commandes
+        /// <summary>
+        /// Permet de créer une nouvelle commande.
+        /// </summary>
+        /// <param name="commande"></param>
+        /// <returns></returns>
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Commande>> PostCommande(Commande commande)
@@ -84,6 +114,11 @@ namespace Foot2site_V1.Controllers
             return CreatedAtAction("GetCommande", new { id = commande.Id }, commande);
         }
 
+        /// <summary>
+        /// Permet de supprimer une commande par son ID.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // DELETE: api/Commandes/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCommande(int id)

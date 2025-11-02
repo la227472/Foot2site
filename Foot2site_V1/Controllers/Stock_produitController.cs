@@ -10,6 +10,16 @@ using Foot2site_V1.Modele;
 
 namespace Foot2site_V1.Controllers
 {
+    /// <summary>
+    /// Controlleur pour gérer les opérations CRUD sur les stocks de produits.
+    /// Voici les Endpoints : 
+    /// GET   /api/Stock_produit               -> Récupérer tous les stocks de produits
+    /// GET   /api/Stock_produit/{id}          -> Récupérer un stock de produit par ID
+    /// GET   /api/Stock_produit/produit/{produitId} -> Récupérer tous les stocks pour un produit spécifique
+    /// PUT   /api/Stock_produit/{id}          -> Mettre à jour un stock de produit existant
+    /// POST  /api/Stock_produit               -> Créer un nouveau stock de produit
+    /// DELETE /api/Stock_produit/{id}          -> Supprimer un stock de produit par ID
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class Stock_produitController : ControllerBase
@@ -21,6 +31,10 @@ namespace Foot2site_V1.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Permet de récupérer la liste de tous les stocks de produits.
+        /// </summary>
+        /// <returns></returns>
         // GET: api/Stock_produit
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Stock_produit>>> GetStock_produit()
@@ -44,6 +58,11 @@ namespace Foot2site_V1.Controllers
             }
         }
 
+        /// <summary>
+        /// Permet de récupérer un stock de produit par son ID.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // GET: api/Stock_produit/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Stock_produit>> GetStock_produit(int id)
@@ -78,6 +97,11 @@ namespace Foot2site_V1.Controllers
             }
         }
 
+        /// <summary>
+        /// Permet de récupérer tous les stocks pour un produit spécifique.
+        /// </summary>
+        /// <param name="produitId"></param>
+        /// <returns></returns>
         // GET: api/Stock_produit/produit/5
         [HttpGet("produit/{produitId}")]
         public async Task<ActionResult<IEnumerable<Stock_produit>>> GetStocksByProduit(int produitId)
@@ -114,6 +138,12 @@ namespace Foot2site_V1.Controllers
             }
         }
 
+        /// <summary>
+        /// Permet de mettre à jour un stock de produit existant.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="stock_produit"></param>
+        /// <returns></returns>
         // PUT: api/Stock_produit/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutStock_produit(int id, Stock_produit stock_produit)
@@ -227,6 +257,11 @@ namespace Foot2site_V1.Controllers
             }
         }
 
+        /// <summary>
+        /// Permet de créer un nouveau stock de produit.
+        /// </summary>
+        /// <param name="stock_produit"></param>
+        /// <returns></returns>
         // POST: api/Stock_produit
         [HttpPost]
         public async Task<ActionResult<Stock_produit>> PostStock_produit(Stock_produit stock_produit)
@@ -314,6 +349,11 @@ namespace Foot2site_V1.Controllers
             }
         }
 
+        /// <summary>
+        /// Permet de supprimer un stock de produit par son ID.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // DELETE: api/Stock_produit/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStock_produit(int id)

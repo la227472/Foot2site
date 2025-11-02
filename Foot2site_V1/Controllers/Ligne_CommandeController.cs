@@ -10,6 +10,15 @@ using Foot2site_V1.Modele;
 
 namespace Foot2site_V1.Controllers
 {
+    /// <summary>
+    /// Controlleur pour gérer les opérations CRUD sur les lignes de commande qui sont les details des articles dans une commande.
+    /// Endpoint :
+    /// GET   /api/Ligne_Commande          -> Récupérer toutes les lignes de commande
+    /// GET   /api/Ligne_Commande/{id}     -> Récupérer une ligne de commande par ID
+    /// PUT   /api/Ligne_Commande/{id}     -> Mettre à jour une ligne de commande existante
+    /// POST  /api/Ligne_Commande          -> Créer une nouvelle ligne de commande
+    /// DELETE /api/Ligne_Commande/{id}     -> Supprimer une ligne de commande par 
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class Ligne_CommandeController : ControllerBase
@@ -21,6 +30,10 @@ namespace Foot2site_V1.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Récupère la liste de toutes les lignes de commande.
+        /// </summary>
+        /// <returns></returns>
         // GET: api/Ligne_Commande
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Ligne_Commande>>> GetLigne_Commande()
@@ -28,6 +41,9 @@ namespace Foot2site_V1.Controllers
             return await _context.Ligne_Commande.ToListAsync();
         }
 
+        /// <summary>
+        /// Permet de récupérer une ligne de commande spécifique en fonction de son ID.
+        ///</summary>
         // GET: api/Ligne_Commande/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Ligne_Commande>> GetLigne_Commande(int id)
@@ -42,6 +58,13 @@ namespace Foot2site_V1.Controllers
             return ligne_Commande;
         }
 
+        /// <summary>
+        /// Permet de mettre à jour une ligne de commande existante.
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="ligne_Commande"></param>
+        /// <returns></returns>
         // PUT: api/Ligne_Commande/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -73,6 +96,11 @@ namespace Foot2site_V1.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Permet de créer une nouvelle ligne de commande.
+        /// </summary>
+        /// <param name="ligne_Commande"></param>
+        /// <returns></returns>
         // POST: api/Ligne_Commande
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
@@ -84,6 +112,9 @@ namespace Foot2site_V1.Controllers
             return CreatedAtAction("GetLigne_Commande", new { id = ligne_Commande.Id }, ligne_Commande);
         }
 
+        /// <summary>
+        /// Permet de supprimer une ligne de commande en fonction de son ID.
+        /// </summary>
         // DELETE: api/Ligne_Commande/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLigne_Commande(int id)

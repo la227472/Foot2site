@@ -7,6 +7,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 namespace Foot2site_V1.Controllers
 {
+    /// <summary>
+    /// Controlleur pour gérer les opérations liées au portefeuille (wallet) des utilisateurs.
+    /// Voici les EndPoints : 
+    /// GET   /api/wallet/solde/{userId}       -> Récupérer le solde actuel du portefeuille d'un utilisateur
+    /// POST  /api/wallet/recharge              -> Recharger le portefeuille d'un utilisateur
+    /// POST  /api/wallet/debit                 -> Débiter le portefeuille d'un utilisateur
+    /// GET   /api/wallet/transactions/{userId} -> Récupérer l'historique des transactions d'un utilisateur
+    /// PUT   /api/wallet/transaction/{id}      -> Modifier une transaction par son ID
+    /// DELETE /api/wallet/transaction/{id}   -> Supprimer une transaction par son ID
+    /// </summary>
     [Route("api/wallet")]
     [ApiController]
     public class WalletController : ControllerBase
@@ -18,6 +28,11 @@ namespace Foot2site_V1.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Permet de récupérer le solde actuel du portefeuille d'un utilisateur.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         // GET: api/wallet/solde/{userId}
         // Récupérer le solde du portefeuille actuel de l'utilisateur en calculant la somme des transactions
         [HttpGet("solde/{userId}")]
@@ -48,7 +63,12 @@ namespace Foot2site_V1.Controllers
             return Ok(solde);
         }
 
-
+        /// <summary>
+        /// Permet de recharger le portefeuille d'un utilisateur.
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <param name="montant"></param>
+        /// <returns></returns>
         // POST: api/wallet/recharge
         // Recharger le portefeuille d'un utilisateur aprés l'achat d'un crédit ou une récompense
         [HttpPost("recharge")]
@@ -85,6 +105,12 @@ namespace Foot2site_V1.Controllers
             return CreatedAtAction(nameof(GetSolde), new { userId = UserId }, RechargeTransaction);
         }
 
+        /// <summary>
+        /// Permet de débiter le portefeuille d'un utilisateur.
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <param name="montant"></param>
+        /// <returns></returns>
         // POST: api/wallet/debit
         // Transaction de type DEBIT pour un achat
         [HttpPost("debit")]
@@ -134,7 +160,11 @@ namespace Foot2site_V1.Controllers
         }
 
 
-
+        /// <summary>
+        /// Permet de récupérer l'historique des transactions d'un utilisateur.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         // GET : api/wallet/transactions/{userId}
         // Récupérer l'historique des transactions d'un utilisateur
         [HttpGet("transactions/{userId}")]
@@ -150,6 +180,12 @@ namespace Foot2site_V1.Controllers
             
         }
 
+        /// <summary>
+        /// Permet de modifier une transaction par son ID.
+        /// </summary>
+        /// <param name="transactionId"></param>
+        /// <param name="transaction"></param>
+        /// <returns></returns>
         // PUT: api/wallet/transaction/{id}
         // Modifier une transaction par id
         [HttpPut("transaction/{transactionId}")]
@@ -174,6 +210,11 @@ namespace Foot2site_V1.Controllers
 
         }
 
+        /// <summary>
+        /// Permet de supprimer une transaction par son ID.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // DELETE: api/wallet/transaction/{id}
         // Supprimer une transaction par id
         [HttpDelete("transaction/{id}")]

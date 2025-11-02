@@ -10,6 +10,15 @@ using Foot2site_V1.Modele;
 
 namespace Foot2site_V1.Controllers
 {
+    /// <summary>
+    /// Controller pour gérer les opérations CRUD sur les produits.
+    /// Voici les Endpoints : 
+    /// GET /api/Produits : Récupère tous les produits.
+    /// GET /api/Produits/{id} : Récupère un produit par son ID.
+    /// PUT /api/Produits/{id} : Met à jour un produit existant.
+    /// POST /api/Produits : Crée un nouveau produit.
+    /// DELETE /api/Produits/{id} : Supprime un produit par son ID.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ProduitsController : ControllerBase
@@ -21,6 +30,10 @@ namespace Foot2site_V1.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Permet de lister tous les produits.
+        /// </summary>
+        /// <returns></returns>
         // GET: api/Produits
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Produit>>> GetProduit()
@@ -47,6 +60,11 @@ namespace Foot2site_V1.Controllers
            
         }
 
+        /// <summary>
+        /// Permet de récupérer un produit par son ID.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // GET: api/Produits/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Produit>> GetProduit(int id)
@@ -83,6 +101,12 @@ namespace Foot2site_V1.Controllers
             }
         }
 
+        /// <summary>
+        /// Permet de mettre à jour un produit existant.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="produit"></param>
+        /// <returns></returns>
         // PUT: api/Produits/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -163,6 +187,12 @@ namespace Foot2site_V1.Controllers
             }
         }
 
+        /// <summary>
+        /// Permet de créer un nouveau produit.
+        /// 
+        /// </summary>
+        /// <param name="produit"></param>
+        /// <returns></returns>
         // POST: api/Produits
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
@@ -252,6 +282,11 @@ namespace Foot2site_V1.Controllers
             }
         }
 
+        /// <summary>
+        /// Permet de supprimer un produit par son ID.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // DELETE: api/Produits/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduit(int id)

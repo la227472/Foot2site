@@ -11,6 +11,16 @@ using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 
 namespace Foot2site_V1.Controllers
 {
+    /// <summary>
+    /// Controlleur pour gérer les opérations CRUD sur les tailles.
+    /// Voici les EndPoints : 
+    /// GET   /api/Tailles          -> Récupérer toutes les tailles
+    /// GET   /api/Tailles/{id}     -> Récupérer une taille par ID
+    /// PUT   /api/Tailles/{id}     -> Mettre à jour une taille existante
+    /// POST  /api/Tailles          -> Créer une nouvelle taille
+    /// DELETE /api/Tailles/{id}     -> Supprimer une taille par ID
+    /// 
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class TaillesController : ControllerBase
@@ -22,6 +32,10 @@ namespace Foot2site_V1.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Permet de lister toutes les tailles.
+        /// </summary>
+        /// <returns></returns>
         // GET: api/Tailles
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Taille>>> GetTaille()
@@ -45,6 +59,11 @@ namespace Foot2site_V1.Controllers
          
         }
 
+        /// <summary>
+        /// Permet de récupérer une taille par son ID.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // GET: api/Tailles/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Taille>> GetTaille(int id)
@@ -83,6 +102,12 @@ namespace Foot2site_V1.Controllers
       
         }
 
+        /// <summary>
+        /// Permet de mettre à jour une taille existante.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="taille"></param>
+        /// <returns></returns>
         // PUT: api/Tailles/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -159,6 +184,11 @@ namespace Foot2site_V1.Controllers
             }
         }
 
+        /// <summary>
+        /// Permet de créer une nouvelle taille.
+        /// </summary>
+        /// <param name="taille"></param>
+        /// <returns></returns>
         // POST: api/Tailles
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
@@ -212,6 +242,11 @@ namespace Foot2site_V1.Controllers
             }
         }
 
+        /// <summary>
+        /// Permet de supprimer une taille par son ID.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // DELETE: api/Tailles/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTaille(int id)
