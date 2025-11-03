@@ -8,7 +8,7 @@
         // Clés étrangères explicites
         public int Id_COMMANDE { get; set; }
         public int Id_STOCK_PRODUIT { get; set; }
-        public Commande commande { get; set; }
-        public Stock_produit stock_Produit { get; set; }
+        public Commande? commande { get; set; }
+        public Stock_produit? stock_Produit { get; set; }
     }
 }
