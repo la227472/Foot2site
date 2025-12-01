@@ -1,0 +1,1 @@
+<!-- HOTFIX appliqué le 01/12/2025 - Correction validée -->
