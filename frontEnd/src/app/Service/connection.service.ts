@@ -5,6 +5,17 @@ import { Router } from '@angular/router';
 import { environment } from '../../Environement/environement';
 import { JWT } from '../Interface/JWT';
 
+export interface CurrentUser {
+  id: number;
+  firstname: string;
+  lastname: string;
+  email: string;
+  password:string;
+  adresseId: number;
+  commandeId: [];
+  roles: string;
+}
+
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +23,11 @@ import { JWT } from '../Interface/JWT';
 export class ConnectionService {
 
   private readonly KEY_TOKEN = 'authToken';
+  private readonly USER_KEY = 'current_user';
   private apiUrl = environment.apiUrl;
 
   isAuthenticated = signal<boolean>(this.hasToken());
+  currentUser = signal<CurrentUser | null>(this.getUserFromStorage());
 
   constructor(
     private http: HttpClient,
@@ -46,9 +59,25 @@ export class ConnectionService {
     );
   }
 
+  /**
+   * télécharge les informations au sujet du user
+   */
+  loadCurrentUser(): void {
+    this.http.get<CurrentUser>(`${this.apiUrl}/me`).subscribe({
+      next: (user) => {
+        localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+        this.currentUser.set(user);
+      },
+      error: (err) => {
+        console.error('Erreur lors du chargement de l\'utilisateur', err);
+      }
+    });
+  }
+
+
   logout(): void {
     localStorage.removeItem(this.KEY_TOKEN);
-    //localStorage.removeItem('currentUser');
+    localStorage.removeItem(this.USER_KEY);
     this.isAuthenticated.set(false);
     this.router.navigate(['/connection']);
   }
@@ -57,11 +86,26 @@ export class ConnectionService {
     return localStorage.getItem(this.KEY_TOKEN);
   }
 
-
-  getCurrentUser() {
-    const userStr = localStorage.getItem('currentUser');
-    return userStr ? JSON.parse(userStr) : null;
+  /**
+   * Vérifier si l'utilisateur a un rôle spécifique
+   */
+  hasRole(role: string): boolean {
+    const user = this.currentUser();
+    return user?.roles?.includes(role) ?? false;
   }
+
+  /**
+   * Vérifier si l'utilisateur est admin
+   */
+  isAdmin(): boolean {
+    return this.hasRole('ROLE_admin');
+  }
+
+  private getUserFromStorage(): CurrentUser | null {
+    const user = localStorage.getItem(this.USER_KEY);
+    return user ? JSON.parse(user) : null;
+  }
+
 
   private hasToken(): boolean {
     return !!localStorage.getItem(this.KEY_TOKEN);
