@@ -39,13 +39,13 @@ export class ModifierProfilComponent implements OnInit {
     private router: Router
   ) {
     this.profilForm = this.fb.group({
-      nom: ['', [Validators.required, Validators.minLength(2)]],
-      prenom: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
+      nom: ['', [Validators.minLength(2)]],
+      prenom: ['', [Validators.minLength(2)]],
+      email: ['', [Validators.email]],
       password: [''],
-      rue: ['', Validators.required],
-      numero: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
-      codePostal: ['', [Validators.required, Validators.pattern('^[0-9]{4}$')]]
+      rue: [''],
+      numero: ['', [Validators.pattern('^[0-9]+$')]],
+      codePostal: ['', [Validators.pattern('^[0-9]{4}$')]]
     });
   }
 
@@ -100,55 +100,28 @@ export class ModifierProfilComponent implements OnInit {
    */
   onSubmit() {
     if (this.profilForm.invalid || !this.utilisateurId) {
-      this.snackBar.open('Veuillez remplir tous les champs correctement', 'Fermer', { duration: 3000 });
+      this.snackBar.open('Veuillez corriger les erreurs dans le formulaire', 'Fermer', { duration: 3000 });
       return;
     }
 
     this.isLoading = true;
     const formValue = this.profilForm.value;
 
-    // D'abord, récupérer l'utilisateur actuel pour obtenir son adresseId
+    // D'abord, récupérer l'utilisateur actuel
     this.modifierProfilService.getUtilisateur(this.utilisateurId).subscribe({
       next: (utilisateur: Utilisateur) => {
-        const adresseId = utilisateur.adresseId;
+        // Vérifier si des champs d'adresse ont été modifiés
+        const hasAddressChanges =
+          (formValue.rue && formValue.rue.trim() !== '') ||
+          (formValue.numero && formValue.numero.toString().trim() !== '') ||
+          (formValue.codePostal && formValue.codePostal.toString().trim() !== '');
 
-        if (adresseId) {
-          // Mettre à jour l'adresse existante
-          const adresseData: Adress = {
-            id: adresseId,
-            Rue: formValue.rue,
-            Numero: parseInt(formValue.numero),
-            Code: parseInt(formValue.codePostal)
-          };
-
-          this.adresseService.updateAdresse(adresseId, adresseData).subscribe({
-            next: () => {
-              this.updateUtilisateur(utilisateur, adresseId);
-            },
-            error: (error) => {
-              console.error('Erreur lors de la mise à jour de l\'adresse:', error);
-              this.snackBar.open('Erreur lors de la mise à jour de l\'adresse', 'Fermer', { duration: 3000 });
-              this.isLoading = false;
-            }
-          });
+        if (hasAddressChanges) {
+          // Gérer la mise à jour de l'adresse
+          this.handleAddressUpdate(utilisateur, formValue);
         } else {
-          // Créer une nouvelle adresse si elle n'existe pas
-          const newAdresse: Adress = {
-            Rue: formValue.rue,
-            Numero: parseInt(formValue.numero),
-            Code: parseInt(formValue.codePostal)
-          };
-
-          this.adresseService.createAdresse(newAdresse).subscribe({
-            next: (createdAdresse) => {
-              this.updateUtilisateur(utilisateur, createdAdresse.id!);
-            },
-            error: (error) => {
-              console.error('Erreur lors de la création de l\'adresse:', error);
-              this.snackBar.open('Erreur lors de la création de l\'adresse', 'Fermer', { duration: 3000 });
-              this.isLoading = false;
-            }
-          });
+          // Pas de modification d'adresse, mettre à jour uniquement l'utilisateur
+          this.updateUtilisateur(utilisateur, utilisateur.adresseId || 0);
         }
       },
       error: (error) => {
@@ -160,16 +133,69 @@ export class ModifierProfilComponent implements OnInit {
   }
 
   /**
+   * Gère la mise à jour de l'adresse
+   */
+  private handleAddressUpdate(utilisateur: Utilisateur, formValue: any) {
+    const adresseId = utilisateur.adresseId;
+
+    // Construire l'objet adresse avec les valeurs existantes ou nouvelles
+    const adresseData: Adress = {
+      id: adresseId,
+      Rue: formValue.rue && formValue.rue.trim() !== '' ? formValue.rue : utilisateur.adresse?.Rue || '',
+      Numero: formValue.numero && formValue.numero.toString().trim() !== '' ? parseInt(formValue.numero) : utilisateur.adresse?.Numero || 0,
+      Code: formValue.codePostal && formValue.codePostal.toString().trim() !== '' ? parseInt(formValue.codePostal) : utilisateur.adresse?.Code || 0
+    };
+
+    if (adresseId) {
+      // Mettre à jour l'adresse existante
+      this.adresseService.updateAdresse(adresseId, adresseData).subscribe({
+        next: () => {
+          this.updateUtilisateur(utilisateur, adresseId);
+        },
+        error: (error) => {
+          console.error('Erreur lors de la mise à jour de l\'adresse:', error);
+          this.snackBar.open('Erreur lors de la mise à jour de l\'adresse', 'Fermer', { duration: 3000 });
+          this.isLoading = false;
+        }
+      });
+    } else {
+      // Créer une nouvelle adresse seulement si tous les champs sont renseignés
+      if (adresseData.Rue && adresseData.Numero && adresseData.Code) {
+        const newAdresse: Adress = {
+          Rue: adresseData.Rue,
+          Numero: adresseData.Numero,
+          Code: adresseData.Code
+        };
+
+        this.adresseService.createAdresse(newAdresse).subscribe({
+          next: (createdAdresse) => {
+            this.updateUtilisateur(utilisateur, createdAdresse.id!);
+          },
+          error: (error) => {
+            console.error('Erreur lors de la création de l\'adresse:', error);
+            this.snackBar.open('Erreur lors de la création de l\'adresse', 'Fermer', { duration: 3000 });
+            this.isLoading = false;
+          }
+        });
+      } else {
+        this.snackBar.open('Veuillez remplir tous les champs de l\'adresse pour la créer', 'Fermer', { duration: 3000 });
+        this.isLoading = false;
+      }
+    }
+  }
+
+  /**
    * Met à jour les informations de l'utilisateur
    */
   private updateUtilisateur(utilisateur: Utilisateur, adresseId: number) {
     const formValue = this.profilForm.value;
 
+    // Construire l'objet de mise à jour avec les valeurs modifiées ou existantes
     const updateData: UpdateUtilisateurRequest = {
       id: this.utilisateurId!,
-      nom: formValue.nom,
-      prenom: formValue.prenom,
-      email: formValue.email,
+      nom: formValue.nom && formValue.nom.trim() !== '' ? formValue.nom : utilisateur.nom,
+      prenom: formValue.prenom && formValue.prenom.trim() !== '' ? formValue.prenom : utilisateur.prenom,
+      email: formValue.email && formValue.email.trim() !== '' ? formValue.email : utilisateur.email,
       adresseId: adresseId,
       roles: utilisateur.roles || []
     };

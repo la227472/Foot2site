@@ -23,8 +23,8 @@
             formControlName="nom"
             placeholder="Nom"
             [class.error]="profilForm.get('nom')?.invalid && profilForm.get('nom')?.touched">
-          <span class="error-text" *ngIf="profilForm.get('nom')?.hasError('required') && profilForm.get('nom')?.touched">
-            Le nom est requis
+          <span class="error-text" *ngIf="profilForm.get('nom')?.hasError('minlength') && profilForm.get('nom')?.touched">
+            Le nom doit contenir au moins 2 caractères
           </span>
         </div>
 
@@ -36,8 +36,8 @@
             formControlName="prenom"
             placeholder="Prénom"
             [class.error]="profilForm.get('prenom')?.invalid && profilForm.get('prenom')?.touched">
-          <span class="error-text" *ngIf="profilForm.get('prenom')?.hasError('required') && profilForm.get('prenom')?.touched">
-            Le prénom est requis
+          <span class="error-text" *ngIf="profilForm.get('prenom')?.hasError('minlength') && profilForm.get('prenom')?.touched">
+            Le prénom doit contenir au moins 2 caractères
           </span>
         </div>
       </div>
@@ -52,9 +52,6 @@
             formControlName="email"
             placeholder="Email"
             [class.error]="profilForm.get('email')?.invalid && profilForm.get('email')?.touched">
-          <span class="error-text" *ngIf="profilForm.get('email')?.hasError('required') && profilForm.get('email')?.touched">
-            L'email est requis
-          </span>
           <span class="error-text" *ngIf="profilForm.get('email')?.hasError('email') && profilForm.get('email')?.touched">
             L'email n'est pas valide
           </span>
@@ -67,7 +64,7 @@
               id="password"
               [type]="hidePassword ? 'password' : 'text'"
               formControlName="password"
-              placeholder="Mot de passe">
+              placeholder="Nouveau mot de passe">
             <button
               type="button"
               class="toggle-password"
@@ -87,11 +84,7 @@
             id="rue"
             type="text"
             formControlName="rue"
-            placeholder="Rue"
-            [class.error]="profilForm.get('rue')?.invalid && profilForm.get('rue')?.touched">
-          <span class="error-text" *ngIf="profilForm.get('rue')?.hasError('required') && profilForm.get('rue')?.touched">
-            La rue est requise
-          </span>
+            placeholder="Rue">
         </div>
       </div>
 
@@ -105,9 +98,6 @@
             formControlName="numero"
             placeholder="Numéro"
             [class.error]="profilForm.get('numero')?.invalid && profilForm.get('numero')?.touched">
-          <span class="error-text" *ngIf="profilForm.get('numero')?.hasError('required') && profilForm.get('numero')?.touched">
-            Le numéro est requis
-          </span>
           <span class="error-text" *ngIf="profilForm.get('numero')?.hasError('pattern') && profilForm.get('numero')?.touched">
             Le numéro doit être un nombre
           </span>
@@ -121,9 +111,6 @@
             formControlName="codePostal"
             placeholder="Code Postal"
             [class.error]="profilForm.get('codePostal')?.invalid && profilForm.get('codePostal')?.touched">
-          <span class="error-text" *ngIf="profilForm.get('codePostal')?.hasError('required') && profilForm.get('codePostal')?.touched">
-            Le code postal est requis
-          </span>
           <span class="error-text" *ngIf="profilForm.get('codePostal')?.hasError('pattern') && profilForm.get('codePostal')?.touched">
             Le code postal doit contenir 4 chiffres
           </span>
