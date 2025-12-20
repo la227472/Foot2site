@@ -85,6 +85,29 @@ export class ConnectionService {
   }
 
   /**
+   * Vérifie si le token est expiré
+   */
+  isTokenExpired(): boolean {
+    const decoded = this.decodeToken();
+    if (!decoded || !decoded.exp) return true;
+
+    const currentTime = Math.floor(Date.now() / 1000);
+    const isExpired = decoded.exp < currentTime;
+
+    if (isExpired) {
+      console.warn('⚠️ Token expiré!', {
+        expirationTime: new Date(decoded.exp * 1000),
+        currentTime: new Date(currentTime * 1000),
+        expiredSince: `${Math.floor((currentTime - decoded.exp) / 60)} minutes`
+      });
+    } else {
+      const timeLeft = decoded.exp - currentTime;
+    }
+
+    return isExpired;
+  }
+
+  /**
    * Vérifie si l'utilisateur connecté a le rôle admin
    */
   isAdmin(): boolean {
@@ -99,10 +122,12 @@ export class ConnectionService {
 
     // Les rôles peuvent être une string ou un tableau
     if (Array.isArray(roles)) {
-      return roles.includes('admin');
+      const hasAdmin = roles.some(role => role.toLowerCase() === 'admin');
+      return hasAdmin;
     }
 
-    return roles === 'admin';
+    const hasAdmin = roles.toLowerCase() === 'admin';
+    return hasAdmin;
   }
 
   /**
