@@ -1,0 +1,96 @@
+<div class="gerer-composant-container">
+  <div class="header-section">
+    <!-- (click)="openDialog()" → Appelle openDialog() du .ts ligne 293 pour ajouter un composant -->
+    <button mat-flat-button color="primary" (click)="openDialog()">
+      <mat-icon>add</mat-icon>
+      Ajouter Composant
+    </button>
+
+    <!-- [formControl]="myControl" → Lié à myControl du .ts ligne 69 pour filtrer par type -->
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Filtrer par type</mat-label>
+      <input type="text" placeholder="Sélectionnez un type" matInput [formControl]="myControl" [matAutocomplete]="auto">
+      <mat-icon matSuffix>arrow_drop_down</mat-icon>
+
+      <!-- filteredOptions → Observable du .ts ligne 83 qui contient les options filtrées -->
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+          {{option}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <!-- {{ prixMin }}/{{ prixMax }} → Affiche les valeurs du .ts | [(ngModel)] → Two-way binding -->
+    <div class="filter-section">
+      <label class="filter-label">Prix: {{ prixMin }}€ - {{ prixMax }}€</label>
+      <mat-slider min="0" max="5000" step="50" discrete>
+        <input matSliderStartThumb [(ngModel)]="prixMin" (ngModelChange)="applyFilters()">
+        <input matSliderEndThumb [(ngModel)]="prixMax" (ngModelChange)="applyFilters()">
+      </mat-slider>
+    </div>
+
+    <!-- {{ scoreMin }}/{{ scoreMax }} → Affiche les valeurs du .ts | (ngModelChange) → Appelle applyFilters() -->
+    <div class="filter-section">
+      <label class="filter-label">Score: {{ scoreMin }} - {{ scoreMax }}</label>
+      <mat-slider min="0" max="100" step="5" discrete>
+        <input matSliderStartThumb [(ngModel)]="scoreMin" (ngModelChange)="applyFilters()">
+        <input matSliderEndThumb [(ngModel)]="scoreMax" (ngModelChange)="applyFilters()">
+      </mat-slider>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <!-- [dataSource]="dataSource" → Source de données du .ts ligne 61 | matSort → Active le tri -->
+    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+      <!-- matColumnDef="type" → Doit correspondre à displayedColumns[0] du .ts ligne 53 -->
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Type</th>
+        <td mat-cell *matCellDef="let composant">{{ composant.type }}</td>
+      </ng-container>
+
+      <!-- matColumnDef="marque" → Doit correspondre à displayedColumns[1] du .ts ligne 53 -->
+      <ng-container matColumnDef="marque">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Marque</th>
+        <td mat-cell *matCellDef="let composant">{{ composant.marque }}</td>
+      </ng-container>
+
+      <!-- matColumnDef="modele" → Doit correspondre à displayedColumns[2] du .ts ligne 53 -->
+      <ng-container matColumnDef="modele">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Modèle</th>
+        <td mat-cell *matCellDef="let composant">{{ composant.modele }}</td>
+      </ng-container>
+
+      <!-- matColumnDef="prix" → Doit correspondre à displayedColumns[3] du .ts ligne 53 -->
+      <ng-container matColumnDef="prix">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Prix (€)</th>
+        <td mat-cell *matCellDef="let composant">{{ composant.prix }}€</td>
+      </ng-container>
+
+      <!-- matColumnDef="stock" → Doit correspondre à displayedColumns[4] du .ts ligne 53 -->
+      <ng-container matColumnDef="stock">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Stock</th>
+        <td mat-cell *matCellDef="let composant">{{ composant.stock }}</td>
+      </ng-container>
+
+      <!-- matColumnDef="score" → Doit correspondre à displayedColumns[5] du .ts ligne 53 -->
+      <!-- [ngClass]="getScoreClass(composant.score)" → Appelle getScoreClass() du .ts ligne 272 pour la couleur -->
+      <ng-container matColumnDef="score">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Score</th>
+        <td mat-cell *matCellDef="let composant">
+          <span class="score-badge" [ngClass]="getScoreClass(composant.score)">{{ composant.score }}/100</span>
+        </td>
+      </ng-container>
+
+      <!-- displayedColumns → Définit l'ordre des colonnes (voir .ts ligne 53) -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="6">Aucun composant trouvé</td>
+      </tr>
+    </table>
+
+    <!-- Lié au dataSource via @ViewChild(MatPaginator) du .ts ligne 122 -->
+    <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+  </div>
+</div>

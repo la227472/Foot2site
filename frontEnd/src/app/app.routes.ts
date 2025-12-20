@@ -2,8 +2,9 @@ import { Routes } from '@angular/router';
 import { ConnectionComponent } from './connection/connection.component';
 import { InscriptionComponent } from './inscription/inscription.component';
 import {AccueilComponent} from './accueil/accueil.component';
-import {authenGuard} from './authen.guard';
-import {CompositorComponent} from './compositor/compositor.component';
+import { ComparerComposComponent } from './comparer-compos/comparer-compos.component';
+import { GererComposantComponent } from './gerer-composant/gerer-composant.component';
+import { adminGuard } from './authen.guard';
 
 export const routes: Routes = [
     {
@@ -19,18 +20,22 @@ export const routes: Routes = [
     {
       path : 'accueil',
       component : AccueilComponent,
-      canActivate: [authenGuard]
     },
 
     {
-     path : 'compo',
-     component : CompositorComponent,
-      canActivate: [authenGuard]
+      path : 'comparercompos',
+      component : ComparerComposComponent,
     },
 
+   /* {
+      path : 'gerer-composant',
+      component : GererComposantComponent,
+      canActivate: [adminGuard]
+    },
+*/
     {
-      path : '',
-      redirectTo : 'connection',
-      pathMatch : 'full',
+        path : '',
+        redirectTo : 'connection',
+        pathMatch : 'full',
     }
 ];

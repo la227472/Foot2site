@@ -1,0 +1,104 @@
+/* Conteneur principal */
+.gerer-composant-container {
+  padding: 20px;
+}
+
+/* Section des filtres */
+.header-section {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+/* Champ de recherche autocomplete */
+.search-field {
+  min-width: 250px;
+}
+
+/* Sections de filtrage par sliders */
+.filter-section {
+  display: flex;
+  flex-direction: column;
+  min-width: 250px;
+  gap: 8px;
+}
+
+/* Labels des filtres */
+.filter-label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Sliders Material */
+.filter-section mat-slider {
+  width: 100%;
+}
+
+/* Conteneur du tableau */
+.table-container {
+  overflow-x: auto;
+}
+
+/* Table Material */
+table {
+  width: 100%;
+}
+
+/* En-tête avec dégradé continu */
+table thead tr {
+  background: linear-gradient(to right, #3f51b5 0%, #5c6bc0 100%) !important;
+}
+
+table th {
+  background: none !important;
+  color: white !important;
+  font-weight: 600 !important;
+}
+
+/* Classes Material */
+.mat-mdc-header-row {
+  background: linear-gradient(to right, #3f51b5 0%, #5c6bc0 100%) !important;
+}
+
+.mat-mdc-header-cell {
+  background: none !important;
+  color: white !important;
+}
+
+/* Icônes de tri en blanc */
+.mat-sort-header-arrow,
+.mat-sort-header-indicator,
+.mat-sort-header-container {
+  color: white !important;
+}
+
+.mat-sort-header-arrow svg,
+.mat-sort-header-indicator svg {
+  fill: white !important;
+}
+
+/* Badges de score */
+.score-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.score-high {
+  background-color: #c8e6c9;
+  color: #2e7d32;
+}
+
+.score-medium {
+  background-color: #ffe0b2;
+  color: #e65100;
+}
+
+.score-low {
+  background-color: #ffcdd2;
+  color: #c62828;
+}

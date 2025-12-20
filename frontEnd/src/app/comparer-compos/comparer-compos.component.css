@@ -1,0 +1,181 @@
+.page-container {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  padding: 40px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header-section {
+  text-align: center;
+  margin-bottom: 50px;
+  color: #2d3436;
+}
+
+.header-section h1 { font-size: 2rem; margin-bottom: 10px; }
+.header-section p { color: #636e72; }
+
+
+
+.config-card {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  width: 500px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.select-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  color: #636e72;
+  margin-bottom: 30px;
+  cursor: pointer;
+}
+
+/* Lignes de composants */
+.comp-row {
+  background-color: #1e272e;
+  color: #d2dae2;
+  border-radius: 12px;
+  padding: 12px 20px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Cible le texte "Carte mère", "Carte graphique", etc. */
+.comp-row .label {
+  font-size: 1.1rem;   /* Taille très large */
+  font-weight: 600;    /* Plus épais pour plus d'impact */
+  color: #d2dae2;      /* On lui redonne la couleur claire pour la lisibilité */
+  flex-grow: 1;        /* S'assure que le texte prend la place centrale */
+}
+.comp-row.active { background-color: #2c3e50; }
+
+.icon-box {
+  background: rgba(255,255,255,0.1);
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+}
+
+.details { flex-grow: 1; display: flex; flex-direction: column; }
+/* Le nom du composant (ex: Processeur) */
+.label { 
+  font-size: 0.9rem; /* Augmenté de 0.75rem */
+  color: #95a5a6; 
+  margin-bottom: 2px;
+}
+
+/* Le modèle spécifique (ex: AMD RYZEN...) */
+.model { 
+  font-size: 1.1rem; /* Augmenté de 0.85rem */
+  font-weight: 600;  /* Un peu plus épais */
+}
+
+/* Le prix à l'intérieur de la ligne */
+.price { 
+  color: #ff7675; 
+  font-size: 1.1rem; /* Augmenté de 0.9rem */
+  font-weight: bold;
+  margin: 0 15px; 
+}
+
+.score-badge {
+  background-color: #00d2d3;
+  color: white;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.score-badge.big { background-color: #00d2d3; padding: 8px 15px; margin-left: 10px; }
+
+/* Footer et Bouton */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #f1f1f1;
+}
+
+.total-summary span { font-weight: bold; font-size: 1.1rem; margin-left: 5px; }
+
+.cart-btn {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  
+  /* --- CHANGEMENTS ICI --- */
+  width: fit-content;       /* Le bouton ne prend que la place de son texte */
+  padding: 12px 30px;       /* Un peu moins haut, plus large sur les côtés */
+  margin: 25px auto 0 auto; /* Centrage horizontal (auto sur gauche/droite) */
+  /* ----------------------- */
+  
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.cart-btn:hover {
+  background-color: #2ecc71; /* Un vert un peu plus clair au survol */
+  transform: scale(1.05);    /* Effet de léger zoom */
+}
+
+.comparison-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center; /* <-- C'est cette ligne qui fait tout le travail */
+  gap: 40px;
+  min-height: 600px;  /* Optionnel : assure une hauteur minimale */
+}
+
+.central-icon {
+  /* Supprimez le margin-top précédent ! */
+  margin-top: 0; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Cibler l'icône spécifiquement */
+.central-icon .purple-box mat-icon {
+  font-size: 75px;  /* Taille du glyphe */
+  width: 75px;      /* Largeur du conteneur de l'icône */
+  height: 75px;     /* Hauteur du conteneur de l'icône */
+  
+  /* Optionnel : s'assurer que l'icône reste parfaitement centrée */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ajuster éventuellement la taille du carré violet si l'icône dépasse */
+.central-icon .purple-box {
+  background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+  color: white;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(108, 92, 231, 0.3);
+  display: flex;
+  
+  /* Augmenté de 50px à 70px pour laisser de l'espace autour de l'icône agrandie */
+  width: 70px; 
+  height: 70px;
+  
+  justify-content: center;
+  align-items: center;
+}
