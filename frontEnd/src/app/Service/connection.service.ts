@@ -4,7 +4,18 @@ import { Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../Environement/environement';
 import { JWT } from '../Interface/JWT';
-//import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
+
+export interface CurrentUser {
+  id: number;
+  firstname: string;
+  lastname: string;
+  email: string;
+  password:string;
+  adresseId: number;
+  commandeId: [];
+  roles: string;
+}
 
 
 @Injectable({
@@ -13,9 +24,11 @@ import { JWT } from '../Interface/JWT';
 export class ConnectionService {
 
   private readonly KEY_TOKEN = 'authToken';
+  private readonly USER_KEY = 'current_user';
   private apiUrl = environment.apiUrl;
 
   isAuthenticated = signal<boolean>(this.hasToken());
+  currentUser = signal<CurrentUser | null>(this.getUserFromStorage());
 
   constructor(
     private http: HttpClient,
@@ -48,9 +61,25 @@ export class ConnectionService {
     );
   }
 
+  /**
+   * télécharge les informations au sujet du user
+   */
+  loadCurrentUser(): void {
+    this.http.get<CurrentUser>(`${this.apiUrl}/me`).subscribe({
+      next: (user) => {
+        localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+        this.currentUser.set(user);
+      },
+      error: (err) => {
+        console.error('Erreur lors du chargement de l\'utilisateur', err);
+      }
+    });
+  }
+
+
   logout(): void {
     localStorage.removeItem(this.KEY_TOKEN);
-    //localStorage.removeItem('currentUser');
+    localStorage.removeItem(this.USER_KEY);
     this.isAuthenticated.set(false);
     this.router.navigate(['/connection']);
   }
@@ -59,14 +88,29 @@ export class ConnectionService {
     return localStorage.getItem(this.KEY_TOKEN);
   }
 
+  /**
+   * Vérifier si l'utilisateur a un rôle spécifique
+   */
+  hasRole(role: string): boolean {
+    const user = this.currentUser();
+    return user?.roles?.includes(role) ?? false;
+  }
 
-  getCurrentUser() {
-    const userStr = localStorage.getItem('currentUser');
-    return userStr ? JSON.parse(userStr) : null;
+
+  private getUserFromStorage(): CurrentUser | null {
+    const user = localStorage.getItem(this.USER_KEY);
+    return user ? JSON.parse(user) : null;
   }
 
   private hasToken(): boolean {
-    return !!localStorage.getItem(this.KEY_TOKEN);
+    const token = this.getToken();
+    if (!token) return false;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.exp * 1000 > Date.now();
+    } catch {
+      return false;
+    }
   }
 
   /**
@@ -75,13 +119,12 @@ export class ConnectionService {
   private decodeToken(): any {
     const token = this.getToken();
     if (!token) return null;
-/*
     try {
       return jwtDecode(token);
     } catch (error) {
       console.error('Erreur lors du décodage du token:', error);
       return null;
-    }*/
+    }
   }
 
   /**

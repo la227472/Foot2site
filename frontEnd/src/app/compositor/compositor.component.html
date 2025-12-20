@@ -1,0 +1,206 @@
+<!-- src/app/compositor/compositor.component.html -->
+<div class="compositor-container">
+  <h1>Créer votre configuration PC</h1>
+
+  @if (successMessage()) {
+    <div class="alert alert-success">{{ successMessage() }}</div>
+  }
+
+  @if (errorMessage()) {
+    <div class="alert alert-danger">{{ errorMessage() }}</div>
+  }
+
+  <form [formGroup]="compositionForm" (ngSubmit)="onSubmit()" class="composition-form">
+
+    <!-- CPU -->
+    <div class="form-group">
+      <label for="cpu">
+        <span class="component-icon">🖥️</span>
+        Processeur (CPU) *
+      </label>
+      <select formControlName="cpu" id="cpu" class="form-select">
+        <option value="">-- Sélectionnez un processeur --</option>
+        @for (cpu of cpus(); track cpu.id) {
+          <option [value]="cpu.id">
+            {{ cpu.marque }} {{ cpu.modele }} - {{ cpu.prix }}€ Score : {{cpu.score}}
+            @if (cpu.stock === 0) { (Rupture de stock) }
+          </option>
+        }
+      </select>
+      @if (compositionForm.get('cpu')?.invalid && compositionForm.get('cpu')?.touched) {
+        <small class="text-danger">Veuillez sélectionner un processeur</small>
+      }
+    </div>
+
+    <!-- Carte Mère -->
+    <div class="form-group">
+      <label for="motherboard">
+        <span class="component-icon">🔧</span>
+        Carte Mère *
+      </label>
+      <select formControlName="motherboard" id="motherboard" class="form-select">
+        <option value="">-- Sélectionnez une carte mère --</option>
+        @for (mb of motherboards(); track mb.id) {
+          <option [value]="mb.id">
+            {{ mb.marque }} {{ mb.modele }} - {{ mb.prix }}€ Score : {{mb.score}}
+          </option>
+        }
+      </select>
+      @if (compositionForm.get('motherboard')?.invalid && compositionForm.get('motherboard')?.touched) {
+        <small class="text-danger">Veuillez sélectionner une carte mère</small>
+      }
+    </div>
+
+    <!-- GPU -->
+    <div class="form-group">
+      <label for="gpu">
+        <span class="component-icon">🎮</span>
+        Carte Graphique (GPU) *
+      </label>
+      <select formControlName="gpu" id="gpu" class="form-select">
+        <option value="">-- Sélectionnez une carte graphique --</option>
+        @for (gpu of gpus(); track gpu.id) {
+          <option [value]="gpu.id">
+            {{ gpu.marque }} {{ gpu.modele }} - {{ gpu.prix }}€ Score : {{gpu.score}}
+          </option>
+        }
+      </select>
+    </div>
+
+    <!-- Mémoire RAM -->
+    <div class="form-group">
+      <label for="memory">
+        <span class="component-icon">💾</span>
+        Mémoire RAM *
+      </label>
+      <select formControlName="memory" id="memory" class="form-select">
+        <option value="">-- Sélectionnez la mémoire --</option>
+        @for (mem of memories(); track mem.id) {
+          <option [value]="mem.id">
+            {{ mem.marque }} {{ mem.modele }} - {{ mem.prix }}€ Score : {{mem.score}}
+          </option>
+        }
+      </select>
+    </div>
+
+    <!-- Disque Dur -->
+    <div class="form-group">
+      <label for="hardDisk">
+        <span class="component-icon">💿</span>
+        Disque Dur / SSD *
+      </label>
+      <select formControlName="hardDisk" id="hardDisk" class="form-select">
+        <option value="">-- Sélectionnez un disque --</option>
+        @for (hd of hardDisks(); track hd.id) {
+          <option [value]="hd.id">
+            {{ hd.marque }} {{ hd.modele }} - {{ hd.prix }}€ Score : {{hd.score}}
+          </option>
+        }
+      </select>
+    </div>
+
+    <!-- Alimentation -->
+    <div class="form-group">
+      <label for="psu">
+        <span class="component-icon">⚡</span>
+        Alimentation (PSU) *
+      </label>
+      <select formControlName="psu" id="psu" class="form-select">
+        <option value="">-- Sélectionnez une alimentation --</option>
+        @for (psu of psus(); track psu.id) {
+          <option [value]="psu.id">
+            {{ psu.marque }} {{ psu.modele }} - {{ psu.prix }}€ Score : {{psu.score}}
+          </option>
+        }
+      </select>
+    </div>
+
+    <!-- Boîtier -->
+    <div class="form-group">
+      <label for="box">
+        <span class="component-icon">📦</span>
+        Boîtier *
+      </label>
+      <select formControlName="box" id="box" class="form-select">
+        <option value="">-- Sélectionnez un boîtier --</option>
+        @for (box of boxes(); track box.id) {
+          <option [value]="box.id">
+            {{ box.marque }} {{ box.modele }} - {{ box.prix }}€ Score : {{box.score}}
+          </option>
+        }
+      </select>
+    </div>
+
+    <!-- Prix Total -->
+    <div class="total-price">
+      <h3>Prix Total: <span class="price">{{ totalPrice() }}€</span></h3>
+    </div>
+
+    <!-- Bouton d'enregistrement -->
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="loading() || compositionForm.invalid">
+      @if (loading()) {
+        <span class="spinner"></span> Chargement...
+      } @else {
+        Enregistrer la configuration
+      }
+    </button>
+
+    <!-- Bouton d'enregistrement et accès au panier, Pas encore prêt -->
+    <button
+      type="submit"
+      class="btn btn-panier">
+      @if (loading()) {
+        <span class="spinner"></span> Chargement...
+      } @else {
+        Au panier
+      }
+    </button>
+  </form>
+
+  <!-- Modal pour le nom de la configuration -->
+  @if (showNameModal()) {
+    <div class="modal-overlay" (click)="cancelSave()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <h2>Nommer votre configuration</h2>
+
+        <form [formGroup]="configNameForm" (ngSubmit)="saveConfiguration()">
+          <div class="form-group">
+            <label for="nomConfiguration">Nom de la configuration *</label>
+            <input
+              type="text"
+              id="nomConfiguration"
+              formControlName="nomConfiguration"
+              class="form-control"
+              placeholder="Ex: PC Gaming Ultra 2024"
+              [class.is-invalid]="nomConfiguration?.invalid && nomConfiguration?.touched">
+            @if (nomConfiguration?.invalid && nomConfiguration?.touched) {
+              <small class="text-danger">
+                @if (nomConfiguration?.errors?.['required']) { Le nom est requis }
+                @if (nomConfiguration?.errors?.['minlength']) { Minimum 3 caractères }
+              </small>
+            }
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" (click)="cancelSave()">
+              Annuler
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="configNameForm.invalid || loading()">
+              @if (loading()) {
+                <span class="spinner"></span> Enregistrement...
+              } @else {
+                Confirmer
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>
