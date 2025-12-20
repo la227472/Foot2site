@@ -5,6 +5,7 @@
   padding: 40px 20px;
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: 'Inter', sans-serif;
 }
 
 .compositor-container h1 {
@@ -142,7 +143,7 @@
 .total-price .price {
   font-size: 32px;
   font-weight: 800;
-  color: #ffd700;
+  color: #ff4536;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
@@ -189,6 +190,12 @@
 .btn-secondary:hover {
   background: #5a6268;
   transform: translateY(-2px);
+}
+.btn-panier{
+  background: linear-gradient(135deg, #155724 0%, #555555 100%);
+  color: white;
+  width: 100%;
+  box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
 }
 
 /* SPINNER */

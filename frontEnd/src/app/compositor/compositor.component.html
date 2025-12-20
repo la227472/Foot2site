@@ -22,7 +22,7 @@
         <option value="">-- Sélectionnez un processeur --</option>
         @for (cpu of cpus(); track cpu.id) {
           <option [value]="cpu.id">
-            {{ cpu.marque }} {{ cpu.modele }} - {{ cpu.prix }}€
+            {{ cpu.marque }} {{ cpu.modele }} - {{ cpu.prix }}€ Score : {{cpu.score}}
             @if (cpu.stock === 0) { (Rupture de stock) }
           </option>
         }
@@ -42,7 +42,7 @@
         <option value="">-- Sélectionnez une carte mère --</option>
         @for (mb of motherboards(); track mb.id) {
           <option [value]="mb.id">
-            {{ mb.marque }} {{ mb.modele }} - {{ mb.prix }}€
+            {{ mb.marque }} {{ mb.modele }} - {{ mb.prix }}€ Score : {{mb.score}}
           </option>
         }
       </select>
@@ -61,7 +61,7 @@
         <option value="">-- Sélectionnez une carte graphique --</option>
         @for (gpu of gpus(); track gpu.id) {
           <option [value]="gpu.id">
-            {{ gpu.marque }} {{ gpu.modele }} - {{ gpu.prix }}€
+            {{ gpu.marque }} {{ gpu.modele }} - {{ gpu.prix }}€ Score : {{gpu.score}}
           </option>
         }
       </select>
@@ -77,7 +77,7 @@
         <option value="">-- Sélectionnez la mémoire --</option>
         @for (mem of memories(); track mem.id) {
           <option [value]="mem.id">
-            {{ mem.marque }} {{ mem.modele }} - {{ mem.prix }}€
+            {{ mem.marque }} {{ mem.modele }} - {{ mem.prix }}€ Score : {{mem.score}}
           </option>
         }
       </select>
@@ -93,7 +93,7 @@
         <option value="">-- Sélectionnez un disque --</option>
         @for (hd of hardDisks(); track hd.id) {
           <option [value]="hd.id">
-            {{ hd.marque }} {{ hd.modele }} - {{ hd.prix }}€
+            {{ hd.marque }} {{ hd.modele }} - {{ hd.prix }}€ Score : {{hd.score}}
           </option>
         }
       </select>
@@ -109,7 +109,7 @@
         <option value="">-- Sélectionnez une alimentation --</option>
         @for (psu of psus(); track psu.id) {
           <option [value]="psu.id">
-            {{ psu.marque }} {{ psu.modele }} - {{ psu.prix }}€
+            {{ psu.marque }} {{ psu.modele }} - {{ psu.prix }}€ Score : {{psu.score}}
           </option>
         }
       </select>
@@ -125,7 +125,7 @@
         <option value="">-- Sélectionnez un boîtier --</option>
         @for (box of boxes(); track box.id) {
           <option [value]="box.id">
-            {{ box.marque }} {{ box.modele }} - {{ box.prix }}€
+            {{ box.marque }} {{ box.modele }} - {{ box.prix }}€ Score : {{box.score}}
           </option>
         }
       </select>
@@ -136,7 +136,7 @@
       <h3>Prix Total: <span class="price">{{ totalPrice() }}€</span></h3>
     </div>
 
-    <!-- Bouton de validation -->
+    <!-- Bouton d'enregistrement -->
     <button
       type="submit"
       class="btn btn-primary"
@@ -145,6 +145,17 @@
         <span class="spinner"></span> Chargement...
       } @else {
         Enregistrer la configuration
+      }
+    </button>
+
+    <!-- Bouton d'enregistrement et accès au panier, Pas encore prêt -->
+    <button
+      type="submit"
+      class="btn btn-panier">
+      @if (loading()) {
+        <span class="spinner"></span> Chargement...
+      } @else {
+        Au panier
       }
     </button>
   </form>
