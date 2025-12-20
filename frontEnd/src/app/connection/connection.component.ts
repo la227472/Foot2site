@@ -1,14 +1,14 @@
 import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink, Router} from '@angular/router';
-//import { ConnectionService } from './connection.component.spec';
+import { ConnectionService } from '../Service/connection.service';
+
 
 @Component({
   selector: 'app-connection',
   imports: [
     ReactiveFormsModule,
-    RouterLink,
-    //ConnectionService
+    RouterLink
   ],
   templateUrl: './connection.component.html',
   styleUrl: './connection.component.css'
@@ -23,12 +23,12 @@ export class ConnectionComponent {
 
   constructor(
     private fb: FormBuilder,
-    //private authService: AuthServiceService,
+    private authService: ConnectionService,
     private router: Router
   ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required]]
     });
   }
 
@@ -41,7 +41,7 @@ export class ConnectionComponent {
       this.loading.set(true);
       this.errorMessage.set('');
 
-      /*this.authService.login(this.loginForm.value).subscribe({
+      this.authService.login(this.loginForm.value).subscribe({
         next: () => {
           this.router.navigate(['/accueil']);
         },
@@ -51,7 +51,7 @@ export class ConnectionComponent {
           );
           this.loading.set(false);
         }
-      });*/
+      });
     } else {
       Object.keys(this.loginForm.controls).forEach(key => {
         this.loginForm.get(key)?.markAsTouched();
