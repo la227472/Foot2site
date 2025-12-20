@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { ConnectionComponent } from './connection/connection.component';
 import { InscriptionComponent } from './inscription/inscription.component';
 import {AccueilComponent} from './accueil/accueil.component';
+import { GererComposantComponent } from './gerer-composant/gerer-composant.component';
+import { adminGuard } from './authen.guard';
 import { ModifierProfilComponent } from './modifier-profil/modifier-profil.component';
 
 export const routes: Routes = [
