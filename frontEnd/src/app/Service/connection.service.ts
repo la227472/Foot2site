@@ -97,22 +97,20 @@ export class ConnectionService {
   }
 
 
-  /**
-   * Vérifier si l'utilisateur est admin
-   */
-
-  /*isAdmin(): boolean {
-    return this.hasRole('ROLE_admin');
-  }*/
-
   private getUserFromStorage(): CurrentUser | null {
     const user = localStorage.getItem(this.USER_KEY);
     return user ? JSON.parse(user) : null;
   }
 
-
   private hasToken(): boolean {
-    return !!localStorage.getItem(this.KEY_TOKEN);
+    const token = this.getToken();
+    if (!token) return false;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.exp * 1000 > Date.now();
+    } catch {
+      return false;
+    }
   }
 
   /**
