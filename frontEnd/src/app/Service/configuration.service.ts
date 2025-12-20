@@ -23,4 +23,9 @@ export class ConfigurationService {
       }
     );
   }
+
+  // Appelle l'endpoint GET qui fait l'Include(cp => cp.Composants)
+  getConfigurations(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/ConfigurationPc`);
+  }
 }
