@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { ConnectionComponent } from './connection/connection.component';
 import { InscriptionComponent } from './inscription/inscription.component';
 import {AccueilComponent} from './accueil/accueil.component';
+import { GererComposantComponent } from './gerer-composant/gerer-composant.component';
+import { adminGuard } from './admin.guard';
 
 export const routes: Routes = [
     {
@@ -17,6 +19,12 @@ export const routes: Routes = [
     {
       path : 'accueil',
       component : AccueilComponent,
+    },
+
+    {
+      path : 'gerer-composant',
+      component : GererComposantComponent,
+      canActivate: [adminGuard]
     },
 
     {
