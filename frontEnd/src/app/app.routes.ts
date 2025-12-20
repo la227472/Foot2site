@@ -2,8 +2,7 @@ import { Routes } from '@angular/router';
 import { ConnectionComponent } from './connection/connection.component';
 import { InscriptionComponent } from './inscription/inscription.component';
 import {AccueilComponent} from './accueil/accueil.component';
-import { GererComposantComponent } from './gerer-composant/gerer-composant.component';
-import { adminGuard } from './admin.guard';
+import { ModifierProfilComponent } from './modifier-profil/modifier-profil.component';
 
 export const routes: Routes = [
     {
@@ -15,21 +14,17 @@ export const routes: Routes = [
         path : 'insci',
         component : InscriptionComponent,
     },
-
     {
       path : 'accueil',
       component : AccueilComponent,
     },
-
-    {
-      path : 'gerer-composant',
-      component : GererComposantComponent,
-      canActivate: [adminGuard]
-    },
-
     {
         path : '',
         redirectTo : 'connection',
         pathMatch : 'full',
-    }
+    },
+    {
+        path : 'modifier-profil',
+        component : ModifierProfilComponent,
+    },
 ];
