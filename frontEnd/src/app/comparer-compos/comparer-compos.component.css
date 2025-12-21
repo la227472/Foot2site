@@ -179,3 +179,88 @@
   justify-content: center;
   align-items: center;
 }
+
+/* Ajoutez ces styles à votre fichier comparer-compos.component.css existant */
+
+/* Améliorations du select-header */
+.select-header {
+  transition: background-color 0.2s ease;
+}
+
+.select-header:hover {
+  background-color: #f8f9fa;
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+  position: relative;
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  margin-top: -15px;
+  margin-bottom: 20px;
+  max-height: 250px;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.dropdown-item {
+  padding: 12px 15px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid #f1f1f1;
+  color: #2d3436;
+}
+
+.dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+  color: #6c5ce7;
+}
+
+/* Amélioration des comp-row sans composant */
+.comp-row:not(.active) {
+  opacity: 0.6;
+}
+
+.comp-row:not(.active) .icon-box {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Animation au chargement */
+.comp-row {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .comparison-layout {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .config-card {
+    width: 90%;
+    max-width: 600px;
+  }
+
+  .central-icon {
+    transform: rotate(90deg);
+    margin: 20px 0;
+  }
+}

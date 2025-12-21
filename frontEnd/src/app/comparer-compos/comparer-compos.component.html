@@ -1,3 +1,5 @@
+<!-- src/app/components/comparer-compos/comparer-compos.component.html -->
+
 <div class="page-container">
   <div class="header-section">
     <h1>Comparez vos configurations</h1>
@@ -5,69 +7,145 @@
   </div>
 
   <div class="comparison-layout">
+    <!-- ========== CONFIG GAUCHE ========== -->
     <div class="config-card">
-      <div class="select-header">
-        <span>Sélectionner une config</span>
+      <div class="select-header" (click)="toggleDropdown('left')">
+        <span>{{ configGauche?.nomConfiguration || 'Sélectionner une config' }}</span>
         <mat-icon>expand_more</mat-icon>
       </div>
 
-      <div class="components-list">
-        <div class="comp-row active">
-          <div class="icon-box"><mat-icon>memory</mat-icon></div>
-          <div class="details">
-            <span class="label">Processeur</span>
-            <span class="model">{{ configGauche.cpu }}</span>
-          </div>
-          <span class="price">{{ configGauche.price }} €</span>
-          <span class="score-badge">{{ configGauche.score }}</span>
+      <!-- Dropdown de sélection -->
+      <div *ngIf="showDropdownLeft" class="dropdown-menu">
+        <div 
+          *ngFor="let config of configurations" 
+          class="dropdown-item"
+          (click)="selectConfig(config, 'left')">
+          {{ config.nomConfiguration }}
         </div>
-
-        <div class="comp-row"><div class="icon-box"><mat-icon>layers</mat-icon></div><span class="label">Carte mère</span></div>
-        <div class="comp-row"><div class="icon-box"><mat-icon>visibility</mat-icon></div><span class="label">Carte graphique</span></div>
-        <div class="comp-row"><div class="icon-box"><mat-icon>bar_chart</mat-icon></div><span class="label">Mémoire</span></div>
-        <div class="comp-row"><div class="icon-box"><mat-icon>save</mat-icon></div><span class="label">Stockage</span></div>
-        <div class="comp-row"><div class="icon-box"><mat-icon>bolt</mat-icon></div><span class="label">Alimentation</span></div>
       </div>
 
-      <div class="card-footer">
-        <div class="score-summary">Score moyen <span class="score-badge big">{{ configGauche.score }}</span></div>
-        <div class="total-summary">Total <span>{{ configGauche.price }} €</span></div>
+      <div class="components-list" *ngIf="configGauche">
+        <!-- Boucle sur tous les types de composants -->
+        <div 
+          *ngFor="let type of typesComposants" 
+          class="comp-row"
+          [class.active]="getComposantByType(configGauche, type)">
+          
+          <div class="icon-box">
+            <mat-icon>{{ getIcon(type) }}</mat-icon>
+          </div>
+          
+          <!-- Si le composant existe -->
+          <div class="details" *ngIf="getComposantByType(configGauche, type) as composant">
+            <span class="label">{{ getTypeLabel(type) }}</span>
+            <span class="model">{{ composant.marque }} {{ composant.modele }}</span>
+          </div>
+          
+          <!-- Si le composant n'existe pas -->
+          <span class="label" *ngIf="!getComposantByType(configGauche, type)">
+            {{ getTypeLabel(type) }}
+          </span>
+          
+          <!-- Prix et score (uniquement si composant existe) -->
+          <ng-container *ngIf="getComposantByType(configGauche, type) as composant">
+            <span class="price">{{ composant.prix | number:'1.0-0' }} €</span>
+            <span class="score-badge">{{ composant.score }}</span>
+          </ng-container>
+        </div>
       </div>
-      <button class="cart-btn"><mat-icon>shopping_cart</mat-icon> Ajouter au Panier</button>
+
+      <div class="card-footer" *ngIf="configGauche">
+        <div class="score-summary">
+          Score moyen 
+          <span class="score-badge big">{{ configGauche.scoreMoyen }}</span>
+        </div>
+        <div class="total-summary">
+          Total 
+          <span>{{ formatPrice(configGauche.prixTotal) }} €</span>
+        </div>
+      </div>
+      
+      <button 
+        class="cart-btn" 
+        *ngIf="configGauche"
+        (click)="ajouterAuPanier(configGauche)">
+        <mat-icon>shopping_cart</mat-icon> 
+        Ajouter au Panier
+      </button>
     </div>
 
+    <!-- ========== ICÔNE CENTRALE ========== -->
     <div class="central-icon">
       <div class="purple-box">
         <mat-icon>settings</mat-icon>
       </div>
     </div>
 
+    <!-- ========== CONFIG DROITE ========== -->
     <div class="config-card">
-      <div class="select-header">
-        <span>Sélectionner une config</span>
+      <div class="select-header" (click)="toggleDropdown('right')">
+        <span>{{ configDroite?.nomConfiguration || 'Sélectionner une config' }}</span>
         <mat-icon>expand_more</mat-icon>
       </div>
-      <div class="components-list">
-        <div class="comp-row active">
-          <div class="icon-box"><mat-icon>memory</mat-icon></div>
-          <div class="details">
-            <span class="label">Processeur</span>
-            <span class="model">{{ configDroite.cpu }}</span>
-          </div>
-          <span class="price">{{ configDroite.price }} €</span>
-          <span class="score-badge">{{ configDroite.score }}</span>
+
+      <!-- Dropdown de sélection -->
+      <div *ngIf="showDropdownRight" class="dropdown-menu">
+        <div 
+          *ngFor="let config of configurations" 
+          class="dropdown-item"
+          (click)="selectConfig(config, 'right')">
+          {{ config.nomConfiguration }}
         </div>
-        <div class="comp-row"><div class="icon-box"><mat-icon>layers</mat-icon></div><span class="label">Carte mère</span></div>
-        <div class="comp-row"><div class="icon-box"><mat-icon>visibility</mat-icon></div><span class="label">Carte graphique</span></div>
-        <div class="comp-row"><div class="icon-box"><mat-icon>bar_chart</mat-icon></div><span class="label">Mémoire</span></div>
-        <div class="comp-row"><div class="icon-box"><mat-icon>save</mat-icon></div><span class="label">Stockage</span></div>
-        <div class="comp-row"><div class="icon-box"><mat-icon>bolt</mat-icon></div><span class="label">Alimentation</span></div>
       </div>
-      <div class="card-footer">
-        <div class="score-summary">Score moyen <span class="score-badge big">{{ configDroite.score }}</span></div>
-        <div class="total-summary">Total <span>{{ configDroite.price }} €</span></div>
+
+      <div class="components-list" *ngIf="configDroite">
+        <!-- Boucle sur tous les types de composants -->
+        <div 
+          *ngFor="let type of typesComposants" 
+          class="comp-row"
+          [class.active]="getComposantByType(configDroite, type)">
+          
+          <div class="icon-box">
+            <mat-icon>{{ getIcon(type) }}</mat-icon>
+          </div>
+          
+          <!-- Si le composant existe -->
+          <div class="details" *ngIf="getComposantByType(configDroite, type) as composant">
+            <span class="label">{{ getTypeLabel(type) }}</span>
+            <span class="model">{{ composant.marque }} {{ composant.modele }}</span>
+          </div>
+          
+          <!-- Si le composant n'existe pas -->
+          <span class="label" *ngIf="!getComposantByType(configDroite, type)">
+            {{ getTypeLabel(type) }}
+          </span>
+          
+          <!-- Prix et score (uniquement si composant existe) -->
+          <ng-container *ngIf="getComposantByType(configDroite, type) as composant">
+            <span class="price">{{ composant.prix | number:'1.0-0' }} €</span>
+            <span class="score-badge">{{ composant.score }}</span>
+          </ng-container>
+        </div>
       </div>
-      <button class="cart-btn"><mat-icon>shopping_cart</mat-icon> Ajouter au Panier</button>
+
+      <div class="card-footer" *ngIf="configDroite">
+        <div class="score-summary">
+          Score moyen 
+          <span class="score-badge big">{{ configDroite.scoreMoyen }}</span>
+        </div>
+        <div class="total-summary">
+          Total 
+          <span>{{ formatPrice(configDroite.prixTotal) }} €</span>
+        </div>
+      </div>
+      
+      <button 
+        class="cart-btn" 
+        *ngIf="configDroite"
+        (click)="ajouterAuPanier(configDroite)">
+        <mat-icon>shopping_cart</mat-icon> 
+        Ajouter au Panier
+      </button>
     </div>
   </div>
 </div>

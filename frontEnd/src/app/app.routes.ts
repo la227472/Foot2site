@@ -3,8 +3,9 @@ import { ConnectionComponent } from './connection/connection.component';
 import { InscriptionComponent } from './inscription/inscription.component';
 import {AccueilComponent} from './accueil/accueil.component';
 import { ComparerComposComponent } from './comparer-compos/comparer-compos.component';
-import { GererComposantComponent } from './gerer-composant/gerer-composant.component';
+//import { GererComposantComponent } from './gerer-composant/gerer-composant.component';
 import { adminGuard } from './authen.guard';
+import { CompositorComponent } from './compositor/compositor.component';
 
 export const routes: Routes = [
     {
@@ -20,6 +21,11 @@ export const routes: Routes = [
     {
       path : 'accueil',
       component : AccueilComponent,
+    },
+
+    {
+      path : 'compo',
+      component : CompositorComponent,
     },
 
     {

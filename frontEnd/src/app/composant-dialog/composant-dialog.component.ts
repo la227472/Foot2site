@@ -7,10 +7,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSliderModule } from '@angular/material/slider';
-import { Composant } from '../Interface/Composant';
+import { Composants } from '../Interface/Composants';
 
 export interface DialogData {
-  composant: Composant | null;
+  composant: Composants | null;
 }
 
 @Component({
@@ -59,7 +59,7 @@ export class ComposantDialogComponent implements OnInit {
 
   onSave(): void {
     if (this.composantForm.valid) {
-      const composant: Composant = {
+      const composant: Composants = {
         id: this.data.composant?.id || 0,
         ...this.composantForm.value
       };

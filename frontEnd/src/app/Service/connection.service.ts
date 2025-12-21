@@ -4,7 +4,7 @@ import { Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../Environement/environement';
 import { JWT } from '../Interface/JWT';
-import { jwtDecode } from 'jwt-decode';
+//import { jwtDecode } from 'jwt-decode';
 
 export interface CurrentUser {
   id: number;
@@ -118,13 +118,13 @@ export class ConnectionService {
    */
   private decodeToken(): any {
     const token = this.getToken();
-    if (!token) return null;
+    if (!token) return null;/*
     try {
       return jwtDecode(token);
     } catch (error) {
       console.error('Erreur lors du décodage du token:', error);
       return null;
-    }
+    }*/
   }
 
   /**
