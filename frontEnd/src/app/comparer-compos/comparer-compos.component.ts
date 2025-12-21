@@ -84,11 +84,7 @@ export class ComparerComposComponent implements OnInit {
     const sub = this.configService.getConfigurationsComplete().subscribe({
       next: (configs) => {
         this.configurations = configs;
-        console.log(`${configs.length} configuration(s) chargée(s)`, configs);
-        
-        // Sélectionner automatiquement les 2 premières configs
-        this.selectDefaultConfigurations(configs);
-        
+        console.log(`${configs.length} configuration(s) chargée(s)`, configs);    
         this.isLoading = false;
       },
       error: (error) => {
@@ -138,17 +134,16 @@ export class ComparerComposComponent implements OnInit {
   /**
    * Sélectionne une configuration dans le dropdown
    */
-  selectConfig(config: ConfigurationComplete, side: 'left' | 'right'): void {
-    if (side === 'left') {
-      this.configGauche = config;
-      this.showDropdownLeft = false;
-      console.log('Configuration gauche sélectionnée:', config.nomConfiguration);
-    } else {
-      this.configDroite = config;
-      this.showDropdownRight = false;
-      console.log('Configuration droite sélectionnée:', config.nomConfiguration);
-    }
+  // Dans votre comparer-compos.component.ts
+selectConfig(config: ConfigurationComplete | null, side: 'left' | 'right'): void {
+  if (side === 'left') {
+    this.configGauche = config;
+    this.showDropdownLeft = false;
+  } else {
+    this.configDroite = config;
+    this.showDropdownRight = false;
   }
+}
 
   /**
    * Ferme tous les dropdowns (peut être appelé sur un clic extérieur)
@@ -332,4 +327,12 @@ export class ComparerComposComponent implements OnInit {
   hasBothConfigurations(): boolean {
     return this.configGauche !== null && this.configDroite !== null;
   }
+
+
+  // À ajouter dans votre classe ComparerComposComponent
+getScoreClass(score: number): string {
+  if (score < 50) return 'score-red';
+  if (score < 70) return 'score-orange';
+  return 'score-green';
+}
 }

@@ -9,20 +9,23 @@
   <div class="comparison-layout">
     <!-- ========== CONFIG GAUCHE ========== -->
     <div class="config-card">
-      <div class="select-header" (click)="toggleDropdown('left')">
-        <span>{{ configGauche?.nomConfiguration || 'Sélectionner une config' }}</span>
-        <mat-icon>expand_more</mat-icon>
-      </div>
+  <div class="select-header" (click)="toggleDropdown('left')">
+    <span>{{ configGauche?.nomConfiguration || 'Veuillez sélectionner une config' }}</span>
+    <mat-icon>expand_more</mat-icon>
+  </div>
 
-      <!-- Dropdown de sélection -->
-      <div *ngIf="showDropdownLeft" class="dropdown-menu">
-        <div 
-          *ngFor="let config of configurations" 
-          class="dropdown-item"
-          (click)="selectConfig(config, 'left')">
-          {{ config.nomConfiguration }}
-        </div>
-      </div>
+  <div *ngIf="showDropdownLeft" class="dropdown-menu">
+    <div class="dropdown-item default-option" (click)="selectConfig(null, 'left')">
+      Veuillez sélectionner une config
+    </div>
+    
+    <div 
+      *ngFor="let config of configurations" 
+      class="dropdown-item"
+      (click)="selectConfig(config, 'left')">
+      {{ config.nomConfiguration }}
+    </div>
+  </div>
 
       <div class="components-list" *ngIf="configGauche">
         <!-- Boucle sur tous les types de composants -->
@@ -49,7 +52,9 @@
           <!-- Prix et score (uniquement si composant existe) -->
           <ng-container *ngIf="getComposantByType(configGauche, type) as composant">
             <span class="price">{{ composant.prix | number:'1.0-0' }} €</span>
-            <span class="score-badge">{{ composant.score }}</span>
+           <span class="score-badge" [ngClass]="getScoreClass(composant.score)">
+  {{ composant.score }}
+</span>
           </ng-container>
         </div>
       </div>
@@ -57,7 +62,9 @@
       <div class="card-footer" *ngIf="configGauche">
         <div class="score-summary">
           Score moyen 
-          <span class="score-badge big">{{ configGauche.scoreMoyen }}</span>
+          <span class="score-badge big" [ngClass]="getScoreClass(configGauche.scoreMoyen)">
+  {{ configGauche.scoreMoyen }}
+</span>
         </div>
         <div class="total-summary">
           Total 
@@ -83,20 +90,24 @@
 
     <!-- ========== CONFIG DROITE ========== -->
     <div class="config-card">
-      <div class="select-header" (click)="toggleDropdown('right')">
-        <span>{{ configDroite?.nomConfiguration || 'Sélectionner une config' }}</span>
-        <mat-icon>expand_more</mat-icon>
-      </div>
+  <div class="select-header" (click)="toggleDropdown('right')">
+    <span>{{ configDroite?.nomConfiguration || 'Veuillez sélectionner une config' }}</span>
+    <mat-icon>expand_more</mat-icon>
+  </div>
 
-      <!-- Dropdown de sélection -->
-      <div *ngIf="showDropdownRight" class="dropdown-menu">
-        <div 
-          *ngFor="let config of configurations" 
-          class="dropdown-item"
-          (click)="selectConfig(config, 'right')">
-          {{ config.nomConfiguration }}
-        </div>
-      </div>
+  <div *ngIf="showDropdownRight" class="dropdown-menu">
+    <div class="dropdown-item default-option" (click)="selectConfig(null, 'right')">
+      Veuillez sélectionner une config
+    </div>
+
+    <div 
+      *ngFor="let config of configurations" 
+      class="dropdown-item"
+      (click)="selectConfig(config, 'right')">
+      {{ config.nomConfiguration }}
+    </div>
+  </div>
+  
 
       <div class="components-list" *ngIf="configDroite">
         <!-- Boucle sur tous les types de composants -->
@@ -123,7 +134,9 @@
           <!-- Prix et score (uniquement si composant existe) -->
           <ng-container *ngIf="getComposantByType(configDroite, type) as composant">
             <span class="price">{{ composant.prix | number:'1.0-0' }} €</span>
-            <span class="score-badge">{{ composant.score }}</span>
+            <span class="score-badge" [ngClass]="getScoreClass(composant.score)">
+  {{ composant.score }}
+</span>
           </ng-container>
         </div>
       </div>
@@ -131,7 +144,9 @@
       <div class="card-footer" *ngIf="configDroite">
         <div class="score-summary">
           Score moyen 
-          <span class="score-badge big">{{ configDroite.scoreMoyen }}</span>
+          <span class="score-badge big" [ngClass]="getScoreClass(configDroite.scoreMoyen)">
+  {{ configDroite.scoreMoyen }}
+</span>
         </div>
         <div class="total-summary">
           Total 

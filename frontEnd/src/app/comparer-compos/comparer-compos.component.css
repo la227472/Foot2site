@@ -76,6 +76,7 @@
 .model { 
   font-size: 1.1rem; /* Augmenté de 0.85rem */
   font-weight: 600;  /* Un peu plus épais */
+  color: #a29bfe;
 }
 
 /* Le prix à l'intérieur de la ligne */
@@ -87,11 +88,24 @@
 }
 
 .score-badge {
-  background-color: #00d2d3;
+  /* background-color: #00d2d3; <-- Vous pouvez commenter cette ligne */
   color: white;
   padding: 5px 12px;
   border-radius: 8px;
   font-weight: bold;
+}
+
+/* Nouvelles classes dynamiques */
+.score-red { 
+  background-color: #ff4d4d !important; /* Rouge */
+}
+
+.score-orange { 
+  background-color: #ffa502 !important; /* Orange */
+}
+
+.score-green { 
+  background-color: #2ed573 !important; /* Vert */
 }
 
 .score-badge.big { background-color: #00d2d3; padding: 8px 15px; margin-left: 10px; }
@@ -220,6 +234,17 @@
 .dropdown-item:hover {
   background-color: #f8f9fa;
   color: #6c5ce7;
+}
+
+.dropdown-item.default-option {
+  font-style: italic;
+  color: #95a5a6;
+  background-color: #fdfdfd;
+}
+
+.dropdown-item.default-option:hover {
+  background-color: #f1f2f6;
+  color: #e74c3c; /* Un rouge léger pour indiquer l'action de "reset" */
 }
 
 /* Amélioration des comp-row sans composant */
