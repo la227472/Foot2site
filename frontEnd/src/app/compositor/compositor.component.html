@@ -10,7 +10,7 @@
     <div class="alert alert-danger">{{ errorMessage() }}</div>
   }
 
-  <form [formGroup]="compositionForm" (ngSubmit)="onSubmit()" class="composition-form">
+  <form [formGroup]="compositionForm" class="composition-form">
 
     <!-- CPU -->
     <div class="form-group">
@@ -138,9 +138,10 @@
 
     <!-- Bouton d'enregistrement -->
     <button
-      type="submit"
+      type="button"
       class="btn btn-primary"
-      [disabled]="loading() || compositionForm.invalid">
+      [disabled]="loading() || compositionForm.invalid"
+      (click)="onSubmit('save')">
       @if (loading()) {
         <span class="spinner"></span> Chargement...
       } @else {
@@ -148,15 +149,12 @@
       }
     </button>
 
-    <!-- Bouton d'enregistrement et accès au panier, Pas encore prêt -->
     <button
-      type="submit"
-      class="btn btn-panier">
-      @if (loading()) {
-        <span class="spinner"></span> Chargement...
-      } @else {
-        Au panier
-      }
+      type="button"
+      class="btn btn-panier"
+      (click)="onSubmit('cart')"
+    >
+      Au panier
     </button>
   </form>
 

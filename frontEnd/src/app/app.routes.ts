@@ -7,6 +7,7 @@ import { GererComposantComponent } from './gerer-composant/gerer-composant.compo
 import { adminGuard } from './authen.guard';
 import {CompositorComponent} from './compositor/compositor.component';
 import {ProfilConfigComponent} from './profil-config/profil-config.component';
+import {PanierComponent} from './panier/panier.component';
 
 export const routes: Routes = [
     {
@@ -43,6 +44,11 @@ export const routes: Routes = [
     {
       path : 'profilconfig',
       component : ProfilConfigComponent,
+    },
+
+    {
+      path : 'panier',
+      component : PanierComponent,
     },
 
     {
