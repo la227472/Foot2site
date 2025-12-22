@@ -7,6 +7,9 @@ import { GererComposantComponent } from './gerer-composant/gerer-composant.compo
 import { adminGuard } from './authen.guard';
 import {CompositorComponent} from './compositor/compositor.component';
 import {ProfilConfigComponent} from './profil-config/profil-config.component';
+import {PanierComponent} from './panier/panier.component';
+import {ProfilComponent} from './monprofil/monprofil.component';
+import {ModifierProfilComponent} from './modifier-profil/modifier-profil.component';
 
 export const routes: Routes = [
     {
@@ -23,7 +26,6 @@ export const routes: Routes = [
         path : 'insci',
         component : InscriptionComponent,
     },
-
     {
       path : 'accueil',
       component : AccueilComponent,
@@ -46,8 +48,22 @@ export const routes: Routes = [
     },
 
     {
+      path : 'panier',
+      component : PanierComponent,
+    },
+
+  {
+    path : 'profil',
+    component : ProfilComponent,
+  },
+
+    {
         path : '',
         redirectTo : 'connection',
         pathMatch : 'full',
-    }
+    },
+    {
+        path : 'modifier-profil',
+        component : ModifierProfilComponent,
+    },
 ];

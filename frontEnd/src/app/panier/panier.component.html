@@ -1,1 +1,161 @@
-<p>panier works!</p>
+<div class="cart-container">
+  <div class="cart-content">
+    <!-- Panier -->
+    <div class="cart-section">
+      <div class="section-header">
+        <h1>Panier</h1>
+        @if (panier().length > 0) {
+          <span class="item-count">{{ panier().length }} configuration(s)</span>
+        }
+      </div>
+
+      @if (panier().length === 0) {
+        <div class="empty-cart">
+          <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="9" cy="21" r="1"/>
+            <circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+          <h2>Votre panier est vide</h2>
+          <p>Configurez votre PC de rêve et ajoutez-le au panier</p>
+          <button (click)="continueShopping()" class="btn-primary">
+            Commencer la configuration
+          </button>
+        </div>
+      } @else {
+        <div class="cart-items">
+          <div class="cart-table-header">
+            <span class="col-product">Produit</span>
+            <span class="col-price">Prix unitaire</span>
+            <span class="col-quantity">Quantité</span>
+            <span class="col-subtotal">Sous-total</span>
+            <span class="col-actions"></span>
+          </div>
+
+          @for (item of panier(); track getKey(item)) {
+            <div class="cart-item">
+              <div class="col-product">
+                <div class="product-info">
+                  <div class="product-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                      <line x1="8" y1="21" x2="16" y2="21"/>
+                      <line x1="12" y1="17" x2="12" y2="21"/>
+                    </svg>
+                  </div>
+                  <div class="product-details">
+                    <h3>{{ item.configuration.nomConfiguration }}</h3>
+                    <div class="components-list">
+                      @for (composant of item.composants; track composant.id) {
+                        <span class="component-chip">
+                          {{ composant.modele }}
+                        </span>
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-price">
+                <span class="price">{{ getItemSubtotal(item).toFixed(2) }} €</span>
+              </div>
+
+              <div class="col-quantity">
+                <div class="quantity-controls">
+                  <button
+                    (click)="decrementQuantity(item)"
+                    [disabled]="item.quantite <= 1"
+                    class="qty-btn"
+                  >
+                    −
+                  </button>
+                  <span class="quantity">{{ item.quantite }}</span>
+                  <button
+                    (click)="incrementQuantity(item)"
+                    class="qty-btn"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
+              <div class="col-subtotal">
+                <span class="subtotal-price">{{ getItemSubtotal(item).toFixed(2) }} €</span>
+              </div>
+
+              <div class="col-actions">
+                <button
+                  (click)="removeItem(item)"
+                  class="btn-remove"
+                  title="Supprimer"
+                >
+                  🗑️
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Résumé -->
+    @if (panier().length > 0) {
+      <div class="summary-section">
+        <div class="summary-card">
+          <h2>Résumé de la commande</h2>
+
+          <div class="summary-row">
+            <span>Sous-total</span>
+            <span class="value">{{ subtotal().toFixed(2) }} €</span>
+          </div>
+
+          <div class="summary-row">
+            <span>Livraison</span>
+            <span class="value" [class.free]="shippingCost() === 0">
+              {{ shippingCost() === 0 ? 'Gratuite' : shippingCost().toFixed(2) + ' €' }}
+            </span>
+          </div>
+
+          <div class="summary-divider"></div>
+
+          <div class="summary-row total">
+            <span>TOTAL</span>
+            <span class="value">{{ total().toFixed(2) }} €</span>
+          </div>
+
+          @if (successMessage) {
+            <div class="alert alert-success">
+              ✅ {{ successMessage }}
+            </div>
+          }
+
+          @if (errorMessage) {
+            <div class="alert alert-error">
+              ❌ {{ errorMessage }}
+            </div>
+          }
+
+          <button
+            (click)="checkout()"
+            [disabled]="loading"
+            class="btn-checkout"
+          >
+            @if (loading) {
+              <span class="spinner"></span>
+              Traitement...
+            } @else {
+              Commander
+            }
+          </button>
+
+          <button
+            (click)="continueShopping()"
+            class="btn-continue"
+          >
+            Continuer mes achats
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

@@ -7,9 +7,9 @@ import { map, catchError } from 'rxjs/operators';
 import { environment } from '../../Environement/environement';
 import { CreateConfigurationRequest } from '../Interface/Configuration';
 import { Configuration } from '../Interface/Configuration';
-import { CreateConfigurationResponse } from '../Interface/Configuration';
 import { Composants } from '../Interface/Composants';
 import { ConfigurationComplete } from '../Interface/Configuration';
+import {ConfigurationDTO} from '../Interface/ConfigurationDTO';
 
 @Injectable({
   providedIn: 'root'
@@ -23,14 +23,14 @@ export class ConfigurationService {
 
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'Une erreur est survenue';
-    
+
     if (error.error instanceof ErrorEvent) {
       // Erreur côté client
       errorMessage = `Erreur: ${error.error.message}`;
     } else {
       // Erreur côté serveur
       errorMessage = `Code d'erreur: ${error.status}\nMessage: ${error.message}`;
-      
+
       switch (error.status) {
         case 401:
           errorMessage = 'Non autorisé. Veuillez vous connecter.';
@@ -46,7 +46,7 @@ export class ConfigurationService {
           break;
       }
     }
-    
+
     console.error('Erreur HTTP:', errorMessage, error);
     return throwError(() => new Error(errorMessage));
   }
@@ -83,7 +83,7 @@ export class ConfigurationService {
    */
   getComposantsByMarque(marque: string): Observable<Composants[]> {
     return this.getAllComposants().pipe(
-      map(composants => composants.filter(c => 
+      map(composants => composants.filter(c =>
         c.marque.toLowerCase().includes(marque.toLowerCase())
       ))
     );
@@ -146,8 +146,8 @@ export class ConfigurationService {
   /**
    * Crée une nouvelle configuration
    */
-  createConfiguration(config: CreateConfigurationRequest): Observable<CreateConfigurationResponse> {
-    return this.http.post<CreateConfigurationResponse>(`${this.apiUrl}/ConfigurationPc`, config)
+  createConfiguration(config: CreateConfigurationRequest): Observable<ConfigurationDTO> {
+    return this.http.post<ConfigurationDTO>(`${this.apiUrl}/ConfigurationPc`, config)
       .pipe(catchError(this.handleError));
   }
 
@@ -203,7 +203,7 @@ export class ConfigurationService {
    */
   private enrichConfiguration(config: Configuration, allComposants: Composants[]): ConfigurationComplete {
     const comps = allComposants.filter(c => config.composantIds.includes(c.id));
-    
+
     return {
       id: config.id,
       nomConfiguration: config.nomConfiguration,
@@ -274,7 +274,7 @@ export class ConfigurationService {
       differenceScore: config1.scoreMoyen - config2.scoreMoyen,
       meilleurPrix: config1.prixTotal < config2.prixTotal ? config1 : config2,
       meilleurScore: config1.scoreMoyen > config2.scoreMoyen ? config1 : config2,
-      meilleurRapportQualitePrix: this.calculerRapportQualitePrix(config1) > 
+      meilleurRapportQualitePrix: this.calculerRapportQualitePrix(config1) >
                                    this.calculerRapportQualitePrix(config2) ? config1 : config2
     };
 
@@ -302,8 +302,8 @@ export class ConfigurationService {
     return this.getAllComposants().pipe(
       map(composants => {
         const enStock = composants.filter(c => c.stock > 0).length;
-        const prixMoyen = composants.length > 0 
-          ? composants.reduce((sum, c) => sum + c.prix, 0) / composants.length 
+        const prixMoyen = composants.length > 0
+          ? composants.reduce((sum, c) => sum + c.prix, 0) / composants.length
           : 0;
         const scoreMoyen = composants.length > 0
           ? composants.reduce((sum, c) => sum + c.score, 0) / composants.length

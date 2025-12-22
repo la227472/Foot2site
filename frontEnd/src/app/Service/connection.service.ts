@@ -6,15 +6,26 @@ import { environment } from '../../Environement/environement';
 import { JWT } from '../Interface/JWT';
 
 
+// connection.service.ts
+
+export interface Adress {
+  id?: number;
+  Code: number;
+  Numero: number;
+  Rue: string;
+}
+
 export interface CurrentUser {
   id: number;
   firstname: string;
   lastname: string;
   email: string;
-  password:string;
+  password: string;
   adresseId: number;
-  commandeId: [];
+  commandeId: any[];
   roles: string;
+  // On ajoute l'objet adresse ici (souvent renvoyé par un Include en C#)
+  adresse?: Adress; 
 }
 
 
