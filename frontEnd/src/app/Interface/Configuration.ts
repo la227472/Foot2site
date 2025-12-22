@@ -1,0 +1,26 @@
+import { Composants } from "./Composants";
+export interface Configuration {
+  id?: number;
+  nomConfiguration: string;
+  utilisateurId: number;
+  composantIds: number[];
+  commandeId?: number | null;
+}
+
+export interface CreateConfigurationRequest {
+  nomConfiguration: string;
+  utilisateurId: number;
+  composantIds: number[];
+}
+
+export interface CreateConfigurationResponse {
+  success: boolean;
+  message: string;
+  configurationId?: number;
+}
+
+export interface ConfigurationComplete extends Configuration {
+  composants: Composants[];
+  prixTotal: number;
+  scoreMoyen: number;
+}

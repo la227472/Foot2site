@@ -1,0 +1,69 @@
+<div class="dashboard-container">
+  <aside class="sidebar">
+  <div class="sidebar-brand">Mon Dashboard</div> <div class="sidebar-menu">
+    <div class="menu-item" routerLink="/profil" routerLinkActive="active">
+      <mat-icon>person</mat-icon> Mon profil
+    </div>
+
+    <div class="menu-item" routerLink="/commandes" routerLinkActive="active">
+      <mat-icon>shopping_bag</mat-icon> Mes commandes
+    </div>
+
+    <div class="menu-item" routerLink="/profilconfig" routerLinkActive="active">
+      <mat-icon>desktop_windows</mat-icon> Mes configurations
+    </div>
+  </div>
+</aside>
+
+  <main class="main-content">
+    <div class="content-card">
+      <h1 class="page-title">Mes configurations</h1>
+
+      <div *ngIf="!isLoading && configurations.length === 0" class="empty-state">
+        Vous n'avez pas encore de configurations enregistrées.
+      </div>
+
+      <div class="config-list" *ngIf="!isLoading">
+        <div *ngFor="let config of configurations" 
+             class="config-group" 
+             [class.expanded]="expandedConfigId === config.id">
+          
+          <div class="config-header" (click)="toggleExpand(config.id)">
+            <div class="config-info">
+              <span class="config-name">{{ config.nomConfiguration }}</span>
+              <span class="config-date">{{ config.composants.length }} composants — Total: {{ config.prixTotal }} €</span>
+            </div>
+            <div class="actions">
+                <button class="delete-btn btn-danger-lite" (click)="deleteConfig($event, config)">
+                <mat-icon>delete</mat-icon>
+                <span>Supprimer</span>
+                </button>
+                
+                <mat-icon class="arrow">
+                    {{ expandedConfigId === config.id ? 'expand_less' : 'expand_more' }}
+                </mat-icon>
+            </div>
+          </div>
+          
+          <div class="config-details" *ngIf="expandedConfigId === config.id">
+            <div *ngFor="let comp of config.composants" class="component-row">
+                <span class="comp-name">{{ comp.marque }} {{ comp.modele }}</span>
+                <div class="comp-stats">
+                <span class="comp-score" [ngClass]="getScoreClass(comp.score)">
+                    {{ comp.score }}
+                </span>
+                <span class="comp-price">{{ comp.prix }} €</span>
+                
+                <button class="remove-comp-btn" (click)="removeComponent(config, comp)" title="Retirer ce composant">
+                    <mat-icon>close</mat-icon>
+                </button>
+                </div>
+            </div>
+            </div>
+        </div>
+      </div>
+
+      <div *ngIf="isLoading" class="loader">Chargement...</div>
+    </div>
+  </main>
+</div>

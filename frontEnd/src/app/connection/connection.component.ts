@@ -25,7 +25,8 @@ export class ConnectionComponent {
     private fb: FormBuilder,
     private authService: ConnectionService,
     private router: Router
-  ) {
+  )
+  {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       password: ['', [Validators.required]]

@@ -1,0 +1,202 @@
+/* --- STRUCTURE GLOBALE --- */
+.dashboard-container {
+  display: flex;
+  background-color: #f0f2f5; 
+  min-height: 100vh;
+  padding: 30px;
+  gap: 30px;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  box-sizing: border-box;
+}
+
+/* --- SIDEBAR (Standardisée) --- */
+.sidebar {
+  width: 320px;
+  background-color: #313761;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 40px 0;
+  border-radius: 25px;
+  height: calc(100vh - 60px);
+  position: sticky;
+  top: 30px;
+}
+
+.sidebar-brand {
+  font-size: 1.8rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 60px;
+  color: #a29bfe;
+  letter-spacing: 1px;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 20px;
+}
+
+.menu-item {
+  padding: 18px 25px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-radius: 15px;
+  text-decoration: none;
+}
+
+.menu-item mat-icon {
+  font-size: 24px;
+}
+
+.menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.menu-item.active {
+  background-color: #a29bfe;
+  color: white;
+  box-shadow: 0 4px 15px rgba(162, 155, 254, 0.3);
+}
+
+/* --- MAIN CONTENT --- */
+.main-content {
+  flex-grow: 1;
+}
+
+.content-card {
+  background: white;
+  border-radius: 25px;
+  padding: 45px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+  min-height: calc(100vh - 60px);
+}
+
+.page-title {
+  color: #313761;
+  font-size: 1.8rem;
+  margin-bottom: 40px;
+  font-weight: 800;
+}
+
+/* --- GRILLE DE PROFIL --- */
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.info-section {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 20px;
+  border: 1px solid #edf2f7;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.info-section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  border-color: #a29bfe;
+}
+
+.info-section h3 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #313761;
+  font-size: 1.3rem;
+  margin-top: 0;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f1f2f6;
+}
+
+.info-section h3 mat-icon {
+  color: #a29bfe;
+  background: #f0eeff;
+  padding: 8px;
+  border-radius: 10px;
+}
+
+/* --- GROUPES D'INFOS --- */
+.info-group {
+  margin-bottom: 25px;
+}
+
+.info-group:last-child {
+  margin-bottom: 0;
+}
+
+.info-group label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #b2bec3;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  margin-bottom: 8px;
+}
+
+.info-group p {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2d3436;
+  margin: 0;
+  background: #f8f9fa;
+  padding: 12px 15px;
+  border-radius: 10px;
+  border-left: 4px solid #dfe6e9;
+}
+
+/* --- BOUTON D'ACTION --- */
+.profile-actions {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #edf2f7;
+  padding-top: 30px;
+}
+
+.edit-btn {
+  background-color: #313761;
+  color: white;
+  border: none;
+  padding: 14px 30px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.edit-btn:hover {
+  background-color: #a29bfe;
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(162, 155, 254, 0.4);
+}
+
+.edit-btn mat-icon {
+  font-size: 20px;
+}
+
+/* --- ÉTAT CHARGEMENT --- */
+.loader {
+  text-align: center;
+  padding: 50px;
+  color: #a29bfe;
+  font-weight: 600;
+  font-size: 1.2rem;
+}

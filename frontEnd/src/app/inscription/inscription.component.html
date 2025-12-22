@@ -1,6 +1,5 @@
 <div class="inscription-container">
-  <h2>Créer un compte</h2>
-  <p class="subtitle">Vous serez automatiquement enregistré comme client</p>
+
 
   @if (successMessage()) {
     <div class="alert alert-success">{{ successMessage() }}</div>
@@ -11,6 +10,8 @@
   }
 
   <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <h2>Créer un compte</h2>
+    <p class="subtitle">Vous serez automatiquement enregistré comme client</p>
 
     <!-- Prénom -->
     <div class="form-group">
