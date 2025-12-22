@@ -44,13 +44,13 @@ export class CompositorComponent implements OnInit {
   ) {
     // Formulaire de sélection des composants
     this.compositionForm = this.fb.group({
-      cpu: ['', Validators.required],
-      motherboard: ['', Validators.required],
-      gpu: ['', Validators.required],
-      memory: ['', Validators.required],
-      psu: ['', Validators.required],
-      box: ['', Validators.required],
-      hardDisk: ['', Validators.required]
+      cpu: [''],
+      motherboard: [''],
+      gpu: [''],
+      memory: [''],
+      psu: [''],
+      box: [''],
+      hardDisk: ['']
     });
 
     // Formulaire pour le nom de la configuration

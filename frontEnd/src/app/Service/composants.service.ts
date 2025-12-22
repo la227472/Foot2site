@@ -28,4 +28,12 @@ export class ComposantsService {
   addComposants(composant: Composants) {
     return this.http.post(`${this.apiUrl}/Composants`, composant);
   }
+
+  deleteComposants(id: number) {
+    return this.http.delete(`${this.apiUrl}/Composants/${id}`);
+  }
+
+  updateComposants(id: number, composant:Composants) {
+    return this.http.put(`${this.apiUrl}/Composants/${id}`, composant);
+  }
 }

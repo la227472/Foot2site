@@ -1,3 +1,6 @@
+import { Composants } from "./Composants";
+
+// src/app/models/configuration.model.ts
 export interface Configuration {
   id?: number;
   nomConfiguration: string;
@@ -16,4 +19,10 @@ export interface CreateConfigurationResponse {
   success: boolean;
   message: string;
   configurationId?: number;
+}
+
+export interface ConfigurationComplete extends Configuration {
+  composants: Composants[];
+  prixTotal: number;
+  scoreMoyen: number;
 }

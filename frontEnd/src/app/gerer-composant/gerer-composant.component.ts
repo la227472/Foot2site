@@ -13,12 +13,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { ComposantService } from '../Service/composant.service';
-import { Composant } from '../Interface/Composant';
+import { ComposantsService } from '../Service/composants.service';
+import { Composants } from '../Interface/Composants';
 import { ComposantDialogComponent } from '../composant-dialog/composant-dialog.component';
 import { ConnectionService } from '../Service/connection.service';
 import {MatSliderModule} from '@angular/material/slider';
-
 @Component({
   selector: 'app-gerer-composant',
   standalone: true,
@@ -46,7 +45,7 @@ export class GererComposantComponent implements OnInit {
   displayedColumns: string[] = ['type', 'marque', 'modele', 'prix', 'stock' , 'score'];
 
   // Source de données du tableau (utilisée dans le HTML ligne 44) - Remplie par loadComposants()
-  dataSource: MatTableDataSource<Composant>;
+  dataSource: MatTableDataSource<Composants>;
 
   // FormControl pour l'autocomplete de type (utilisé dans le HTML ligne 12)
   myControl = new FormControl('');
@@ -82,12 +81,12 @@ export class GererComposantComponent implements OnInit {
 
   // Injection des services : composantService (API), dialog (popups), snackBar (notifications), connectionService (auth)
   constructor(
-    private composantService: ComposantService,
+    private composantService: ComposantsService,
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
     private connectionService: ConnectionService
   ) {
-    this.dataSource = new MatTableDataSource<Composant>([]);
+    this.dataSource = new MatTableDataSource<Composants>([]);
   }
 
   // Méthode appelée au chargement : configure l'autocomplete, écoute les filtres, vérifie le token, charge les données
@@ -131,7 +130,7 @@ export class GererComposantComponent implements OnInit {
 
   // Définit comment filtrer les données : retourne true si la ligne passe tous les filtres
   setupCustomFilter(): void {
-    this.dataSource.filterPredicate = (data: Composant, filter: string) => {
+    this.dataSource.filterPredicate = (data: Composants, filter: string) => {
       const filterObj = JSON.parse(filter);
       const matchType = !filterObj.type || data.type === filterObj.type;
       const matchPrix = data.prix >= filterObj.prixMin && data.prix <= filterObj.prixMax;
@@ -165,7 +164,7 @@ export class GererComposantComponent implements OnInit {
   }
 
   // Ouvre une popup pour ajouter/modifier un composant (appelée depuis le HTML ligne 4)
-  openDialog(composant?: Composant): void {
+  openDialog(composant?: Composants): void {
     const dialogRef = this.dialog.open(ComposantDialogComponent, {
       width: '500px',
       data: { composant: composant || null }
@@ -183,13 +182,13 @@ export class GererComposantComponent implements OnInit {
   }
 
   // Crée un nouveau composant via l'API (appelée depuis openDialog())
-  createComposant(composant: Composant): void {
+  createComposant(composant: Composants): void {
     if (this.connectionService.isTokenExpired()) {
       this.connectionService.logout();
       return;
     }
 
-    this.composantService.createComposant(composant).subscribe({
+    this.composantService.addComposants(composant).subscribe({
       next: () => {
         this.loadComposants();
         this.snackBar.open('Composant ajouté avec succès', 'Fermer', { duration: 3000 });
@@ -201,13 +200,13 @@ export class GererComposantComponent implements OnInit {
   }
 
   // Modifie un composant existant via l'API (appelée depuis openDialog())
-  updateComposant(composant: Composant): void {
+  updateComposant(composant: Composants): void {
     if (this.connectionService.isTokenExpired()) {
       this.connectionService.logout();
       return;
     }
 
-    this.composantService.updateComposant(composant.id, composant).subscribe({
+    this.composantService.updateComposants(composant.id, composant).subscribe({
       next: () => {
         this.loadComposants();
         this.snackBar.open('Composant modifié avec succès', 'Fermer', { duration: 3000 });
@@ -219,14 +218,14 @@ export class GererComposantComponent implements OnInit {
   }
 
   // Supprime un composant via l'API - NON utilisée actuellement (pas de bouton supprimer dans le HTML)
-  deleteComposant(composant: Composant): void {
+  deleteComposant(composant: Composants): void {
     if (confirm(`Êtes-vous sûr de vouloir supprimer ${composant.marque} ${composant.modele} ?`)) {
       if (this.connectionService.isTokenExpired()) {
         this.connectionService.logout();
         return;
       }
 
-      this.composantService.deleteComposant(composant.id).subscribe({
+      this.composantService.deleteComposants(composant.id).subscribe({
         next: () => {
           this.loadComposants();
           this.snackBar.open('Composant supprimé avec succès', 'Fermer', { duration: 3000 });

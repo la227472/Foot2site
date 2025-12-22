@@ -6,6 +6,7 @@ import { ComparerComposComponent } from './comparer-compos/comparer-compos.compo
 import { GererComposantComponent } from './gerer-composant/gerer-composant.component';
 import { adminGuard } from './authen.guard';
 import {CompositorComponent} from './compositor/compositor.component';
+import {ProfilConfigComponent} from './profil-config/profil-config.component';
 
 export const routes: Routes = [
     {
@@ -37,6 +38,11 @@ export const routes: Routes = [
       path : 'gerer-composant',
       component : GererComposantComponent,
       canActivate: [adminGuard]
+    },
+
+    {
+      path : 'profilconfig',
+      component : ProfilConfigComponent,
     },
 
     {
