@@ -1,7 +1,3 @@
-<div style="background: #eee; padding: 10px; margin-bottom: 20px; border-radius: 5px; font-family: monospace;">
-  DEBUG SESSION : {{ authService.currentUser() | json }}
-</div>
-
 <div class="dashboard-container">
   <aside class="sidebar">
     <div class="sidebar-menu">
@@ -29,9 +25,16 @@
               <span class="config-name">{{ config.nomConfiguration }}</span>
               <span class="config-date">{{ config.composants.length }} composants — Total: {{ config.prixTotal }} €</span>
             </div>
-            <mat-icon class="arrow">
-              {{ expandedConfigId === config.id ? 'expand_less' : 'expand_more' }}
-            </mat-icon>
+            <div class="actions">
+                <button class="delete-btn btn-danger-lite" (click)="deleteConfig($event, config)">
+                <mat-icon>delete</mat-icon>
+                <span>Supprimer</span>
+                </button>
+                
+                <mat-icon class="arrow">
+                    {{ expandedConfigId === config.id ? 'expand_less' : 'expand_more' }}
+                </mat-icon>
+            </div>
           </div>
           
           <div class="config-details" *ngIf="expandedConfigId === config.id">

@@ -4,6 +4,7 @@ import { ConfigurationComplete } from '../Interface/Configuration';
 import { ConfigurationService } from '../Service/configuration.service';
 import { ConnectionService } from '../Service/connection.service'; // Importez votre service de connexion
 import { CommonModule } from '@angular/common';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-profil-config',
@@ -65,4 +66,47 @@ export class ProfilConfigComponent implements OnInit {
     if (score < 70) return 'score-orange';
     return 'score-green';
   }
+
+  deleteConfig(event: MouseEvent, config: any): void {
+  event.stopPropagation(); // Toujours important pour l'accordéon
+
+  Swal.fire({
+    title: 'Supprimer la configuration ?',
+    text: `Voulez-vous vraiment supprimer "${config.nomConfiguration}" ? Cette action est irréversible.`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#ff4d4f', // Le rouge de votre bouton
+    cancelButtonColor: '#313761',  // Le bleu de votre sidebar
+    confirmButtonText: 'Oui, supprimer !',
+    cancelButtonText: 'Annuler',
+    reverseButtons: true, // Met "Annuler" à gauche
+    customClass: {
+      popup: 'swal-custom-radius' // On peut ajouter une classe pour arrondir les coins
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Si l'utilisateur a cliqué sur "Oui"
+      this.configService.deleteConfiguration(config.id).subscribe({
+        next: () => {
+          // Mise à jour de la liste locale
+          this.configurations = this.configurations.filter(c => c.id !== config.id);
+          
+          // Petit toast de confirmation en haut à droite
+          Swal.fire({
+            title: 'Supprimé !',
+            text: 'Votre configuration a été supprimée.',
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false,
+            toast: true,
+            position: 'top-end'
+          });
+        },
+        error: (err) => {
+          Swal.fire('Erreur', 'Impossible de supprimer la configuration.', 'error');
+        }
+      });
+    }
+  });
+}
 }

@@ -182,3 +182,48 @@
   color: #b2bec3;
   font-style: italic;
 }
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.delete-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #fff1f0; /* Fond rouge très clair */
+  color: #ff4d4f;            /* Texte rouge */
+  border: 1px solid #ffccc7;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.delete-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.delete-btn:hover {
+  background-color: #ff4d4f; /* Fond devient rouge vif */
+  color: white;              /* Texte devient blanc */
+  border-color: #ff4d4f;
+  box-shadow: 0 4px 12px rgba(255, 77, 79, 0.2);
+  transform: translateY(-1px);
+}
+
+.delete-btn:active {
+  transform: translateY(0);
+}
+
+/* Ajustement pour que l'icône flèche soit un peu plus grisée à côté du bouton vif */
+.arrow {
+  color: #b2bec3;
+  margin-left: 10px;
+}
