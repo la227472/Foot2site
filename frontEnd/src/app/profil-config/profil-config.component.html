@@ -39,15 +39,19 @@
           
           <div class="config-details" *ngIf="expandedConfigId === config.id">
             <div *ngFor="let comp of config.composants" class="component-row">
-              <span class="comp-name">{{ comp.marque }} {{ comp.modele }}</span>
-              <div class="comp-stats">
+                <span class="comp-name">{{ comp.marque }} {{ comp.modele }}</span>
+                <div class="comp-stats">
                 <span class="comp-score" [ngClass]="getScoreClass(comp.score)">
-                  {{ comp.score }}
+                    {{ comp.score }}
                 </span>
                 <span class="comp-price">{{ comp.prix }} €</span>
-              </div>
+                
+                <button class="remove-comp-btn" (click)="removeComponent(config, comp)" title="Retirer ce composant">
+                    <mat-icon>close</mat-icon>
+                </button>
+                </div>
             </div>
-          </div>
+            </div>
         </div>
       </div>
 

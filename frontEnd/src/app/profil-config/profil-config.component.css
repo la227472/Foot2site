@@ -227,3 +227,28 @@
   color: #b2bec3;
   margin-left: 10px;
 }
+
+
+.remove-comp-btn {
+  background: none;
+  border: none;
+  color: #b2bec3;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  margin-left: 10px;
+}
+
+.remove-comp-btn:hover {
+  background-color: #fff1f0;
+  color: #ff4d4f;
+}
+
+.remove-comp-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
