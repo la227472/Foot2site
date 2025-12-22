@@ -1,130 +1,85 @@
 <div class="modifier-profil-container">
   <div class="profil-card">
-    <!-- Header avec fond bleu -->
     <div class="profil-header">
-      <h1>Modifier profil</h1>
+      <h1><mat-icon>manage_accounts</mat-icon> Modifier mon profil</h1>
     </div>
 
-    <!-- Loading spinner -->
     <div *ngIf="isLoading" class="loading-spinner">
-      <mat-spinner diameter="50"></mat-spinner>
-      <p>Chargement des données...</p>
+      <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+      <p>Chargement de vos coordonnées...</p>
     </div>
 
-    <!-- Formulaire -->
     <form [formGroup]="profilForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
-      <!-- Ligne 1: Nom et Prénom -->
+      
+      <div class="form-section-title">
+        <mat-icon>person</mat-icon> Informations personnelles
+      </div>
+      
       <div class="form-row">
         <div class="form-group">
           <label for="nom">Nom</label>
-          <input
-            id="nom"
-            type="text"
-            formControlName="nom"
-            placeholder="Nom"
-            [class.error]="profilForm.get('nom')?.invalid && profilForm.get('nom')?.touched">
-          <span class="error-text" *ngIf="profilForm.get('nom')?.hasError('minlength') && profilForm.get('nom')?.touched">
-            Le nom doit contenir au moins 2 caractères
-          </span>
+          <input id="nom" type="text" formControlName="nom" 
+                 [class.error]="profilForm.get('nom')?.invalid && profilForm.get('nom')?.touched">
         </div>
 
         <div class="form-group">
           <label for="prenom">Prénom</label>
-          <input
-            id="prenom"
-            type="text"
-            formControlName="prenom"
-            placeholder="Prénom"
-            [class.error]="profilForm.get('prenom')?.invalid && profilForm.get('prenom')?.touched">
-          <span class="error-text" *ngIf="profilForm.get('prenom')?.hasError('minlength') && profilForm.get('prenom')?.touched">
-            Le prénom doit contenir au moins 2 caractères
-          </span>
+          <input id="prenom" type="text" formControlName="prenom"
+                 [class.error]="profilForm.get('prenom')?.invalid && profilForm.get('prenom')?.touched">
         </div>
       </div>
 
-      <!-- Ligne 2: Email et Mot de passe -->
       <div class="form-row">
         <div class="form-group">
           <label for="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            formControlName="email"
-            placeholder="Email"
-            [class.error]="profilForm.get('email')?.invalid && profilForm.get('email')?.touched">
-          <span class="error-text" *ngIf="profilForm.get('email')?.hasError('email') && profilForm.get('email')?.touched">
-            L'email n'est pas valide
-          </span>
+          <input id="email" type="email" formControlName="email">
         </div>
 
         <div class="form-group">
           <label for="password">Mot de passe</label>
           <div class="password-wrapper">
-            <input
-              id="password"
-              [type]="hidePassword ? 'password' : 'text'"
-              formControlName="password"
-              placeholder="Nouveau mot de passe">
-            <button
-              type="button"
-              class="toggle-password"
-              (click)="hidePassword = !hidePassword">
+            <input id="password" [type]="hidePassword ? 'password' : 'text'" 
+                   formControlName="password" 
+                   placeholder="Laisser vide pour ne pas modifier">
+            <button type="button" class="toggle-password" (click)="hidePassword = !hidePassword">
               <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
             </button>
           </div>
-          <span class="hint-text">Laisser vide pour ne pas modifier</span>
         </div>
       </div>
 
-      <!-- Ligne 3: Rue seule -->
+      <div class="form-section-title">
+        <mat-icon>home</mat-icon> Adresse de livraison
+      </div>
+
       <div class="form-row">
         <div class="form-group full-width">
           <label for="rue">Rue</label>
-          <input
-            id="rue"
-            type="text"
-            formControlName="rue"
-            placeholder="Rue">
+          <input id="rue" type="text" formControlName="rue">
         </div>
       </div>
 
-      <!-- Ligne 4: Numéro et Code Postal -->
       <div class="form-row">
         <div class="form-group">
           <label for="numero">Numéro</label>
-          <input
-            id="numero"
-            type="text"
-            formControlName="numero"
-            placeholder="Numéro"
-            [class.error]="profilForm.get('numero')?.invalid && profilForm.get('numero')?.touched">
-          <span class="error-text" *ngIf="profilForm.get('numero')?.hasError('pattern') && profilForm.get('numero')?.touched">
-            Le numéro doit être un nombre
-          </span>
+          <input id="numero" type="text" formControlName="numero">
         </div>
 
         <div class="form-group">
           <label for="codePostal">Code Postal</label>
-          <input
-            id="codePostal"
-            type="text"
-            formControlName="codePostal"
-            placeholder="Code Postal"
-            [class.error]="profilForm.get('codePostal')?.invalid && profilForm.get('codePostal')?.touched">
-          <span class="error-text" *ngIf="profilForm.get('codePostal')?.hasError('pattern') && profilForm.get('codePostal')?.touched">
-            Le code postal doit contenir 4 chiffres
-          </span>
+          <input id="codePostal" type="text" formControlName="codePostal">
         </div>
       </div>
 
-      <!-- Bouton Modifier -->
-      <button
-        type="submit"
-        class="btn btn-primary"
-        [disabled]="profilForm.invalid || isLoading">
-        <span class="spinner" *ngIf="isLoading"></span>
-        {{ isLoading ? 'Modification...' : 'Modifier' }}
-      </button>
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">
+          Annuler
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="profilForm.invalid || isLoading">
+          <mat-icon *ngIf="!isLoading">save</mat-icon>
+          <span>{{ isLoading ? 'Enregistrement...' : 'Enregistrer les modifications' }}</span>
+        </button>
+      </div>
     </form>
   </div>
 </div>
