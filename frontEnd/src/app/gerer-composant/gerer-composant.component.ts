@@ -16,7 +16,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ComposantsService } from '../Service/composants.service';
 import { Composants } from '../Interface/Composants';
 import { ComposantDialogComponent } from '../composant-dialog/composant-dialog.component';
-import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '../shared/dialogs/confirm-dialog/confirm-dialog.component';
 import { ConnectionService } from '../Service/connection.service';
 import {MatSliderModule} from '@angular/material/slider';
 import {MatTooltipModule} from '@angular/material/tooltip';
