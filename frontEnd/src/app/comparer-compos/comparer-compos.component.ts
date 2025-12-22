@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ConfigurationService } from '../Service/configuration.service';
 import { ConfigurationComplete } from '../Interface/Configuration';
 import { Subscription } from 'rxjs';
 import { Composants } from '../Interface/Composants';
+import { ConnectionService } from '../Service/connection.service';
 
 @Component({
   selector: 'app-comparer-compos',
@@ -14,82 +15,66 @@ import { Composants } from '../Interface/Composants';
   styleUrl: './comparer-compos.component.css'
 })
 export class ComparerComposComponent implements OnInit {
-  // Données
+  // Services injectés via inject() pour la modernité ou via constructeur
+  private configService = inject(ConfigurationService);
+  private authService = inject(ConnectionService);
+
   configurations: ConfigurationComplete[] = [];
   configGauche: ConfigurationComplete | null = null;
   configDroite: ConfigurationComplete | null = null;
 
-  // États UI
   showDropdownLeft = false;
   showDropdownRight = false;
   isLoading = true;
   errorMessage = '';
 
-  // Subscriptions
   private subscriptions: Subscription = new Subscription();
 
-  // Mapping des types de composants vers les icônes Material
+  // ... Mapping des icônes et labels (inchangé) ...
   readonly iconMapping: { [key in Composants['type']]: string } = {
-    'CPU': 'memory',
-    'Motherboard': 'settings',
-    'GPU': 'videogame_asset',
-    'Memory': 'view_headline',
-    'HardDisk': 'save',
-    'PSU': 'power',
-    'Box': 'inventory_2'
+    'CPU': 'memory', 'Motherboard': 'settings', 'GPU': 'videogame_asset',
+    'Memory': 'view_headline', 'HardDisk': 'save', 'PSU': 'power', 'Box': 'inventory_2'
   };
 
-  // Mapping des types vers des noms français
   readonly typeLabels: { [key in Composants['type']]: string } = {
-    'CPU': 'Processeur',
-    'Motherboard': 'Carte mère',
-    'GPU': 'Carte graphique',
-    'Memory': 'Mémoire RAM',
-    'HardDisk': 'Disque dur',
-    'PSU': 'Alimentation',
-    'Box': 'Boîtier'
+    'CPU': 'Processeur', 'Motherboard': 'Carte mère', 'GPU': 'Carte graphique',
+    'Memory': 'Mémoire RAM', 'HardDisk': 'Disque dur', 'PSU': 'Alimentation', 'Box': 'Boîtier'
   };
 
-  // Liste ordonnée des types de composants à afficher
-  readonly typesComposants: Composants['type'][] = [
-    'CPU',
-    'Motherboard',
-    'GPU',
-    'Memory',
-    'HardDisk',
-    'PSU',
-    'Box'
-  ];
-
-  constructor(private configService: ConfigurationService) {}
+  readonly typesComposants: Composants['type'][] = ['CPU', 'Motherboard', 'GPU', 'Memory', 'HardDisk', 'PSU', 'Box'];
 
   ngOnInit(): void {
     this.loadConfigurations();
   }
 
   ngOnDestroy(): void {
-    // Nettoyage des subscriptions pour éviter les fuites mémoire
     this.subscriptions.unsubscribe();
   }
 
-  // ============== CHARGEMENT DES DONNÉES ==============
+  // ============== CHARGEMENT DES DONNÉES FILTRÉES ==============
 
-  /**
-   * Charge toutes les configurations depuis l'API
-   */
   loadConfigurations(): void {
     this.isLoading = true;
     this.errorMessage = '';
 
+    // On récupère l'utilisateur en session
+    const user = this.authService.currentUser();
+
     const sub = this.configService.getConfigurationsComplete().subscribe({
-      next: (configs) => {
-        this.configurations = configs;
-        console.log(`${configs.length} configuration(s) chargée(s)`, configs);    
+      next: (configs: any[]) => {
+        if (user) {
+          // FILTRAGE : On ne garde que les configs de l'utilisateur connecté
+          this.configurations = configs.filter(c => c.utilisateurId === user.id);
+          console.log(`${this.configurations.length} config(s) de l'utilisateur ${user.firstname} chargée(s)`);
+        } else {
+          this.configurations = [];
+          this.errorMessage = 'Veuillez vous connecter pour voir vos configurations.';
+        }
         this.isLoading = false;
       },
-      error: (error) => {
-        console.error('Erreur lors du chargement des configurations:', error);
-        this.errorMessage = 'Impossible de charger les configurations. Vérifiez votre connexion au serveur.';
+      error: (error: any) => {
+        console.error('Erreur:', error);
+        this.errorMessage = 'Impossible de charger les configurations.';
         this.isLoading = false;
       }
     });
