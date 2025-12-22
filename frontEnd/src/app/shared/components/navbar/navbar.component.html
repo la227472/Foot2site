@@ -1,0 +1,47 @@
+<nav class="navbar">
+  <div class="navbar-container">
+    <div class="navbar-brand">
+      <a routerLink="/accueil">RAMène-toi</a>
+    </div>
+
+    <div class="navbar-menu">
+      <a routerLink="/accueil" routerLinkActive="active">Accueil</a>
+      <a routerLink="/comparer" routerLinkActive="active">Comparer</a>
+      <a
+        *ngIf="connectionService.isAdmin()"
+        routerLink="/gerer-composant"
+        routerLinkActive="active"
+        >Gérer Composant</a
+      >
+    </div>
+
+    <div class="navbar-icons">
+      <button class="icon-btn" title="Panier"  routerLink="/panier" routerLinkActive="active">
+<mat-icon>shopping_cart</mat-icon>
+      </button>
+
+      <!-- Afficher profil et déconnexion uniquement si connecté -->
+      <ng-container
+        *ngIf="connectionService.isAuthenticated(); else loginButton"
+      >
+        <button class="icon-btn" title="Profil">
+<mat-icon>account_circle</mat-icon>
+        </button>
+
+        <button class="icon-btn" (click)="logout()" title="Déconnexion">
+<mat-icon>logout</mat-icon>
+        </button>
+      </ng-container>
+
+      <!-- Bouton de connexion si non connecté -->
+      <ng-template #loginButton>
+        <button
+          class="icon-btn login-btn"
+          routerLink="/connection"
+          title="Se connecter">
+          <mat-icon>login</mat-icon>
+        </button>
+      </ng-template>
+    </div>
+  </div>
+</nav>

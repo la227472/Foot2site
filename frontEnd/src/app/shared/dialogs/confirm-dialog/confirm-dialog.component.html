@@ -1,0 +1,13 @@
+<h2 mat-dialog-title class="dialog-title">{{ data.title }}</h2>
+
+<mat-dialog-content>
+  <p class="dialog-message">{{ data.message }}</p>
+  <p class="composant-name" *ngIf="data.composantName">
+    <strong>{{ data.composantName }}</strong>
+  </p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Annuler</button>
+  <button mat-raised-button color="warn" (click)="onConfirm()">Supprimer</button>
+</mat-dialog-actions>
