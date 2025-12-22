@@ -16,9 +16,10 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ComposantsService } from '../Service/composants.service';
 import { Composants } from '../Interface/Composants';
 import { ComposantDialogComponent } from '../composant-dialog/composant-dialog.component';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { ConnectionService } from '../Service/connection.service';
 import {MatSliderModule} from '@angular/material/slider';
-/*
+import {MatTooltipModule} from '@angular/material/tooltip';
 @Component({
   selector: 'app-gerer-composant',
   standalone: true,
@@ -36,14 +37,15 @@ import {MatSliderModule} from '@angular/material/slider';
     MatDialogModule,
     MatSnackBarModule,
     MatAutocompleteModule,
-    MatSliderModule
+    MatSliderModule,
+    MatTooltipModule
   ],
   templateUrl: './gerer-composant.component.html',
   styleUrl: './gerer-composant.component.css'
 })
 export class GererComposantComponent implements OnInit {
   // Liste des colonnes à afficher (utilisée dans le HTML ligne 85) - L'ordre ici = l'ordre d'affichage
-  displayedColumns: string[] = ['type', 'marque', 'modele', 'prix', 'stock' , 'score'];
+  displayedColumns: string[] = ['type', 'marque', 'modele', 'prix', 'stock' , 'score', 'actions'];
 
   // Source de données du tableau (utilisée dans le HTML ligne 44) - Remplie par loadComposants()
   dataSource: MatTableDataSource<Composants>;
@@ -165,7 +167,7 @@ export class GererComposantComponent implements OnInit {
   }
 
   // Ouvre une popup pour ajouter/modifier un composant (appelée depuis le HTML ligne 4)
-  openDialog(composant?: Composant): void {
+  openDialog(composant?: Composants): void {
     const dialogRef = this.dialog.open(ComposantDialogComponent, {
       width: '500px',
       data: { composant: composant || null }
@@ -183,13 +185,13 @@ export class GererComposantComponent implements OnInit {
   }
 
   // Crée un nouveau composant via l'API (appelée depuis openDialog())
-  createComposant(composant: Composant): void {
+  createComposant(composant: Composants): void {
     if (this.connectionService.isTokenExpired()) {
       this.connectionService.logout();
       return;
     }
 
-    this.composantService.createComposant(composant).subscribe({
+    this.composantService.addComposants(composant).subscribe({
       next: () => {
         this.loadComposants();
         this.snackBar.open('Composant ajouté avec succès', 'Fermer', { duration: 3000 });
@@ -201,13 +203,13 @@ export class GererComposantComponent implements OnInit {
   }
 
   // Modifie un composant existant via l'API (appelée depuis openDialog())
-  updateComposant(composant: Composant): void {
+  updateComposant(composant: Composants): void {
     if (this.connectionService.isTokenExpired()) {
       this.connectionService.logout();
       return;
     }
 
-    this.composantService.updateComposant(composant.id, composant).subscribe({
+    this.composantService.updateComposants(composant.id, composant).subscribe({
       next: () => {
         this.loadComposants();
         this.snackBar.open('Composant modifié avec succès', 'Fermer', { duration: 3000 });
@@ -218,24 +220,35 @@ export class GererComposantComponent implements OnInit {
     });
   }
 
-  // Supprime un composant via l'API - NON utilisée actuellement (pas de bouton supprimer dans le HTML)
-  deleteComposant(composant: Composant): void {
-    if (confirm(`Êtes-vous sûr de vouloir supprimer ${composant.marque} ${composant.modele} ?`)) {
-      if (this.connectionService.isTokenExpired()) {
-        this.connectionService.logout();
-        return;
+  // Supprime un composant via l'API avec confirmation dialog
+  deleteComposant(composant: Composants): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Supprimer un composant',
+        message: `Êtes-vous sûr de vouloir supprimer ce composant ?`,
+        composantName: `${composant.marque} ${composant.modele}`
       }
+    });
 
-      this.composantService.deleteComposant(composant.id).subscribe({
-        next: () => {
-          this.loadComposants();
-          this.snackBar.open('Composant supprimé avec succès', 'Fermer', { duration: 3000 });
-        },
-        error: (error) => {
-          this.snackBar.open('Erreur lors de la suppression du composant', 'Fermer', { duration: 3000 });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        if (this.connectionService.isTokenExpired()) {
+          this.connectionService.logout();
+          return;
         }
-      });
-    }
+
+        this.composantService.deleteComposants(composant.id).subscribe({
+          next: () => {
+            this.loadComposants();
+            this.snackBar.open('Composant supprimé avec succès', 'Fermer', { duration: 3000 });
+          },
+          error: (error) => {
+            this.snackBar.open('Erreur lors de la suppression du composant', 'Fermer', { duration: 3000 });
+          }
+        });
+      }
+    });
   }
 
   // Retourne une classe CSS selon le score (utilisée dans le HTML ligne 76 avec [ngClass])
@@ -245,4 +258,3 @@ export class GererComposantComponent implements OnInit {
     return 'score-low';
   }
 }
-*/

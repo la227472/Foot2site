@@ -81,12 +81,25 @@
         </td>
       </ng-container>
 
+      <!-- matColumnDef="actions" → Colonne d'actions (éditer/supprimer) -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let composant">
+          <button mat-icon-button color="primary" (click)="openDialog(composant)" matTooltip="Modifier">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteComposant(composant)" matTooltip="Supprimer">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
       <!-- displayedColumns → Définit l'ordre des colonnes (voir .ts ligne 53) -->
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 
       <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" colspan="6">Aucun composant trouvé</td>
+        <td class="mat-cell" colspan="7">Aucun composant trouvé</td>
       </tr>
     </table>
 
