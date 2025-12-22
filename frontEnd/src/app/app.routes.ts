@@ -7,6 +7,7 @@ import { ComparerComposComponent } from './comparer-compos/comparer-compos.compo
 import { adminGuard } from './authen.guard';
 import { CompositorComponent } from './compositor/compositor.component';
 import { ProfilConfigComponent } from './profil-config/profil-config.component';
+import { ProfilComponent } from './monprofil/monprofil.component';
 
 export const routes: Routes = [
     {
@@ -37,6 +38,11 @@ export const routes: Routes = [
     {
       path : 'profilconfig',
       component : ProfilConfigComponent,
+    },
+
+    {
+      path : 'profil',
+      component : ProfilComponent,
     },
 
    /* {

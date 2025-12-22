@@ -6,11 +6,12 @@ import { ConnectionService } from '../Service/connection.service'; // Importez v
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import { Composants } from '../Interface/Composants';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-profil-config',
   standalone: true,
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule, MatIconModule, RouterLink, RouterLinkActive],
   templateUrl: './profil-config.component.html',
   styleUrl: './profil-config.component.css'
 })
