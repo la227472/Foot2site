@@ -7,7 +7,6 @@ import { map, catchError } from 'rxjs/operators';
 import { environment } from '../../Environement/environement';
 import { CreateConfigurationRequest } from '../Interface/Configuration';
 import { Configuration } from '../Interface/Configuration';
-import { CreateConfigurationResponse } from '../Interface/Configuration';
 import { Composants } from '../Interface/Composants';
 import { ConfigurationComplete } from '../Interface/Configuration';
 import {ConfigurationDTO} from '../Interface/ConfigurationDTO';
