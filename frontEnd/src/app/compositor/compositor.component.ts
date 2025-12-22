@@ -176,7 +176,7 @@ export class CompositorComponent implements OnInit {
 
         // Redirection après 2 secondes
         setTimeout(() => {
-          this.router.navigate(['/mes-configurations']);
+          this.router.navigate(['/comparer']);
         }, 2000);
       },
       error: (error) => {

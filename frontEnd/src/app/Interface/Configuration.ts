@@ -1,4 +1,3 @@
-// src/app/models/configuration.model.ts
 export interface Configuration {
   id?: number;
   nomConfiguration: string;

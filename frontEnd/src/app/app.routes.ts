@@ -5,11 +5,17 @@ import {AccueilComponent} from './accueil/accueil.component';
 import { ComparerComposComponent } from './comparer-compos/comparer-compos.component';
 import { GererComposantComponent } from './gerer-composant/gerer-composant.component';
 import { adminGuard } from './authen.guard';
+import {CompositorComponent} from './compositor/compositor.component';
 
 export const routes: Routes = [
     {
         path : 'connection',
         component : ConnectionComponent,
+    },
+
+    {
+      path : 'compo',
+      component : CompositorComponent,
     },
 
     {
@@ -23,16 +29,16 @@ export const routes: Routes = [
     },
 
     {
-      path : 'comparercompos',
+      path : 'comparer',
       component : ComparerComposComponent,
     },
 
-   /* {
+    {
       path : 'gerer-composant',
       component : GererComposantComponent,
       canActivate: [adminGuard]
     },
-*/
+
     {
         path : '',
         redirectTo : 'connection',
