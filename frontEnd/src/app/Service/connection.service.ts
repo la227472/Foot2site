@@ -1,10 +1,10 @@
 import {Injectable, signal} from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../Environement/environement';
 import { JWT } from '../Interface/JWT';
-//import { jwtDecode } from 'jwt-decode';
+
 
 export interface CurrentUser {
   id: number;
@@ -46,35 +46,48 @@ export class ConnectionService {
     });
 
     return this.http.post<JWT>(
-      `${this.apiUrl}/Utilisateurs/login`,
-      body.toString(),
-      { headers }
-
-    ).pipe(
-      tap(response => {
-        // Sauvegarder le token et les infos utilisateur
-        if (response.token) {
-          localStorage.setItem(this.KEY_TOKEN, response.token);
-          this.isAuthenticated.set(true);
-        }
-      })
-    );
+    `${this.apiUrl}/Utilisateurs/login`,
+    body.toString(),
+    { headers }
+  ).pipe(
+    tap(response => {
+      if (response.token) {
+        localStorage.setItem(this.KEY_TOKEN, response.token);
+        this.isAuthenticated.set(true);
+        
+        // CORRECTION : On s'abonne pour déclencher la requête GET /api/Utilisateurs/{id}
+        this.loadCurrentUser().subscribe(); 
+      }
+    })
+  );
   }
 
   /**
    * télécharge les informations au sujet du user
    */
-  loadCurrentUser(): void {
-    this.http.get<CurrentUser>(`${this.apiUrl}/me`).subscribe({
-      next: (user) => {
-        localStorage.setItem(this.USER_KEY, JSON.stringify(user));
-        this.currentUser.set(user);
-      },
-      error: (err) => {
-        console.error('Erreur lors du chargement de l\'utilisateur', err);
-      }
-    });
+ // connection.service.ts
+
+/**
+ * Charge les informations de l'utilisateur actuellement connecté
+ */
+loadCurrentUser(): Observable<CurrentUser> {
+  // 1. On récupère l'ID depuis le token décodé
+  const userInfo = this.getUserInfo(); 
+  const userId = userInfo?.id;
+
+  if (!userId) {
+    return throwError(() => new Error("Impossible de trouver l'ID utilisateur dans le token"));
   }
+
+  // 2. On appelle la route GET api/Utilisateurs/{id} conforme à votre contrôleur backend
+  return this.http.get<CurrentUser>(`${this.apiUrl}/Utilisateurs/${userId}`).pipe(
+    tap((user) => {
+      // On sauvegarde l'objet complet pour la session
+      localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+      this.currentUser.set(user);
+    })
+  );
+}
 
 
   logout(): void {
@@ -113,18 +126,34 @@ export class ConnectionService {
     }
   }
 
-  /**
-   * Décode le JWT et retourne les claims (payload)
+  
+   /* 
+   *Décode le JWT et retourne les claims (payload) 
+   */
+   
+/* * Décode le JWT manuellement sans bibliothèque externe
    */
   private decodeToken(): any {
     const token = this.getToken();
-    if (!token) return null;/*
+    if (!token) return null;
+
     try {
-      return jwtDecode(token);
+      // Un JWT est composé de 3 parties séparées par des points : Header.Payload.Signature
+      // Nous avons besoin de la partie centrale (le Payload, index 1)
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+
+      return JSON.parse(jsonPayload);
     } catch (error) {
-      console.error('Erreur lors du décodage du token:', error);
+      console.error('Erreur lors du décodage manuel du token:', error);
       return null;
-    }*/
+    }
   }
 
   /**

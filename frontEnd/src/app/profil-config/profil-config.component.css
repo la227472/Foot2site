@@ -151,3 +151,34 @@
   min-width: 80px;
   text-align: right;
 }
+
+/* Animation de l'icône flèche */
+.arrow {
+  transition: transform 0.3s ease;
+  color: #313761;
+}
+
+.config-group.expanded {
+  border-color: #a29bfe;
+  box-shadow: 0 4px 12px rgba(162, 155, 254, 0.1);
+}
+
+/* Classes de score dynamiques */
+.comp-score {
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: white; /* Texte blanc pour les scores colorés */
+}
+
+.score-red { background-color: #ff4e4e; }
+.score-orange { background-color: #ffa502; }
+.score-green { background-color: #2ecc71; }
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #b2bec3;
+  font-style: italic;
+}

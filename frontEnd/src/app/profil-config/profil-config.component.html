@@ -1,3 +1,7 @@
+<div style="background: #eee; padding: 10px; margin-bottom: 20px; border-radius: 5px; font-family: monospace;">
+  DEBUG SESSION : {{ authService.currentUser() | json }}
+</div>
+
 <div class="dashboard-container">
   <aside class="sidebar">
     <div class="sidebar-menu">
@@ -11,37 +15,40 @@
     <div class="content-card">
       <h1 class="page-title">Mes configurations</h1>
 
-      <div class="config-list">
-        <div class="config-group expanded">
-          <div class="config-header">
+      <div *ngIf="!isLoading && configurations.length === 0" class="empty-state">
+        Vous n'avez pas encore de configurations enregistrées.
+      </div>
+
+      <div class="config-list" *ngIf="!isLoading">
+        <div *ngFor="let config of configurations" 
+             class="config-group" 
+             [class.expanded]="expandedConfigId === config.id">
+          
+          <div class="config-header" (click)="toggleExpand(config.id)">
             <div class="config-info">
-              <span class="config-name">Configuration Gaming High-End</span>
-              <span class="config-date">Commandée le 22 janv. 2024</span>
+              <span class="config-name">{{ config.nomConfiguration }}</span>
+              <span class="config-date">{{ config.composants.length }} composants — Total: {{ config.prixTotal }} €</span>
             </div>
-            <mat-icon class="arrow">expand_more</mat-icon>
+            <mat-icon class="arrow">
+              {{ expandedConfigId === config.id ? 'expand_less' : 'expand_more' }}
+            </mat-icon>
           </div>
           
-          <div class="config-details">
-            <div class="component-row">
-              <span class="comp-name">AMD RYZEN 7 9800 X3D</span>
+          <div class="config-details" *ngIf="expandedConfigId === config.id">
+            <div *ngFor="let comp of config.composants" class="component-row">
+              <span class="comp-name">{{ comp.marque }} {{ comp.modele }}</span>
               <div class="comp-stats">
-                <span class="comp-score score-high">93</span>
-                <span class="comp-price">529,99 €</span>
+                <span class="comp-score" [ngClass]="getScoreClass(comp.score)">
+                  {{ comp.score }}
+                </span>
+                <span class="comp-price">{{ comp.prix }} €</span>
               </div>
             </div>
-            </div>
-        </div>
-
-        <div class="config-group">
-          <div class="config-header">
-            <div class="config-info">
-              <span class="config-name">Configuration Budget Gaming</span>
-              <span class="config-date">Commandée le 15 janv. 2024</span>
-            </div>
-            <mat-icon class="arrow">expand_more</mat-icon>
           </div>
         </div>
       </div>
+
+      <div *ngIf="isLoading" class="loader">Chargement...</div>
     </div>
   </main>
 </div>
