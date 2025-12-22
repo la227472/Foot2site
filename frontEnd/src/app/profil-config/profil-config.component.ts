@@ -1,12 +1,12 @@
-import { Component, OnInit, inject } from '@angular/core'; // Ajoutez inject
+import { Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ConfigurationComplete } from '../Interface/Configuration';
 import { ConfigurationService } from '../Service/configuration.service';
-import { ConnectionService } from '../Service/connection.service'; // Importez votre service de connexion
+import { ConnectionService } from '../Service/connection.service';
 import { CommonModule } from '@angular/common';
-import Swal from 'sweetalert2';
 import { Composants } from '../Interface/Composants';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-profil-config',
