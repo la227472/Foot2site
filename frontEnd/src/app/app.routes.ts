@@ -10,6 +10,7 @@ import { ProfilConfigComponent } from './profil-config/profil-config.component';
 import { PanierComponent } from './panier/panier.component';
 import { ModifierProfilComponent } from './modifier-profil/modifier-profil.component';
 import { GererUsersComponent } from './gerer-users/gerer-users.component';
+import { CommandesComponent } from './commandes/commandes.component';
 
 export const routes: Routes = [
   {
@@ -54,6 +55,11 @@ export const routes: Routes = [
   {
     path: 'panier',
     component: PanierComponent,
+  },
+  
+  {
+    path: 'commandes',
+    component: CommandesComponent,
   },
   
   {
