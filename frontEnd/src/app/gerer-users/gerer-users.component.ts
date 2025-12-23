@@ -125,6 +125,14 @@ export class GererUsersComponent implements OnInit {
   }
 
   /**
+   * Vérifie si un utilisateur a le rôle Admin
+   */
+  isUserAdmin(user: Utilisateur): boolean {
+    if (!user.roles || !Array.isArray(user.roles)) return false;
+    return user.roles.some(role => role.toLowerCase() === 'admin');
+  }
+
+  /**
    * Retourne à l'accueil
    */
   goBack() {

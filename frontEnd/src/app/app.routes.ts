@@ -76,5 +76,6 @@ export const routes: Routes = [
   {
     path: 'users',
     component: GererUsersComponent,
+    canActivate: [adminGuard],
   }
 ];

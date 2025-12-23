@@ -30,13 +30,32 @@
       <ng-container
         *ngIf="connectionService.isAuthenticated(); else loginButton"
       >
-        <button class="icon-btn" title="Profil">
-<mat-icon>account_circle</mat-icon>
-        </button>
+        <div class="profile-menu-container">
+          <button class="icon-btn" title="Profil" (click)="toggleProfileMenu()">
+            <mat-icon>account_circle</mat-icon>
+          </button>
 
-        <button class="icon-btn" (click)="logout()" title="Déconnexion">
-<mat-icon>logout</mat-icon>
-        </button>
+          <!-- Menu déroulant -->
+          <div class="profile-dropdown" *ngIf="isProfileMenuOpen">
+            <a routerLink="/profil" (click)="closeProfileMenu()" class="dropdown-item">
+              <mat-icon>person</mat-icon>
+              <span>Profil</span>
+            </a>
+            <a routerLink="/profilconfig" (click)="closeProfileMenu()" class="dropdown-item">
+              <mat-icon>settings</mat-icon>
+              <span>Configuration</span>
+            </a>
+            <a routerLink="/commandes" (click)="closeProfileMenu()" class="dropdown-item">
+              <mat-icon>receipt_long</mat-icon>
+              <span>Commandes</span>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a (click)="logout()" class="dropdown-item logout-item">
+              <mat-icon>logout</mat-icon>
+              <span>Déconnexion</span>
+            </a>
+          </div>
+        </div>
       </ng-container>
 
       <!-- Bouton de connexion si non connecté -->
