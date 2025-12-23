@@ -226,4 +226,3 @@ export class ModifierProfilComponent implements OnInit {
     this.router.navigate(['/accueil']);
   }
 }
-
