@@ -1,85 +1,104 @@
-<div class="modifier-profil-container">
-  <div class="profil-card">
-    <div class="profil-header">
-      <h1><mat-icon>manage_accounts</mat-icon> Modifier mon profil</h1>
-    </div>
-
-    <div *ngIf="isLoading" class="loading-spinner">
-      <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
-      <p>Chargement de vos coordonnées...</p>
-    </div>
-
-    <form [formGroup]="profilForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
-      
-      <div class="form-section-title">
-        <mat-icon>person</mat-icon> Informations personnelles
-      </div>
-      
-      <div class="form-row">
-        <div class="form-group">
-          <label for="nom">Nom</label>
-          <input id="nom" type="text" formControlName="nom" 
-                 [class.error]="profilForm.get('nom')?.invalid && profilForm.get('nom')?.touched">
-        </div>
-
-        <div class="form-group">
-          <label for="prenom">Prénom</label>
-          <input id="prenom" type="text" formControlName="prenom"
-                 [class.error]="profilForm.get('prenom')?.invalid && profilForm.get('prenom')?.touched">
-        </div>
+<div class="dashboard-container">
+  <aside class="sidebar">
+    <div class="sidebar-brand">Mon Dashboard</div>
+    <div class="sidebar-menu">
+      <div class="menu-item" routerLink="/profil" routerLinkActive="active">
+        <mat-icon>person</mat-icon> Mon profil
       </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input id="email" type="email" formControlName="email">
-        </div>
+      <div class="menu-item" routerLink="/commandes" routerLinkActive="active">
+        <mat-icon>shopping_bag</mat-icon> Mes commandes
+      </div>
 
-        <div class="form-group">
-          <label for="password">Mot de passe</label>
-          <div class="password-wrapper">
-            <input id="password" [type]="hidePassword ? 'password' : 'text'" 
-                   formControlName="password" 
-                   placeholder="Laisser vide pour ne pas modifier">
-            <button type="button" class="toggle-password" (click)="hidePassword = !hidePassword">
-              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-            </button>
+      <div class="menu-item" routerLink="/profilconfig" routerLinkActive="active">
+        <mat-icon>desktop_windows</mat-icon> Mes configurations
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="content-card">
+      <div class="profil-header">
+        <h1 class="page-title">Modifier mon profil</h1>
+      </div>
+
+      <div *ngIf="isLoading" class="loading-spinner">
+        <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+        <p>Chargement de vos coordonnées...</p>
+      </div>
+
+      <form [formGroup]="profilForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
+        
+        <div class="form-section-title">
+          <mat-icon>person</mat-icon> Informations personnelles
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nom">Nom</label>
+            <input id="nom" type="text" formControlName="nom" 
+                   [class.error]="profilForm.get('nom')?.invalid && profilForm.get('nom')?.touched">
+          </div>
+
+          <div class="form-group">
+            <label for="prenom">Prénom</label>
+            <input id="prenom" type="text" formControlName="prenom"
+                   [class.error]="profilForm.get('prenom')?.invalid && profilForm.get('prenom')?.touched">
           </div>
         </div>
-      </div>
 
-      <div class="form-section-title">
-        <mat-icon>home</mat-icon> Adresse de livraison
-      </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input id="email" type="email" formControlName="email">
+          </div>
 
-      <div class="form-row">
-        <div class="form-group full-width">
-          <label for="rue">Rue</label>
-          <input id="rue" type="text" formControlName="rue">
+          <div class="form-group">
+            <label for="password">Mot de passe</label>
+            <div class="password-wrapper">
+              <input id="password" [type]="hidePassword ? 'password' : 'text'" 
+                     formControlName="password" 
+                     placeholder="Laisser vide pour ne pas modifier">
+              <button type="button" class="toggle-password" (click)="hidePassword = !hidePassword">
+                <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label for="numero">Numéro</label>
-          <input id="numero" type="text" formControlName="numero">
+        <div class="form-section-title">
+          <mat-icon>home</mat-icon> Adresse de livraison
         </div>
 
-        <div class="form-group">
-          <label for="codePostal">Code Postal</label>
-          <input id="codePostal" type="text" formControlName="codePostal">
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="rue">Rue</label>
+            <input id="rue" type="text" formControlName="rue">
+          </div>
         </div>
-      </div>
 
-      <div class="form-actions">
-        <button type="button" class="btn btn-secondary" (click)="onCancel()">
-          Annuler
-        </button>
-        <button type="submit" class="btn btn-primary" [disabled]="profilForm.invalid || isLoading">
-          <mat-icon *ngIf="!isLoading">save</mat-icon>
-          <span>{{ isLoading ? 'Enregistrement...' : 'Enregistrer les modifications' }}</span>
-        </button>
-      </div>
-    </form>
-  </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="numero">Numéro</label>
+            <input id="numero" type="text" formControlName="numero">
+          </div>
+
+          <div class="form-group">
+            <label for="codePostal">Code Postal</label>
+            <input id="codePostal" type="text" formControlName="codePostal">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="onCancel()">
+            Annuler
+          </button>
+          <button type="submit" class="btn-primary" [disabled]="profilForm.invalid || isLoading">
+            <mat-icon *ngIf="!isLoading">save</mat-icon>
+            <span>{{ isLoading ? 'Enregistrement...' : 'Enregistrer les modifications' }}</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
 </div>

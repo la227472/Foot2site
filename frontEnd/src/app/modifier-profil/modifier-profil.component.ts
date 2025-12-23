@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -18,7 +18,9 @@ import { ConnectionService, CurrentUser, Adress } from '../Service/connection.se
     ReactiveFormsModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    RouterLink,
+    RouterLinkActive
   ],
   templateUrl: './modifier-profil.component.html',
   styleUrls: ['./modifier-profil.component.css']

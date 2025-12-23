@@ -32,17 +32,15 @@
 }
 
 .menu-item {
-  padding: 18px 30px; /* Légère réduction pour équilibrer avec le flex */
+  padding: 18px 30px;
   color: white;
   font-weight: 600;
   font-size: 1.1rem;
   cursor: pointer;
   transition: 0.3s;
-  
-  /* --- AJOUTS POUR L'ALIGNEMENT --- */
   display: flex;
-  align-items: center; /* Aligne l'icône et le texte sur la même ligne horizontale */
-  gap: 15px;           /* Crée un espace régulier entre l'icône et le texte */
+  align-items: center;
+  gap: 15px;
 }
 
 /* Optionnel : Ajuster la taille de l'icône si elle paraît trop grande/petite */
@@ -55,6 +53,7 @@
 .menu-item.active {
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 20px;
+  margin: 0 15px;
 }
 
 /* --- MAIN CONTENT --- */
