@@ -13,6 +13,12 @@
         routerLinkActive="active"
         >Gérer Composant</a
       >
+      <a
+        *ngIf="connectionService.isAdmin()"
+        routerLink="/users"
+        routerLinkActive="active"
+        >Utilisateurs</a
+      >
     </div>
 
     <div class="navbar-icons">

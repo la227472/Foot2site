@@ -9,6 +9,7 @@ import { CompositorComponent } from './compositor/compositor.component';
 import { ProfilConfigComponent } from './profil-config/profil-config.component';
 import { PanierComponent } from './panier/panier.component';
 import { ModifierProfilComponent } from './modifier-profil/modifier-profil.component';
+import { GererUsersComponent } from './gerer-users/gerer-users.component';
 
 export const routes: Routes = [
   {
@@ -54,6 +55,7 @@ export const routes: Routes = [
     path: 'panier',
     component: PanierComponent,
   },
+  
   {
     path: '',
     redirectTo: 'connection',
@@ -61,7 +63,12 @@ export const routes: Routes = [
   },
   
   {
-    path: 'modifier-profil',
+    path: 'profil',
     component: ModifierProfilComponent,
   },
+
+  {
+    path: 'users',
+    component: GererUsersComponent,
+  }
 ];
