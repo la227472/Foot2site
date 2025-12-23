@@ -41,7 +41,9 @@
           <!-- Si le composant existe -->
           <div class="details" *ngIf="getComposantByType(configGauche, type) as composant">
             <span class="label">{{ getTypeLabel(type) }}</span>
-            <span class="model">{{ composant.marque }} {{ composant.modele }}</span>
+            <span class="model" [attr.title]="composant.marque + ' ' + composant.modele">
+              {{ composant.marque }} {{ composant.modele }}
+            </span>
           </div>
           
           <!-- Si le composant n'existe pas -->
@@ -52,9 +54,7 @@
           <!-- Prix et score (uniquement si composant existe) -->
           <ng-container *ngIf="getComposantByType(configGauche, type) as composant">
             <span class="price">{{ composant.prix | number:'1.0-0' }} €</span>
-           <span class="score-badge" [ngClass]="getScoreClass(composant.score)">
-  {{ composant.score }}
-</span>
+            <span class="score-badge" [ngClass]="getScoreClass(composant.score)">{{ composant.score }}</span>
           </ng-container>
         </div>
       </div>
@@ -123,7 +123,9 @@
           <!-- Si le composant existe -->
           <div class="details" *ngIf="getComposantByType(configDroite, type) as composant">
             <span class="label">{{ getTypeLabel(type) }}</span>
-            <span class="model">{{ composant.marque }} {{ composant.modele }}</span>
+            <span class="model" [attr.title]="composant.marque + ' ' + composant.modele">
+              {{ composant.marque }} {{ composant.modele }}
+            </span>
           </div>
           
           <!-- Si le composant n'existe pas -->
