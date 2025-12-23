@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { GererUsersService } from '../Service/gerer-users.service';
 import { ConnectionService } from '../Service/connection.service';
 import { Utilisateur } from '../Interface/Utilisateur';
+import { EditUserDialogComponent } from './edit-user-dialog.component';
 
 @Component({
   selector: 'app-gerer-users',
@@ -81,10 +82,22 @@ export class GererUsersComponent implements OnInit {
   }
 
   /**
-   * Navigue vers la page de modification du profil de l'utilisateur
+   * Ouvre la popup de modification de l'utilisateur
    */
   editUtilisateur(id: number) {
-    this.router.navigate(['/modifier-profil'], { queryParams: { userId: id } });
+    const dialogRef = this.dialog.open(EditUserDialogComponent, {
+      width: '600px',
+      maxWidth: '95vw',
+      data: { userId: id },
+      disableClose: false
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Si la modification a réussi, recharger la liste
+        this.loadUtilisateurs();
+      }
+    });
   }
 
   /**

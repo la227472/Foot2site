@@ -195,21 +195,32 @@ loadCurrentUser(): Observable<CurrentUser> {
    */
   isAdmin(): boolean {
     const decoded = this.decodeToken();
-    if (!decoded) return false;
+    if (!decoded) {
+      console.log('🔍 isAdmin: Token non décodé');
+      return false;
+    }
 
     // Le backend peut stocker les rôles de différentes manières dans le JWT
     // Vérifier les deux formats possibles
     const roles = decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || decoded['role'];
 
-    if (!roles) return false;
+    console.log('🔍 isAdmin: Rôles trouvés dans le token:', roles);
+    console.log('🔍 isAdmin: Contenu complet du token:', decoded);
+
+    if (!roles) {
+      console.log('🔍 isAdmin: Aucun rôle trouvé');
+      return false;
+    }
 
     // Les rôles peuvent être une string ou un tableau
     if (Array.isArray(roles)) {
       const hasAdmin = roles.some(role => role.toLowerCase() === 'admin');
+      console.log('🔍 isAdmin: Résultat (array):', hasAdmin);
       return hasAdmin;
     }
 
     const hasAdmin = roles.toLowerCase() === 'admin';
+    console.log('🔍 isAdmin: Résultat (string):', hasAdmin);
     return hasAdmin;
   }
 

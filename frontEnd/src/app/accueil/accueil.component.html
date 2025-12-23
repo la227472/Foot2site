@@ -1,8 +1,87 @@
-<div class="one">
-  <div class="two">
-    <h1>Composez votre PC de rêve</h1>
-    <p>Créez la configuration parfaite !</p>
-    <button class="btn-primary"  routerLink="/compo">Commencer à assembler</button>
-  </div>
-</div>
+<div class="accueil-container">
+  <!-- Section Hero -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <mat-icon>computer</mat-icon>
+        <span>Configurateur PC Professionnel</span>
+      </div>
+      <h1>Composez votre PC de rêve</h1>
+      <p class="hero-description">
+        Comparez et assemblez les meilleurs composants pour créer la configuration parfaite adaptée à vos besoins
+      </p>
+      <div class="hero-buttons">
+        <button class="btn-primary" routerLink="/compo">
+          <mat-icon>build</mat-icon>
+          <span>Commencer à assembler</span>
+        </button>
+        <button class="btn-secondary" routerLink="/comparer">
+          <mat-icon>compare_arrows</mat-icon>
+          <span>Comparer des composants</span>
+        </button>
+      </div>
+    </div>
 
+    <!-- Illustration avec icônes de composants -->
+    <div class="hero-illustration">
+      <div class="component-card cpu">
+        <mat-icon>memory</mat-icon>
+        <span>Processeur</span>
+      </div>
+      <div class="component-card gpu">
+        <mat-icon>videogame_asset</mat-icon>
+        <span>Carte Graphique</span>
+      </div>
+      <div class="component-card ram">
+        <mat-icon>dns</mat-icon>
+        <span>Mémoire RAM</span>
+      </div>
+      <div class="component-card storage">
+        <mat-icon>storage</mat-icon>
+        <span>Stockage</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Features -->
+  <section class="features-section">
+    <div class="section-header">
+      <h2>Pourquoi choisir notre configurateur ?</h2>
+      <p>Des outils puissants pour créer votre configuration idéale</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <mat-icon>speed</mat-icon>
+        </div>
+        <h3>Comparaison rapide</h3>
+        <p>Comparez instantanément les performances et les prix de différents composants</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <mat-icon>verified</mat-icon>
+        </div>
+        <h3>Compatibilité vérifiée</h3>
+        <p>Notre système vérifie automatiquement la compatibilité entre tous les composants</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <mat-icon>trending_up</mat-icon>
+        </div>
+        <h3>Meilleur rapport qualité-prix</h3>
+        <p>Trouvez les composants offrant les meilleures performances pour votre budget</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <mat-icon>bookmark</mat-icon>
+        </div>
+        <h3>Sauvegardez vos configs</h3>
+        <p>Enregistrez vos configurations et retrouvez-les à tout moment</p>
+      </div>
+    </div>
+  </section>
+</div>

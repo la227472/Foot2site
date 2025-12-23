@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { ConnectionService} from '../Service/connection.service';
 import {FormsModule} from '@angular/forms';
 import {RouterLink} from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-accueil',
-  imports: [FormsModule,RouterLink],
+  imports: [FormsModule, RouterLink, MatIconModule],
   templateUrl: './accueil.component.html',
   styleUrl: './accueil.component.css'
 })
