@@ -21,23 +21,36 @@ export class PanierService {
   /**
    * Ajoute une configuration au panier
    */
-  addToCart(configuration: Configuration, composants: Composants[]) {
+  addToCart(configuration: Configuration, composants: Composants[]): void {
     const current = this.panierItems();
-    const existing = current.find(
-      i => i.configuration.id === configuration.id
-    );
 
-    if (existing) {
-      existing.quantite++;
-      this.panierItems.set([...current]);
-    } else {
+    // 🟢 Panier vide → on ajoute
+    if (current.length === 0) {
       this.panierItems.set([
-        ...current,
         { configuration, composants, quantite: 1 }
       ]);
+      this.save();
+      return;
     }
+
+    const existing = current[0];
+
+    // 🟢 Même configuration → on incrémente
+    if (existing.configuration.id === configuration.id) {
+      existing.quantite++;
+      this.panierItems.set([...current]);
+      this.save();
+      return;
+    }
+
+    // 🔁 Configuration différente → ON REMPLACE
+    this.panierItems.set([
+      { configuration, composants, quantite: 1 }
+    ]);
     this.save();
   }
+
+
 
   private save() {
     localStorage.setItem('cart', JSON.stringify(this.panierItems()));

@@ -1,23 +1,29 @@
-import { Component, computed } from '@angular/core';
+import {Component, computed, OnInit, signal} from '@angular/core';
 import { Router } from '@angular/router';
 import { PanierService } from '../Service/panier.service';
 import { Panier } from '../Interface/Panier';
 import {isCaptureEventType} from '@angular/core/primitives/event-dispatch';
 import {forkJoin} from 'rxjs';
-import {Commande} from '../Interface/Commande';
 import {CommandeService} from '../Service/commande.service';
-import {ConnectionComponent} from '../connection/connection.component';
 import {ConnectionService} from '../Service/connection.service';
+import {Configuration, ConfigurationComplete} from '../Interface/Configuration';
+import {ConfigurationService} from '../Service/configuration.service';
 
 @Component({
   selector: 'app-panier',
   templateUrl: './panier.component.html',
+  imports: [
+  ],
   styleUrl: './panier.component.css'
 })
-export class PanierComponent {
+export class PanierComponent implements  OnInit{
 
   // 🔹 État panier
   panier = computed(() => this.panierService.panierItems());
+
+  configsUtilisateur = signal<ConfigurationComplete[]>([]);
+  selectedConfig = signal<ConfigurationComplete | null>(null);
+  isDropdownOpen = signal(false);
 
   // 🔹 Totaux
   subtotal = computed(() => this.panierService.getTotalPrice());
@@ -31,9 +37,34 @@ export class PanierComponent {
   constructor(
     private panierService: PanierService,
     private commandeService : CommandeService,
+    private configService : ConfigurationService,
     private authService : ConnectionService,
     private router: Router
   ) {}
+
+  ngOnInit(): void {
+    const user = this.authService.currentUser();
+
+    if (!user) {
+      this.errorMessage = 'Veuillez vous connecter pour voir vos configurations.';
+      return;
+    }
+
+    this.configService.getConfigurationsComplete().subscribe({
+      next: (configs) => {
+        const filtered = configs.filter(c => c.utilisateurId === user.id);
+        this.configsUtilisateur.set(filtered);
+
+        console.log(
+          `${filtered.length} config(s) chargée(s) pour l'utilisateur ${user.firstname}`
+        );
+      },
+      error: err => {
+        console.error(err);
+        this.errorMessage = 'Impossible de charger les configurations.';
+      }
+    });
+  }
 
   // ======================
   // QUANTITÉ
@@ -113,6 +144,22 @@ export class PanierComponent {
   continueShopping(): void {
     this.router.navigate(['/compo']);
   }
+
+  selectConfig(config: ConfigurationComplete | null): void {
+    this.selectedConfig.set(config);
+    if (!config) return;
+
+    const configuration: Configuration = {
+      id: config.id,
+      utilisateurId: config.utilisateurId,
+      nomConfiguration: config.nomConfiguration,
+      composantIds: config.composantIds
+    };
+
+    this.panierService.addToCart(configuration, config.composants);
+  }
+
+
 
   // ======================
   // UTILS

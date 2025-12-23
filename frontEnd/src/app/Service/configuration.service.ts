@@ -185,6 +185,18 @@ export class ConfigurationService {
     );
   }
 
+  checkConfigNameExists(userId: number, name: string) {
+    return this.http.get<boolean>(
+      `${this.apiUrl}/ConfigurationPc/exists`,
+      {
+        params: {
+          utilisateurId: userId,
+          nomConfiguration: name
+        }
+      }
+    );
+  }
+
   /**
    * Récupère une configuration complète par ID
    */

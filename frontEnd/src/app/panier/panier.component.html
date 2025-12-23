@@ -4,10 +4,36 @@
     <div class="cart-section">
       <div class="section-header">
         <h1>Panier</h1>
-        @if (panier().length > 0) {
-          <span class="item-count">{{ panier().length }} configuration(s)</span>
-        }
+        <h2 class="active-config">
+          Configuration sélectionnée : {{ panier()[0].configuration.nomConfiguration }}
+        </h2>
       </div>
+
+
+      <button
+        type="button"
+        class="dropdown-toggle"
+        (click)="isDropdownOpen.set(!isDropdownOpen())">
+        Charger une configuration enregistrée
+      </button>
+
+      @if (isDropdownOpen()) {
+        <div class="dropdown-menu" [class.disabled]="panier().length > 0">
+          <div
+            class="dropdown-item default-option"
+            (click)="selectConfig(null); isDropdownOpen.set(false)">
+            Veuillez sélectionner une config
+          </div>
+
+          @for (config of configsUtilisateur(); track config.id) {
+            <div
+              class="dropdown-item"
+              (click)="selectConfig(config); isDropdownOpen.set(false)">
+              {{ config.nomConfiguration }}
+            </div>
+          }
+        </div>
+      }
 
       @if (panier().length === 0) {
         <div class="empty-cart">
@@ -32,7 +58,7 @@
             <span class="col-actions"></span>
           </div>
 
-          @for (item of panier(); track getKey(item)) {
+          @for (item of panier(); track item) {
             <div class="cart-item">
               <div class="col-product">
                 <div class="product-info">
