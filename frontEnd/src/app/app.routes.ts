@@ -48,6 +48,10 @@ export const routes: Routes = [
   },
 
   {
+    path: 'profil',
+    component: ModifierProfilComponent,
+  },
+  {
     path: 'panier',
     component: PanierComponent,
   },

@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+
 import { ModifierProfilService } from '../Service/modifier-profil.service';
 import { AdresseService } from '../Service/adresse.service';
-import { ConnectionService } from '../Service/connection.service';
-import { Utilisateur, UpdateUtilisateurRequest } from '../Interface/Utilisateur';
-import { Adress } from '../Interface/Adress';
+import { ConnectionService, CurrentUser, Adress } from '../Service/connection.service';
 
 @Component({
   selector: 'app-modifier-profil',
@@ -19,7 +18,9 @@ import { Adress } from '../Interface/Adress';
     ReactiveFormsModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    RouterLink,
+    RouterLinkActive
   ],
   templateUrl: './modifier-profil.component.html',
   styleUrls: ['./modifier-profil.component.css']
@@ -29,6 +30,7 @@ export class ModifierProfilComponent implements OnInit {
   isLoading = false;
   hidePassword = true;
   utilisateurId: number | null = null;
+  adresseActuelle: Adress | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -39,13 +41,13 @@ export class ModifierProfilComponent implements OnInit {
     private router: Router
   ) {
     this.profilForm = this.fb.group({
-      nom: ['', [Validators.minLength(2)]],
-      prenom: ['', [Validators.minLength(2)]],
-      email: ['', [Validators.email]],
+      nom: ['', [Validators.required]],
+      prenom: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
       password: [''],
-      rue: [''],
-      numero: ['', [Validators.pattern('^[0-9]+$')]],
-      codePostal: ['', [Validators.pattern('^[0-9]{4}$')]]
+      rue: ['', Validators.required],
+      numero: ['', [Validators.required]],
+      codePostal: ['', [Validators.required]]
     });
   }
 
@@ -53,14 +55,9 @@ export class ModifierProfilComponent implements OnInit {
     this.loadUserProfile();
   }
 
-  /**
-   * Charge le profil de l'utilisateur connecté depuis le token JWT
-   */
   loadUserProfile() {
     const userInfo = this.connectionService.getUserInfo();
-
     if (!userInfo || !userInfo.id) {
-      this.snackBar.open('Utilisateur non connecté', 'Fermer', { duration: 3000 });
       this.router.navigate(['/connection']);
       return;
     }
@@ -69,160 +66,135 @@ export class ModifierProfilComponent implements OnInit {
     this.isLoading = true;
 
     this.modifierProfilService.getUtilisateur(this.utilisateurId).subscribe({
-      next: (utilisateur: Utilisateur) => {
-        this.patchFormWithUserData(utilisateur);
-        this.isLoading = false;
+      next: (data: any) => {
+        this.profilForm.patchValue({
+          nom: data.nom,
+          prenom: data.prenom,
+          email: data.email
+        });
+
+        if (data.adresseId) {
+          this.adresseService.getAdresse(data.adresseId).subscribe({
+            next: (addr: any) => {
+              this.adresseActuelle = {
+                id: addr.id || addr.Id,
+                Rue: (addr.Rue || addr.rue || '').toString().trim(),
+                Numero: Number(addr.Numero || addr.numero),
+                Code: Number(addr.Code || addr.code || addr.codePostal)
+              };
+              this.profilForm.patchValue({
+                rue: this.adresseActuelle.Rue,
+                numero: this.adresseActuelle.Numero,
+                codePostal: this.adresseActuelle.Code
+              });
+              this.isLoading = false;
+            },
+            error: () => this.isLoading = false
+          });
+        } else {
+          this.isLoading = false;
+        }
       },
-      error: (error) => {
-        console.error('Erreur lors du chargement du profil:', error);
-        this.snackBar.open('Erreur lors du chargement du profil', 'Fermer', { duration: 3000 });
-        this.isLoading = false;
-      }
+      error: () => this.handleError("Erreur chargement profil")
     });
   }
 
-  /**
-   * Remplit le formulaire avec les données de l'utilisateur
-   */
-  patchFormWithUserData(utilisateur: Utilisateur) {
-    this.profilForm.patchValue({
-      nom: utilisateur.nom,
-      prenom: utilisateur.prenom,
-      email: utilisateur.email,
-      rue: utilisateur.adresse?.Rue || '',
-      numero: utilisateur.adresse?.Numero || '',
-      codePostal: utilisateur.adresse?.Code || ''
-    });
-  }
-
-  /**
-   * Soumet le formulaire de modification du profil
-   */
   onSubmit() {
-    if (this.profilForm.invalid || !this.utilisateurId) {
-      this.snackBar.open('Veuillez corriger les erreurs dans le formulaire', 'Fermer', { duration: 3000 });
-      return;
-    }
+    if (this.profilForm.invalid || !this.utilisateurId) return;
 
     this.isLoading = true;
     const formValue = this.profilForm.value;
 
-    // D'abord, récupérer l'utilisateur actuel
     this.modifierProfilService.getUtilisateur(this.utilisateurId).subscribe({
-      next: (utilisateur: Utilisateur) => {
-        // Vérifier si des champs d'adresse ont été modifiés
-        const hasAddressChanges =
-          (formValue.rue && formValue.rue.trim() !== '') ||
-          (formValue.numero && formValue.numero.toString().trim() !== '') ||
-          (formValue.codePostal && formValue.codePostal.toString().trim() !== '');
+      next: (userBackend: any) => {
+        const aChange = this.checkIfAddressChanged(formValue);
 
-        if (hasAddressChanges) {
-          // Gérer la mise à jour de l'adresse
-          this.handleAddressUpdate(utilisateur, formValue);
+        if (aChange) {
+          this.adresseService.getAdresses().subscribe({
+            next: (allAdresses: Adress[]) => {
+              const rueSaisie = formValue.rue.trim().toLowerCase();
+              const numSaisi = Number(formValue.numero);
+              const codeSaisi = Number(formValue.codePostal);
+
+              // RECHERCHE AMÉLIORÉE : On normalise les données venant de la DB aussi
+              const existingAddr = allAdresses.find(a => {
+                const rueDB = (a.Rue || (a as any).rue || '').toString().trim().toLowerCase();
+                const numDB = Number(a.Numero || (a as any).numero);
+                const codeDB = Number(a.Code || (a as any).code || (a as any).codePostal);
+                return rueDB === rueSaisie && numDB === numSaisi && codeDB === codeSaisi;
+              });
+
+              if (existingAddr) {
+                // CORRECTION MAJEURE : On vérifie id ET Id
+                const idTrouve = existingAddr.id || (existingAddr as any).Id;
+                console.log("Adresse existante trouvée ! ID utilisé :", idTrouve);
+                this.updateUtilisateurFinal(userBackend, formValue, idTrouve);
+              } else {
+                console.log("Nouvelle adresse : création...");
+                const nouvelleAdresse: Adress = {
+                  Rue: formValue.rue.trim(),
+                  Numero: Number(formValue.numero),
+                  Code: Number(formValue.codePostal)
+                };
+                this.adresseService.createAdresse(nouvelleAdresse).subscribe({
+                  next: (created: any) => {
+                    const newId = created.id || created.Id;
+                    this.updateUtilisateurFinal(userBackend, formValue, newId);
+                  },
+                  error: () => this.handleError("Erreur création adresse")
+                });
+              }
+            },
+            error: () => this.handleError("Erreur lors de la vérification")
+          });
         } else {
-          // Pas de modification d'adresse, mettre à jour uniquement l'utilisateur
-          this.updateUtilisateur(utilisateur, utilisateur.adresseId || 0);
+          this.updateUtilisateurFinal(userBackend, formValue, userBackend.adresseId);
         }
       },
-      error: (error) => {
-        console.error('Erreur lors de la récupération de l\'utilisateur:', error);
-        this.snackBar.open('Erreur lors de la récupération des données', 'Fermer', { duration: 3000 });
-        this.isLoading = false;
-      }
+      error: () => this.handleError("Erreur de synchronisation")
     });
   }
 
-  /**
-   * Gère la mise à jour de l'adresse
-   */
-  private handleAddressUpdate(utilisateur: Utilisateur, formValue: any) {
-    const adresseId = utilisateur.adresseId;
-
-    // Construire l'objet adresse avec les valeurs existantes ou nouvelles
-    const adresseData: Adress = {
-      id: adresseId,
-      Rue: formValue.rue && formValue.rue.trim() !== '' ? formValue.rue : utilisateur.adresse?.Rue || '',
-      Numero: formValue.numero && formValue.numero.toString().trim() !== '' ? parseInt(formValue.numero) : utilisateur.adresse?.Numero || 0,
-      Code: formValue.codePostal && formValue.codePostal.toString().trim() !== '' ? parseInt(formValue.codePostal) : utilisateur.adresse?.Code || 0
-    };
-
-    if (adresseId) {
-      // Mettre à jour l'adresse existante
-      this.adresseService.updateAdresse(adresseId, adresseData).subscribe({
-        next: () => {
-          this.updateUtilisateur(utilisateur, adresseId);
-        },
-        error: (error) => {
-          console.error('Erreur lors de la mise à jour de l\'adresse:', error);
-          this.snackBar.open('Erreur lors de la mise à jour de l\'adresse', 'Fermer', { duration: 3000 });
-          this.isLoading = false;
-        }
-      });
-    } else {
-      // Créer une nouvelle adresse seulement si tous les champs sont renseignés
-      if (adresseData.Rue && adresseData.Numero && adresseData.Code) {
-        const newAdresse: Adress = {
-          Rue: adresseData.Rue,
-          Numero: adresseData.Numero,
-          Code: adresseData.Code
-        };
-
-        this.adresseService.createAdresse(newAdresse).subscribe({
-          next: (createdAdresse) => {
-            this.updateUtilisateur(utilisateur, createdAdresse.id!);
-          },
-          error: (error) => {
-            console.error('Erreur lors de la création de l\'adresse:', error);
-            this.snackBar.open('Erreur lors de la création de l\'adresse', 'Fermer', { duration: 3000 });
-            this.isLoading = false;
-          }
-        });
-      } else {
-        this.snackBar.open('Veuillez remplir tous les champs de l\'adresse pour la créer', 'Fermer', { duration: 3000 });
-        this.isLoading = false;
-      }
-    }
+  private checkIfAddressChanged(formValue: any): boolean {
+    if (!this.adresseActuelle) return true;
+    return (
+      formValue.rue.trim().toLowerCase() !== this.adresseActuelle.Rue.toLowerCase() ||
+      Number(formValue.numero) !== this.adresseActuelle.Numero ||
+      Number(formValue.codePostal) !== this.adresseActuelle.Code
+    );
   }
 
-  /**
-   * Met à jour les informations de l'utilisateur
-   */
-  private updateUtilisateur(utilisateur: Utilisateur, adresseId: number) {
-    const formValue = this.profilForm.value;
-
-    // Construire l'objet de mise à jour avec les valeurs modifiées ou existantes
-    const updateData: UpdateUtilisateurRequest = {
-      id: this.utilisateurId!,
-      nom: formValue.nom && formValue.nom.trim() !== '' ? formValue.nom : utilisateur.nom,
-      prenom: formValue.prenom && formValue.prenom.trim() !== '' ? formValue.prenom : utilisateur.prenom,
-      email: formValue.email && formValue.email.trim() !== '' ? formValue.email : utilisateur.email,
+  private updateUtilisateurFinal(oldData: any, formValue: any, adresseId: number) {
+    const updateData: any = {
+      id: this.utilisateurId,
+      nom: formValue.nom,
+      prenom: formValue.prenom,
+      email: formValue.email,
       adresseId: adresseId,
-      roles: utilisateur.roles || []
+      roles: oldData.roles,
+      motDePasse: (formValue.password && formValue.password.trim() !== '') 
+                  ? formValue.password 
+                  : oldData.motDePasse 
     };
-
-    // Ajouter le mot de passe seulement s'il est renseigné
-    if (formValue.password && formValue.password.trim() !== '') {
-      updateData.motDePasse = formValue.password;
-    }
 
     this.modifierProfilService.updateProfil(this.utilisateurId!, updateData).subscribe({
       next: () => {
-        this.snackBar.open('Profil mis à jour avec succès !', 'Fermer', { duration: 3000 });
+        this.snackBar.open('Profil mis à jour !', 'Fermer', { duration: 3000 });
         this.isLoading = false;
         this.profilForm.patchValue({ password: '' });
+        this.connectionService.loadCurrentUser().subscribe();
+        this.loadUserProfile(); 
       },
-      error: (error) => {
-        console.error('Erreur lors de la mise à jour du profil:', error);
-        this.snackBar.open('Erreur lors de la mise à jour du profil', 'Fermer', { duration: 3000 });
-        this.isLoading = false;
-      }
+      error: () => this.handleError("Erreur mise à jour profil")
     });
   }
 
-  /**
-   * Annule la modification et retourne à l'accueil
-   */
+  private handleError(msg: string) {
+    this.snackBar.open(msg, 'Fermer', { duration: 3000 });
+    this.isLoading = false;
+  }
+
   onCancel() {
-    this.router.navigate(['/accueil']);
+    this.router.navigate(['/profil']);
   }
 }
