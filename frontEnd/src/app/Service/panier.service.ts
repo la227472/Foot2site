@@ -39,9 +39,7 @@ export class PanierService {
     this.save();
   }
 
-  private save() {
-    localStorage.setItem('cart', JSON.stringify(this.panierItems()));
-  }
+  private save() { this.saveCartToStorage(); }
 
   removeFromCart(configurationKey: string): void {
     this.panierItems.set(
@@ -109,17 +107,16 @@ export class PanierService {
    * Vide le panier
    */
   clearCart(): void {
+    localStorage.removeItem(this.getCartKey());
     this.panierItems.set([]);
-    localStorage.removeItem('cart');
   }
 
-  private loadFromStorage() {
-    const saved = localStorage.getItem('cart');
-    if (saved) {
-      this.panierItems.set(JSON.parse(saved));
-    }
+  
+  loadFromStorage() {
+    const key = this.getCartKey();
+    const saved = localStorage.getItem(key);
+    this.panierItems.set(saved ? JSON.parse(saved) : []);
   }
-
   /**
    * Calcule le prix d'une configuration
    */
@@ -131,7 +128,20 @@ export class PanierService {
    * Sauvegarde le panier en localStorage
    */
   private saveCartToStorage(): void {
-    localStorage.setItem('cart', JSON.stringify(this.panierItems()));
+    localStorage.setItem(this.getCartKey(), JSON.stringify(this.panierItems()));
+  }
+
+private getCartKey(): string {
+    const userStr = localStorage.getItem('current_user'); // La clé USER_KEY de ton service auth
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        return `cart_user_${user.id}`;
+      } catch (e) {
+        return 'cart_guest';
+      }
+    }
+    return 'cart_guest';
   }
 
 }
