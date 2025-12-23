@@ -10,6 +10,7 @@ import { ProfilConfigComponent } from './profil-config/profil-config.component';
 import { PanierComponent } from './panier/panier.component';
 import { ModifierProfilComponent } from './modifier-profil/modifier-profil.component';
 import { GererUsersComponent } from './gerer-users/gerer-users.component';
+import { CommandesComponent } from './commandes/commandes.component';
 
 export const routes: Routes = [
   {
@@ -57,6 +58,11 @@ export const routes: Routes = [
   },
   
   {
+    path: 'commandes',
+    component: CommandesComponent,
+  },
+  
+  {
     path: '',
     redirectTo: 'connection',
     pathMatch: 'full',
@@ -70,5 +76,6 @@ export const routes: Routes = [
   {
     path: 'users',
     component: GererUsersComponent,
+    canActivate: [adminGuard],
   }
 ];

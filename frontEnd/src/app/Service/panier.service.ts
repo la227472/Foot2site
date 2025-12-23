@@ -50,8 +50,6 @@ export class PanierService {
     this.save();
   }
 
-
-
   private save() {
     localStorage.setItem('cart', JSON.stringify(this.panierItems()));
   }
@@ -126,7 +124,7 @@ export class PanierService {
     localStorage.removeItem('cart');
   }
 
-  private loadFromStorage() {
+  loadFromStorage() {
     const saved = localStorage.getItem('cart');
     if (saved) {
       this.panierItems.set(JSON.parse(saved));
@@ -146,5 +144,19 @@ export class PanierService {
   private saveCartToStorage(): void {
     localStorage.setItem('cart', JSON.stringify(this.panierItems()));
   }
+
+  private getCartKey(): string {
+    const userStr = localStorage.getItem('current_user'); // La clé USER_KEY de ton service auth
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        return `cart_user_${user.id}`;
+      } catch (e) {
+        return 'cart_guest';
+      }
+    }
+    return 'cart_guest';
+  }
+
 
 }

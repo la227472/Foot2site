@@ -1,101 +1,134 @@
-<div class="gerer-users-layout">
-  <!-- Menu latéral gauche -->
-  <aside class="sidebar">
-    <nav class="sidebar-nav">
-      <button class="nav-item" routerLink="/accueil">
-        Mon profil
-      </button>
-      <button class="nav-item" routerLink="/accueil">
-        Mes commandes
-      </button>
-      <button class="nav-item active">
-        Utilisateurs
-      </button>
-    </nav>
-  </aside>
-
-  <!-- Contenu principal à droite -->
-  <main class="main-content">
-    <!-- Header avec bouton retour et titre -->
-    <header class="content-header">
+<div class="gerer-users-container">
+  <div class="content-wrapper">
+    <!-- Header avec bouton retour et titre centré -->
+    <header class="page-header">
       <button class="back-button" (click)="goBack()">
         <mat-icon>arrow_back</mat-icon>
       </button>
-      <h1>Utilisateurs</h1>
+      <h1>Gestion des Utilisateurs</h1>
     </header>
 
-    <!-- Zone de contenu avec recherche et tableau -->
-    <div class="content-body">
-      <!-- Barre de recherche -->
-      <div class="search-section">
-        <label class="search-label">Nom - Prénom - e-mail</label>
-        <div class="search-bar">
-          <mat-icon class="search-icon">search</mat-icon>
-          <input
-            type="text"
-            [(ngModel)]="searchTerm"
-            (input)="onSearch()"
-            placeholder="Rechercher">
-        </div>
+    <!-- Barre de recherche -->
+    <div class="search-section">
+      <label class="search-label">Nom - Prénom - e-mail</label>
+      <div class="search-bar">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          (input)="onSearch()"
+          placeholder="Rechercher un utilisateur">
       </div>
+    </div>
 
-      <!-- Loading spinner -->
-      <div *ngIf="isLoading" class="loading-spinner">
-        <mat-spinner diameter="50"></mat-spinner>
-        <p>Chargement des utilisateurs...</p>
-      </div>
+    <!-- Loading spinner -->
+    <div *ngIf="isLoading" class="loading-spinner">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Chargement des utilisateurs...</p>
+    </div>
 
-      <!-- Tableau des utilisateurs -->
-      <div class="users-table-container" *ngIf="!isLoading">
-        <table class="users-table">
-          <!-- En-tête du tableau -->
-          <thead>
-            <tr>
-              <th class="col-nom">Nom</th>
-              <th class="col-prenom">Prenom</th>
-              <th class="col-email">E-mail</th>
-              <th class="col-actif">Actif</th>
-              <th class="col-actions"></th>
-            </tr>
-          </thead>
-
-          <!-- Corps du tableau -->
-          <tbody>
-            <tr *ngFor="let user of filteredUtilisateurs" class="table-row">
-              <td class="col-nom">
+    <!-- Tableau des utilisateurs (Desktop) -->
+    <div class="table-container" *ngIf="!isLoading">
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th class="col-nom">Nom</th>
+            <th class="col-prenom">Prénom</th>
+            <th class="col-email">E-mail</th>
+            <th class="col-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of filteredUtilisateurs">
+            <td class="col-nom">
+              <div class="user-info">
                 <mat-icon class="user-icon">person</mat-icon>
-                {{ user.nom }}
-              </td>
-              <td class="col-prenom">{{ user.prenom }}</td>
-              <td class="col-email">{{ user.email }}</td>
-              <td class="col-actif">
-                <span class="status-badge">X</span>
-              </td>
-              <td class="col-actions">
+                <span>{{ user.nom }}</span>
+              </div>
+            </td>
+            <td class="col-prenom">{{ user.prenom }}</td>
+            <td class="col-email">{{ user.email }}</td>
+            <td class="col-actions">
+              <div class="action-buttons">
                 <button
+                  *ngIf="!isUserAdmin(user)"
                   class="action-button edit"
                   (click)="editUtilisateur(user.id!)"
-                  title="Modifier">
+                  title="Modifier l'utilisateur">
                   <mat-icon>edit</mat-icon>
                 </button>
                 <button
+                  *ngIf="!isUserAdmin(user)"
                   class="action-button delete"
                   (click)="deleteUtilisateur(user)"
-                  title="Supprimer">
+                  title="Supprimer l'utilisateur">
                   <mat-icon>delete</mat-icon>
                 </button>
-              </td>
-            </tr>
+                <span *ngIf="isUserAdmin(user)" class="admin-badge">
+                  <mat-icon>shield</mat-icon>
+                  Admin
+                </span>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="filteredUtilisateurs.length === 0">
+            <td colspan="4" class="no-data">
+              <mat-icon class="no-data-icon">search_off</mat-icon>
+              <p>Aucun utilisateur trouvé</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-            <!-- Message si aucun utilisateur -->
-            <tr *ngIf="filteredUtilisateurs.length === 0">
-              <td colspan="5" class="no-data">
-                <p>Aucun utilisateur trouvé</p>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <!-- Liste des utilisateurs (Mobile) -->
+    <div class="users-list" *ngIf="!isLoading">
+      <div *ngIf="filteredUtilisateurs.length === 0" class="no-data">
+        <mat-icon class="no-data-icon">search_off</mat-icon>
+        <p>Aucun utilisateur trouvé</p>
+      </div>
+
+      <div *ngFor="let user of filteredUtilisateurs" class="user-card">
+        <div class="user-card-header">
+          <mat-icon class="user-icon">person</mat-icon>
+          <div class="user-card-title">
+            <h3 class="user-card-name">{{ user.nom }} {{ user.prenom }}</h3>
+            <p class="user-card-email">{{ user.email }}</p>
+          </div>
+        </div>
+
+        <div class="user-card-body">
+          <div class="user-card-field">
+            <span class="user-card-label">Nom</span>
+            <span class="user-card-value">{{ user.nom }}</span>
+          </div>
+          <div class="user-card-field">
+            <span class="user-card-label">Prénom</span>
+            <span class="user-card-value">{{ user.prenom }}</span>
+          </div>
+        </div>
+
+        <div class="user-card-actions">
+          <button
+            *ngIf="!isUserAdmin(user)"
+            class="action-button edit"
+            (click)="editUtilisateur(user.id!)"
+            title="Modifier l'utilisateur">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            *ngIf="!isUserAdmin(user)"
+            class="action-button delete"
+            (click)="deleteUtilisateur(user)"
+            title="Supprimer l'utilisateur">
+            <mat-icon>delete</mat-icon>
+          </button>
+          <span *ngIf="isUserAdmin(user)" class="admin-badge">
+            <mat-icon>shield</mat-icon>
+            Admin
+          </span>
+        </div>
       </div>
     </div>
-  </main>
+  </div>
 </div>

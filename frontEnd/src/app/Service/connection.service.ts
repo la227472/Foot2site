@@ -1,9 +1,10 @@
-import {Injectable, signal} from '@angular/core';
+import {inject, Injectable, signal} from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, tap, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../Environement/environement';
 import { JWT } from '../Interface/JWT';
+import { PanierService } from './panier.service';
 
 
 // connection.service.ts
@@ -37,7 +38,7 @@ export class ConnectionService {
   private readonly KEY_TOKEN = 'authToken';
   private readonly USER_KEY = 'current_user';
   private apiUrl = environment.apiUrl;
-
+  private panierService = inject(PanierService);
   isAuthenticated = signal<boolean>(this.hasToken());
   currentUser = signal<CurrentUser | null>(this.getUserFromStorage());
 
@@ -67,7 +68,13 @@ export class ConnectionService {
         this.isAuthenticated.set(true);
         
         // CORRECTION : On s'abonne pour déclencher la requête GET /api/Utilisateurs/{id}
-        this.loadCurrentUser().subscribe(); 
+        // On charge le user
+        this.loadCurrentUser().subscribe({
+          next: () => {
+            // AJOUT : On force le panier à recharger les données du nouvel utilisateur
+            this.panierService.loadFromStorage(); 
+          }
+        }); 
       }
     })
   );
@@ -102,9 +109,11 @@ loadCurrentUser(): Observable<CurrentUser> {
 
 
   logout(): void {
+    this.panierService.clearCart();
     localStorage.removeItem(this.KEY_TOKEN);
     localStorage.removeItem(this.USER_KEY);
     this.isAuthenticated.set(false);
+    this.currentUser.set(null);
     this.router.navigate(['/connection']);
   }
 
@@ -195,21 +204,32 @@ loadCurrentUser(): Observable<CurrentUser> {
    */
   isAdmin(): boolean {
     const decoded = this.decodeToken();
-    if (!decoded) return false;
+    if (!decoded) {
+      console.log('🔍 isAdmin: Token non décodé');
+      return false;
+    }
 
     // Le backend peut stocker les rôles de différentes manières dans le JWT
     // Vérifier les deux formats possibles
     const roles = decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || decoded['role'];
 
-    if (!roles) return false;
+    console.log('🔍 isAdmin: Rôles trouvés dans le token:', roles);
+    console.log('🔍 isAdmin: Contenu complet du token:', decoded);
+
+    if (!roles) {
+      console.log('🔍 isAdmin: Aucun rôle trouvé');
+      return false;
+    }
 
     // Les rôles peuvent être une string ou un tableau
     if (Array.isArray(roles)) {
       const hasAdmin = roles.some(role => role.toLowerCase() === 'admin');
+      console.log('🔍 isAdmin: Résultat (array):', hasAdmin);
       return hasAdmin;
     }
 
     const hasAdmin = roles.toLowerCase() === 'admin';
+    console.log('🔍 isAdmin: Résultat (string):', hasAdmin);
     return hasAdmin;
   }
 
