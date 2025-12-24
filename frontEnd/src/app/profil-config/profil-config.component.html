@@ -16,39 +16,39 @@
 </aside>
 
   <main class="main-content">
-    <div class="content-card">
-      <h1 class="page-title">Mes configurations</h1>
+  <div class="content-card">
+    <h1 class="page-title">Mes configurations</h1>
 
-      <div *ngIf="!isLoading && configurations.length === 0" class="empty-state">
-        Vous n'avez pas encore de configurations enregistrées.
-      </div>
+    <div *ngIf="!isLoading && configurations.length === 0" class="empty-state">
+      Vous n'avez pas encore de configurations enregistrées.
+    </div>
 
-      <div class="config-list" *ngIf="!isLoading">
-        <div *ngFor="let config of configurations" 
-             class="config-group" 
-             [class.expanded]="expandedConfigId === config.id">
-          
-          <div class="config-header" (click)="toggleExpand(config.id)">
-            <div class="config-info">
-              <span class="config-name">{{ config.nomConfiguration }}</span>
-              <span class="config-date">{{ config.composants.length }} composants — Total: {{ config.prixTotal }} €</span>
-            </div>
-            <div class="actions">
-                <button class="delete-btn btn-danger-lite" (click)="deleteConfig($event, config)">
+    <div class="config-list" *ngIf="!isLoading">
+      <div *ngFor="let config of paginatedConfigs" 
+           class="config-group" 
+           [class.expanded]="expandedConfigId === config.id">
+        
+        <div class="config-header" (click)="toggleExpand(config.id)">
+          <div class="config-info">
+            <span class="config-name">{{ config.nomConfiguration }}</span>
+            <span class="config-date">{{ config.composants.length }} composants — Total: {{ config.prixTotal }} €</span>
+          </div>
+          <div class="actions">
+              <button class="delete-btn btn-danger-lite" (click)="deleteConfig($event, config)">
                 <mat-icon>delete</mat-icon>
                 <span>Supprimer</span>
-                </button>
-                
-                <mat-icon class="arrow">
-                    {{ expandedConfigId === config.id ? 'expand_less' : 'expand_more' }}
-                </mat-icon>
-            </div>
+              </button>
+              
+              <mat-icon class="arrow">
+                  {{ expandedConfigId === config.id ? 'expand_less' : 'expand_more' }}
+              </mat-icon>
           </div>
-          
-          <div class="config-details" *ngIf="expandedConfigId === config.id">
-            <div *ngFor="let comp of config.composants" class="component-row">
-                <span class="comp-name">{{ comp.marque }} {{ comp.modele }}</span>
-                <div class="comp-stats">
+        </div>
+        
+        <div class="config-details" *ngIf="expandedConfigId === config.id">
+          <div *ngFor="let comp of config.composants" class="component-row">
+              <span class="comp-name">{{ comp.marque }} {{ comp.modele }}</span>
+              <div class="comp-stats">
                 <span class="comp-score" [ngClass]="getScoreClass(comp.score)">
                     {{ comp.score }}
                 </span>
@@ -57,13 +57,36 @@
                 <button class="remove-comp-btn" (click)="removeComponent(config, comp)" title="Retirer ce composant">
                     <mat-icon>close</mat-icon>
                 </button>
-                </div>
-            </div>
-            </div>
+              </div>
+          </div>
         </div>
       </div>
-
-      <div *ngIf="isLoading" class="loader">Chargement...</div>
     </div>
-  </main>
+
+    <div class="pagination-container" *ngIf="!isLoading && configurations.length > itemsPerPage">
+      <button class="page-nav-btn" 
+              [disabled]="currentPage === 1" 
+              (click)="changePage(currentPage - 1)">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+
+      <div class="page-numbers">
+        <button *ngFor="let p of pagesArray" 
+                class="page-btn" 
+                [class.active]="currentPage === p"
+                (click)="changePage(p)">
+          {{ p }}
+        </button>
+      </div>
+
+      <button class="page-nav-btn" 
+              [disabled]="currentPage === totalPages" 
+              (click)="changePage(currentPage + 1)">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+
+    <div *ngIf="isLoading" class="loader">Chargement...</div>
+  </div>
+</main>
 </div>

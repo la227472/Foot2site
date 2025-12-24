@@ -20,6 +20,24 @@ export class ProfilConfigComponent implements OnInit {
   expandedConfigId: number | null = null;
   isLoading = true;
 
+  // --- AJOUT PAGINATION ---
+  currentPage = 1;
+  itemsPerPage = 5;
+
+  // Découpe la liste pour la page actuelle
+  get paginatedConfigs() {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.configurations.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+
+  get totalPages() {
+    return Math.max(1, Math.ceil(this.configurations.length / this.itemsPerPage));
+  }
+
+  get pagesArray() {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
   // Injection des services
   private configService = inject(ConfigurationService);
   public authService = inject(ConnectionService);
@@ -30,20 +48,19 @@ export class ProfilConfigComponent implements OnInit {
 
   loadUserConfigs(): void {
     this.isLoading = true;
-    
-    // Récupération de l'utilisateur actuellement connecté via le signal
     const user = this.authService.currentUser();
 
     if (!user) {
       this.isLoading = false;
-      console.warn("Aucun utilisateur connecté.");
       return;
     }
 
     this.configService.getConfigurationsComplete().subscribe({
       next: (configs) => {
-        // FILTRAGE : On garde uniquement les configs appartenant à l'utilisateur connecté
-        this.configurations = configs.filter(c => c.utilisateurId === user.id);
+        // IMPORTANT : Utiliser le spread [...] pour forcer le rafraîchissement
+        const filtered = configs.filter(c => c.utilisateurId === user.id);
+        this.configurations = [...filtered]; 
+        this.currentPage = 1; // Reset à la page 1
         this.isLoading = false;
       },
       error: () => {
@@ -67,6 +84,12 @@ export class ProfilConfigComponent implements OnInit {
     if (score < 50) return 'score-red';
     if (score < 70) return 'score-orange';
     return 'score-green';
+  }
+
+  changePage(page: number): void {
+    this.currentPage = page;
+    this.expandedConfigId = null;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   deleteConfig(event: MouseEvent, config: any): void {
