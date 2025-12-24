@@ -25,10 +25,21 @@ export class PanierComponent implements  OnInit{
   selectedConfig = signal<ConfigurationComplete | null>(null);
   isDropdownOpen = signal(false);
 
-  // 🔹 Totaux
-  subtotal = computed(() => this.panierService.getTotalPrice());
-  shippingCost = computed(() => this.subtotal() > 100 ? 0 : 9.99);
-  total = computed(() => this.subtotal() + this.shippingCost());
+ // 🔹 Totaux
+// Le sous-total HT (Somme des composants)
+subtotal = computed(() => this.panierService.getTotalPrice());
+
+// Le montant de la TVA (21% du HT)
+tvaAmount = computed(() => this.subtotal() * 0.21);
+
+// Le total TTC des produits uniquement
+totalTTCProducts = computed(() => this.subtotal() + this.tvaAmount());
+
+// Livraison basée sur le prix HT (ou TTC selon ta politique, ici HT > 100)
+shippingCost = computed(() => this.subtotal() > 100 ? 0 : 9.99);
+
+// Le TOTAL FINAL (TTC produits + Livraison)
+total = computed(() => this.totalTTCProducts() + this.shippingCost());
 
   loading = false;
   successMessage = '';
@@ -131,7 +142,7 @@ export class PanierComponent implements  OnInit{
         this.panierService.clearCart();
         this.successMessage = 'Commande passée avec succès';
         this.loading = false;
-        this.router.navigate(['/orders']);
+        this.router.navigate(['/commandes']);
       },
       error: err => {
         console.error(err);
