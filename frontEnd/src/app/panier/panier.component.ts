@@ -8,6 +8,8 @@ import {CommandeService} from '../Service/commande.service';
 import {ConnectionService} from '../Service/connection.service';
 import {Configuration, ConfigurationComplete} from '../Interface/Configuration';
 import {ConfigurationService} from '../Service/configuration.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../shared/dialogs/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-panier',
@@ -50,7 +52,8 @@ total = computed(() => this.totalTTCProducts() + this.shippingCost());
     private commandeService : CommandeService,
     private configService : ConfigurationService,
     private authService : ConnectionService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -78,9 +81,22 @@ total = computed(() => this.totalTTCProducts() + this.shippingCost());
   }
 
   removeItem(item: Panier): void {
-    if (confirm('Retirer cette configuration du panier ?')) {
-      this.panierService.removeFromCart(this.getKey(item));
-    }
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      disableClose: false,
+      hasBackdrop: true,
+      data: {
+        title: 'Retirer du panier',
+        message: 'Êtes-vous sûr de vouloir retirer cette configuration du panier ?',
+        composantName: item.configuration.nomConfiguration
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.panierService.removeFromCart(this.getKey(item));
+      }
+    });
   }
 
   // ======================

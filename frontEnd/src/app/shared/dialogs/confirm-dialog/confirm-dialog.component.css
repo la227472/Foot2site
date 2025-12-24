@@ -5,6 +5,8 @@
 
 mat-dialog-content {
   padding: 20px 24px;
+  overflow: hidden !important;
+  max-height: none !important;
 }
 
 .dialog-message {
