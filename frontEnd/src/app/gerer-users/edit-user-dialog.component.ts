@@ -489,18 +489,22 @@ export class EditUserDialogComponent implements OnInit {
               });
               this.isLoading = false;
             },
-            error: () => {
-              this.snackBar.open('Erreur lors du chargement de l\'adresse', 'Fermer', { duration: 3000 });
+            error: (err) => {
               this.isLoading = false;
+              if (err.status !== 401) {
+                this.snackBar.open('Erreur lors du chargement de l\'adresse', 'Fermer', { duration: 3000 });
+              }
             }
           });
         } else {
           this.isLoading = false;
         }
       },
-      error: () => {
-        this.snackBar.open('Erreur lors du chargement de l\'utilisateur', 'Fermer', { duration: 3000 });
+      error: (err) => {
         this.isLoading = false;
+        if (err.status !== 401) {
+          this.snackBar.open('Erreur lors du chargement de l\'utilisateur', 'Fermer', { duration: 3000 });
+        }
         this.dialogRef.close();
       }
     });
