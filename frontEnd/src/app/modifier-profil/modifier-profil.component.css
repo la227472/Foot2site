@@ -85,18 +85,21 @@
   font-size: 1.1rem;
 }
 
-/* --- FORMULAIRE RÉVISÉ --- */
+/* --- FORMULAIRE AVEC MATERIAL --- */
 .form-row {
   display: flex;
-  gap: 90px;           /* Espace horizontal généreux entre les colonnes */
-  margin-bottom: 35px; /* Espace vertical entre chaque ligne d'inputs */
-  max-width: 900px;    /* Légèrement augmenté pour accommoder le nouveau gap */
+  gap: 24px;
+  margin-bottom: 16px;
+  max-width: 900px;
 }
 
-.form-group {
+.form-field {
   flex: 1;
   min-width: 200px;
-  max-width: 380px;    /* Un peu plus large pour équilibrer le grand gap */
+}
+
+.form-field.full-width {
+  width: 100%;
 }
 
 .form-group.full-width {
@@ -131,24 +134,7 @@ input:focus {
   box-shadow: 0 0 0 4px rgba(162, 155, 254, 0.1);
 }
 
-/* Password wrapper */
-.password-wrapper {
-  position: relative;
-  display: flex;
-}
-
-.toggle-password {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #b2bec3;
-}
-
-/* --- ACTIONS / BOUTONS --- */
+/* --- ACTIONS / BOUTONS MATERIAL --- */
 .form-actions {
   margin-top: 40px;
   display: flex;
@@ -158,36 +144,24 @@ input:focus {
   border-top: 1px solid #f0f2f5;
 }
 
-.btn-primary, .btn-secondary {
-  padding: 12px 25px;
-  border-radius: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  transition: 0.3s;
-  border: none;
+/* Surcharge des styles Material pour correspondre au thème */
+::ng-deep .mat-mdc-raised-button.mat-primary {
+  background-color: #313761 !important;
+  color: white !important;
 }
 
-.btn-primary {
-  background-color: #313761;
-  color: white;
+::ng-deep .mat-mdc-raised-button.mat-primary:hover {
+  background-color: #a29bfe !important;
+  color: white !important;
 }
 
-.btn-primary:hover:not(:disabled) {
-  background-color: #a29bfe;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(162, 155, 254, 0.3);
+::ng-deep .mat-mdc-stroked-button.mat-primary {
+  border-color: #313761 !important;
+  color: #313761 !important;
 }
 
-.btn-secondary {
-  background-color: #f0f2f5;
-  color: #636e72;
-}
-
-.btn-secondary:hover {
-  background-color: #e2e8f0;
+::ng-deep .mat-mdc-stroked-button.mat-primary:hover {
+  background-color: rgba(162, 155, 254, 0.1) !important;
 }
 
 /* --- LOADING & STATES --- */
