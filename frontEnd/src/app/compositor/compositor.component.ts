@@ -37,6 +37,7 @@ export class CompositorComponent implements OnInit {
   showNameModal = signal(false);
   totalPrice = signal(0);
   saveMode = signal<'save' | 'cart'>('save');
+  hasAtLeastOneComponent = signal(false);
 
   constructor(
     private compositorService: ConfigurationService,
@@ -65,6 +66,12 @@ export class CompositorComponent implements OnInit {
     // Calculer le prix total à chaque changement
     this.compositionForm.valueChanges.subscribe(() => {
       this.calculateTotalPrice();
+
+      const hasOne = Object.values(this.compositionForm.value).some(
+        v => v !== null && v !== ''
+      );
+
+      this.hasAtLeastOneComponent.set(hasOne);
     });
   }
 
@@ -125,6 +132,11 @@ export class CompositorComponent implements OnInit {
   }
 
   onSubmit(mode: 'save' | 'cart'): void {
+    if (!this.hasAtLeastOneComponent()) {
+      this.errorMessage.set('Veuillez sélectionner au moins un composant');
+      return;
+    }
+
     if (this.compositionForm.invalid) {
       this.compositionForm.markAllAsTouched();
       this.errorMessage.set('Veuillez sélectionner tous les composants');

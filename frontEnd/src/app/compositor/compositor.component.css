@@ -181,6 +181,26 @@
   transform: none;
 }
 
+.btn-panier{
+  background: linear-gradient(135deg, #155724 0%, #555555 100%);
+  color: white;
+  width: 100%;
+  box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+}
+
+.btn-panier:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+
+.btn-panier:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+
 .btn-secondary {
   background: #6c757d;
   color: white;
@@ -190,12 +210,6 @@
 .btn-secondary:hover {
   background: #5a6268;
   transform: translateY(-2px);
-}
-.btn-panier{
-  background: linear-gradient(135deg, #155724 0%, #555555 100%);
-  color: white;
-  width: 100%;
-  box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
 }
 
 /* SPINNER */
