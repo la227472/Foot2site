@@ -379,6 +379,14 @@
   animation: spin 0.8s linear infinite;
 }
 
+
+.total .value::after {
+  content: ' TTC';
+  font-size: 0.8rem;
+  margin-left: 4px;
+}
+
+
 @keyframes spin {
   to { transform: rotate(360deg); }
 }

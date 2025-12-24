@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Foot2site_V1.Data;
+using Foot2site_V1.Modele;
+using Foot2site_V1.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Foot2site_V1.Data;
-using Foot2site_V1.Modele;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Foot2site_V1.Controllers
 {
@@ -112,6 +113,14 @@ namespace Foot2site_V1.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProduit(int id, Produit produit)
         {
+            //il faut être admin pour modifier un produit
+            var valid = new AuthorizationServices().IsTokenValid(this.Request.Headers.Authorization.ToString(), "ADMIN");
+
+            if (!valid)
+            {
+                return Unauthorized("Vous n'êtes pas autorisé à modifier un produit.");
+            }
+
             try
             {
                 // Validation de l'ID
@@ -198,6 +207,16 @@ namespace Foot2site_V1.Controllers
         [HttpPost]
         public async Task<ActionResult<Produit>> PostProduit(Produit produit)
         {
+            //il faut être admin pour ajouter un produit
+            var valid = new AuthorizationServices().IsTokenValid(this.Request.Headers.Authorization.ToString(), "ADMIN");
+
+            if (!valid)
+            {
+                return Unauthorized("Vous n'êtes pas autorisé à ajouter un produit.");
+            }
+
+
+
             try
             {
                 // Validation des données
@@ -291,6 +310,14 @@ namespace Foot2site_V1.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduit(int id)
         {
+            //il faut être admin pour supprimer un produit
+            var valid = new AuthorizationServices().IsTokenValid(this.Request.Headers.Authorization.ToString(), "ADMIN");
+
+            if (!valid)
+            {
+                return Unauthorized("Vous n'êtes pas autorisé à supprimer un produit.");
+            }
+
             try
             {
                 // Validation de l'ID

@@ -28,42 +28,54 @@
       </div>
 
       <form [formGroup]="profilForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
-        
+
         <div class="form-section-title">
           <mat-icon>person</mat-icon> Informations personnelles
         </div>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label for="nom">Nom</label>
-            <input id="nom" type="text" formControlName="nom" 
-                   [class.error]="profilForm.get('nom')?.invalid && profilForm.get('nom')?.touched">
-          </div>
 
-          <div class="form-group">
-            <label for="prenom">Prénom</label>
-            <input id="prenom" type="text" formControlName="prenom"
-                   [class.error]="profilForm.get('prenom')?.invalid && profilForm.get('prenom')?.touched">
-          </div>
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Nom</mat-label>
+            <input matInput formControlName="nom" placeholder="Votre nom">
+            <mat-icon matPrefix>badge</mat-icon>
+            <mat-error *ngIf="profilForm.get('nom')?.hasError('required')">
+              Le nom est requis
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Prénom</mat-label>
+            <input matInput formControlName="prenom" placeholder="Votre prénom">
+            <mat-icon matPrefix>person_outline</mat-icon>
+            <mat-error *ngIf="profilForm.get('prenom')?.hasError('required')">
+              Le prénom est requis
+            </mat-error>
+          </mat-form-field>
         </div>
 
         <div class="form-row">
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input id="email" type="email" formControlName="email">
-          </div>
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" formControlName="email" placeholder="votre@email.com">
+            <mat-icon matPrefix>email</mat-icon>
+            <mat-error *ngIf="profilForm.get('email')?.hasError('required')">
+              L'email est requis
+            </mat-error>
+            <mat-error *ngIf="profilForm.get('email')?.hasError('email')">
+              Email invalide
+            </mat-error>
+          </mat-form-field>
 
-          <div class="form-group">
-            <label for="password">Mot de passe</label>
-            <div class="password-wrapper">
-              <input id="password" [type]="hidePassword ? 'password' : 'text'" 
-                     formControlName="password" 
-                     placeholder="Laisser vide pour ne pas modifier">
-              <button type="button" class="toggle-password" (click)="hidePassword = !hidePassword">
-                <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-              </button>
-            </div>
-          </div>
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Mot de passe</mat-label>
+            <input matInput [type]="hidePassword ? 'password' : 'text'"
+                   formControlName="password"
+                   placeholder="Laisser vide pour ne pas modifier">
+            <mat-icon matPrefix>lock</mat-icon>
+            <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+          </mat-form-field>
         </div>
 
         <div class="form-section-title">
@@ -71,29 +83,42 @@
         </div>
 
         <div class="form-row">
-          <div class="form-group full-width">
-            <label for="rue">Rue</label>
-            <input id="rue" type="text" formControlName="rue">
-          </div>
+          <mat-form-field appearance="outline" class="form-field full-width">
+            <mat-label>Rue</mat-label>
+            <input matInput formControlName="rue" placeholder="Nom de la rue">
+            <mat-icon matPrefix>location_on</mat-icon>
+            <mat-error *ngIf="profilForm.get('rue')?.hasError('required')">
+              La rue est requise
+            </mat-error>
+          </mat-form-field>
         </div>
 
         <div class="form-row">
-          <div class="form-group">
-            <label for="numero">Numéro</label>
-            <input id="numero" type="text" formControlName="numero">
-          </div>
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Numéro</mat-label>
+            <input matInput formControlName="numero" placeholder="N°">
+            <mat-icon matPrefix>pin</mat-icon>
+            <mat-error *ngIf="profilForm.get('numero')?.hasError('required')">
+              Le numéro est requis
+            </mat-error>
+          </mat-form-field>
 
-          <div class="form-group">
-            <label for="codePostal">Code Postal</label>
-            <input id="codePostal" type="text" formControlName="codePostal">
-          </div>
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Code Postal</mat-label>
+            <input matInput formControlName="codePostal" placeholder="Code postal">
+            <mat-icon matPrefix>markunread_mailbox</mat-icon>
+            <mat-error *ngIf="profilForm.get('codePostal')?.hasError('required')">
+              Le code postal est requis
+            </mat-error>
+          </mat-form-field>
         </div>
 
         <div class="form-actions">
-          <button type="button" class="btn-secondary" (click)="onCancel()">
+          <button mat-stroked-button type="button" color="primary" (click)="onCancel()">
+            <mat-icon>close</mat-icon>
             Annuler
           </button>
-          <button type="submit" class="btn-primary" [disabled]="profilForm.invalid || isLoading">
+          <button mat-raised-button type="submit" color="primary" [disabled]="profilForm.invalid || isLoading">
             <mat-icon *ngIf="!isLoading">save</mat-icon>
             <span>{{ isLoading ? 'Enregistrement...' : 'Enregistrer les modifications' }}</span>
           </button>

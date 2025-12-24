@@ -5,6 +5,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatChipsModule } from '@angular/material/chips';
 import { FormsModule } from '@angular/forms';
 import { GererUsersService } from '../Service/gerer-users.service';
 import { ConnectionService } from '../Service/connection.service';
@@ -21,6 +26,11 @@ import { EditUserDialogComponent } from './edit-user-dialog.component';
     MatProgressSpinnerModule,
     MatSnackBarModule,
     MatDialogModule,
+    MatButtonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatTooltipModule,
+    MatChipsModule,
     FormsModule
   ],
   templateUrl: './gerer-users.component.html',

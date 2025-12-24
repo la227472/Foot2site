@@ -5,6 +5,9 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 
 import { ModifierProfilService } from '../Service/modifier-profil.service';
 import { AdresseService } from '../Service/adresse.service';
@@ -19,6 +22,9 @@ import { ConnectionService, CurrentUser, Adress } from '../Service/connection.se
     MatIconModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
     RouterLink,
     RouterLinkActive
   ],
@@ -89,13 +95,27 @@ export class ModifierProfilComponent implements OnInit {
               });
               this.isLoading = false;
             },
-            error: () => this.isLoading = false
+            error: (err) => {
+              this.isLoading = false;
+              if (err.status === 401) {
+                this.snackBar.open('Votre session a expiré. Veuillez vous reconnecter.', 'OK', { duration: 5000 });
+                this.connectionService.logout();
+              }
+            }
           });
         } else {
           this.isLoading = false;
         }
       },
-      error: () => this.handleError("Erreur chargement profil")
+      error: (err) => {
+        this.isLoading = false;
+        if (err.status === 401) {
+          this.snackBar.open('Votre session a expiré. Veuillez vous reconnecter.', 'OK', { duration: 5000 });
+          this.connectionService.logout();
+        } else {
+          this.handleError("Erreur chargement profil");
+        }
+      }
     });
   }
 
@@ -172,9 +192,9 @@ export class ModifierProfilComponent implements OnInit {
       email: formValue.email,
       adresseId: adresseId,
       roles: oldData.roles,
-      motDePasse: (formValue.password && formValue.password.trim() !== '') 
-                  ? formValue.password 
-                  : oldData.motDePasse 
+      motDePasse: (formValue.password && formValue.password.trim() !== '')
+                  ? formValue.password
+                  : oldData.motDePasse
     };
 
     this.modifierProfilService.updateProfil(this.utilisateurId!, updateData).subscribe({
@@ -182,10 +202,34 @@ export class ModifierProfilComponent implements OnInit {
         this.snackBar.open('Profil mis à jour !', 'Fermer', { duration: 3000 });
         this.isLoading = false;
         this.profilForm.patchValue({ password: '' });
-        this.connectionService.loadCurrentUser().subscribe();
-        this.loadUserProfile(); 
+
+        // Recharger les données utilisateur avec gestion d'erreur
+        this.connectionService.loadCurrentUser().subscribe({
+          next: () => {
+            this.loadUserProfile();
+          },
+          error: (err) => {
+            console.error('Erreur lors du rechargement du profil:', err);
+            // Si erreur 401, la session a expiré
+            if (err.status === 401) {
+              this.snackBar.open('Votre session a expiré. Veuillez vous reconnecter.', 'OK', { duration: 5000 });
+              this.connectionService.logout();
+            } else {
+              // Pour les autres erreurs, simplement recharger la page
+              this.loadUserProfile();
+            }
+          }
+        });
       },
-      error: () => this.handleError("Erreur mise à jour profil")
+      error: (err) => {
+        // Gestion spécifique pour erreur 401
+        if (err.status === 401) {
+          this.snackBar.open('Votre session a expiré. Veuillez vous reconnecter.', 'OK', { duration: 5000 });
+          this.connectionService.logout();
+        } else {
+          this.handleError("Erreur mise à jour profil");
+        }
+      }
     });
   }
 

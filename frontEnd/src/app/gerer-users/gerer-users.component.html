@@ -2,23 +2,23 @@
   <div class="content-wrapper">
     <!-- Header avec bouton retour et titre centré -->
     <header class="page-header">
-      <button class="back-button" (click)="goBack()">
+      <button mat-icon-button class="back-button" (click)="goBack()" matTooltip="Retour à l'accueil">
         <mat-icon>arrow_back</mat-icon>
       </button>
       <h1>Gestion des Utilisateurs</h1>
     </header>
 
-    <!-- Barre de recherche -->
+    <!-- Barre de recherche Material -->
     <div class="search-section">
-      <label class="search-label">Nom - Prénom - e-mail</label>
-      <div class="search-bar">
-        <mat-icon class="search-icon">search</mat-icon>
-        <input
-          type="text"
-          [(ngModel)]="searchTerm"
-          (input)="onSearch()"
-          placeholder="Rechercher un utilisateur">
-      </div>
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Rechercher un utilisateur</mat-label>
+        <input matInput
+               type="text"
+               [(ngModel)]="searchTerm"
+               (input)="onSearch()"
+               placeholder="Nom, Prénom ou Email">
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
     </div>
 
     <!-- Loading spinner -->
@@ -52,22 +52,26 @@
               <div class="action-buttons">
                 <button
                   *ngIf="!isUserAdmin(user)"
+                  mat-icon-button
+                  color="primary"
                   class="action-button edit"
                   (click)="editUtilisateur(user.id!)"
-                  title="Modifier l'utilisateur">
+                  matTooltip="Modifier l'utilisateur">
                   <mat-icon>edit</mat-icon>
                 </button>
                 <button
                   *ngIf="!isUserAdmin(user)"
+                  mat-icon-button
+                  color="warn"
                   class="action-button delete"
                   (click)="deleteUtilisateur(user)"
-                  title="Supprimer l'utilisateur">
+                  matTooltip="Supprimer l'utilisateur">
                   <mat-icon>delete</mat-icon>
                 </button>
-                <span *ngIf="isUserAdmin(user)" class="admin-badge">
+                <mat-chip *ngIf="isUserAdmin(user)" class="admin-chip">
                   <mat-icon>shield</mat-icon>
                   Admin
-                </span>
+                </mat-chip>
               </div>
             </td>
           </tr>
@@ -111,22 +115,24 @@
         <div class="user-card-actions">
           <button
             *ngIf="!isUserAdmin(user)"
-            class="action-button edit"
+            mat-icon-button
+            color="primary"
             (click)="editUtilisateur(user.id!)"
-            title="Modifier l'utilisateur">
+            matTooltip="Modifier l'utilisateur">
             <mat-icon>edit</mat-icon>
           </button>
           <button
             *ngIf="!isUserAdmin(user)"
-            class="action-button delete"
+            mat-icon-button
+            color="warn"
             (click)="deleteUtilisateur(user)"
-            title="Supprimer l'utilisateur">
+            matTooltip="Supprimer l'utilisateur">
             <mat-icon>delete</mat-icon>
           </button>
-          <span *ngIf="isUserAdmin(user)" class="admin-badge">
+          <mat-chip *ngIf="isUserAdmin(user)" class="admin-chip-mobile">
             <mat-icon>shield</mat-icon>
             Admin
-          </span>
+          </mat-chip>
         </div>
       </div>
     </div>

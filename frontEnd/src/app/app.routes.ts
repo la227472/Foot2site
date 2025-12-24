@@ -11,6 +11,7 @@ import { PanierComponent } from './panier/panier.component';
 import { ModifierProfilComponent } from './modifier-profil/modifier-profil.component';
 import { GererUsersComponent } from './gerer-users/gerer-users.component';
 import { CommandesComponent } from './commandes/commandes.component';
+import {authenGuard} from './Guard/authen.guard';
 
 export const routes: Routes = [
   {
@@ -21,6 +22,7 @@ export const routes: Routes = [
   {
     path: 'compo',
     component: CompositorComponent,
+    canActivate:[authenGuard],
   },
 
   {
@@ -30,11 +32,13 @@ export const routes: Routes = [
   {
     path: 'accueil',
     component: AccueilComponent,
+    canActivate:[authenGuard],
   },
 
   {
     path: 'comparer',
     component: ComparerComposComponent,
+    canActivate:[authenGuard],
   },
 
   {
@@ -46,31 +50,36 @@ export const routes: Routes = [
   {
     path: 'profilconfig',
     component: ProfilConfigComponent,
+    canActivate:[authenGuard],
   },
 
   {
     path: 'profil',
     component: ModifierProfilComponent,
+    canActivate:[authenGuard],
   },
   {
     path: 'panier',
     component: PanierComponent,
+    canActivate:[authenGuard],
   },
-  
+
   {
     path: 'commandes',
     component: CommandesComponent,
+    canActivate:[authenGuard],
   },
-  
+
   {
     path: '',
     redirectTo: 'connection',
     pathMatch: 'full',
   },
-  
+
   {
     path: 'profil',
     component: ModifierProfilComponent,
+    canActivate:[authenGuard],
   },
 
   {

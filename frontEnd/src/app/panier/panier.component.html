@@ -48,9 +48,7 @@
       } @else {
         <div class="cart-items">
           <div class="cart-table-header">
-            <span class="col-product">Produit</span>
-            <span class="col-price">Prix unitaire</span>
-            <span class="col-quantity">Quantité</span>
+            <span class="col-product">Config</span>
             <span class="col-subtotal">Sous-total</span>
             <span class="col-actions"></span>
           </div>
@@ -76,29 +74,6 @@
                       }
                     </div>
                   </div>
-                </div>
-              </div>
-
-              <div class="col-price">
-                <span class="price">{{ getItemSubtotal(item).toFixed(2) }} €</span>
-              </div>
-
-              <div class="col-quantity">
-                <div class="quantity-controls">
-                  <button
-                    (click)="decrementQuantity(item)"
-                    [disabled]="item.quantite <= 1"
-                    class="qty-btn"
-                  >
-                    −
-                  </button>
-                  <span class="quantity">{{ item.quantite }}</span>
-                  <button
-                    (click)="incrementQuantity(item)"
-                    class="qty-btn"
-                  >
-                    +
-                  </button>
                 </div>
               </div>
 
@@ -128,23 +103,33 @@
           <h2>Résumé de la commande</h2>
 
           <div class="summary-row">
-            <span>Sous-total</span>
-            <span class="value">{{ subtotal().toFixed(2) }} €</span>
-          </div>
+        <span>Sous-total (HT)</span>
+        <span class="value">{{ subtotal().toFixed(2) }} €</span>
+      </div>
 
-          <div class="summary-row">
-            <span>Livraison</span>
-            <span class="value" [class.free]="shippingCost() === 0">
-              {{ shippingCost() === 0 ? 'Gratuite' : shippingCost().toFixed(2) + ' €' }}
-            </span>
-          </div>
+      <div class="summary-row">
+        <span>TVA (21%)</span>
+        <span class="value">{{ tvaAmount().toFixed(2) }} €</span>
+      </div>
 
-          <div class="summary-divider"></div>
+      <div class="summary-row">
+        <span>Total (TTC produits)</span>
+        <span class="value">{{ totalTTCProducts().toFixed(2) }} €</span>
+      </div>
 
-          <div class="summary-row total">
-            <span>TOTAL</span>
-            <span class="value">{{ total().toFixed(2) }} €</span>
-          </div>
+      <div class="summary-row">
+        <span>Livraison</span>
+        <span class="value" [class.free]="shippingCost() === 0">
+          {{ shippingCost() === 0 ? 'Gratuite' : shippingCost().toFixed(2) + ' €' }}
+        </span>
+      </div>
+
+      <div class="summary-divider"></div>
+
+      <div class="summary-row total">
+        <span>TOTAL À PAYER</span>
+        <span class="value">{{ total().toFixed(2) }} €</span>
+      </div>
 
           @if (successMessage) {
             <div class="alert alert-success">

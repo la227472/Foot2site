@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Foot2site_V1.Data;
+using Foot2site_V1.Modele;
+using Foot2site_V1.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Foot2site_V1.Data;
-using Foot2site_V1.Modele;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Foot2site_V1.Controllers
 {
@@ -39,6 +40,7 @@ namespace Foot2site_V1.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Stock_produit>>> GetStock_produit()
         {
+         
             try
             {
                 var stocks = await _context.Stock_produit
@@ -148,6 +150,16 @@ namespace Foot2site_V1.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutStock_produit(int id, Stock_produit stock_produit)
         {
+
+            //il faut être admin pour modifier un stock de produit
+            var valid = new AuthorizationServices().IsTokenValid(this.Request.Headers.Authorization.ToString(), "ADMIN");
+
+            if (!valid)
+            {
+                return Unauthorized("Vous n'êtes pas autorisé à modifier le stock d'un produit.");
+            }
+
+
             try
             {
                 // Validation de l'ID
@@ -266,6 +278,17 @@ namespace Foot2site_V1.Controllers
         [HttpPost]
         public async Task<ActionResult<Stock_produit>> PostStock_produit(Stock_produit stock_produit)
         {
+
+            //il faut être admin créer un stock de produit
+            var valid = new AuthorizationServices().IsTokenValid(this.Request.Headers.Authorization.ToString(), "ADMIN");
+
+            if (!valid)
+            {
+                return Unauthorized("Vous n'êtes pas autorisé à créer un stock de produit.");
+            }
+
+
+
             try
             {
                 // Validation des données
@@ -358,6 +381,16 @@ namespace Foot2site_V1.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStock_produit(int id)
         {
+            //il faut être admin pour supprimer un stock de produit
+            var valid = new AuthorizationServices().IsTokenValid(this.Request.Headers.Authorization.ToString(), "ADMIN");
+
+            if (!valid)
+            {
+                return Unauthorized("Vous n'êtes pas autorisé à supprimer le stock d'un produit.");
+            }
+
+
+
             try
             {
                 // Validation de l'ID

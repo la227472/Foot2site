@@ -1,8 +1,10 @@
-﻿using Foot2site_V1.Data;
+﻿using BCrypt.Net;
+using Foot2site_V1.Data;
 using Foot2site_V1.Modele;
+using Foot2site_V1.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BCrypt.Net;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -38,6 +40,14 @@ namespace Foot2site_V1.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
+            //il faut être admin pour voir la liste des utilisateurs
+            var valid = new AuthorizationServices().IsTokenValid(this.Request.Headers.Authorization.ToString(), "ADMIN");
+
+            if (!valid)
+            {
+                return Unauthorized("Vous n'êtes pas autorisé à voir la liste des utilisateurs.");
+            }
+
             return await _context.User.Include(u => u.Role).ToListAsync();
         }
 
@@ -51,8 +61,8 @@ namespace Foot2site_V1.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-            var user = await _context.User.Include(u => u.Role).FirstOrDefaultAsync(u => u.Id_User == id);
 
+            var user = await _context.User.Include(u => u.Role).FirstOrDefaultAsync(u => u.Id_User == id);
             if (user == null)
             {
                 return NotFound();
@@ -139,6 +149,14 @@ namespace Foot2site_V1.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
+            //il faut être admin pour supprimer un utilisateur
+            var valid = new AuthorizationServices().IsTokenValid(this.Request.Headers.Authorization.ToString(), "ADMIN");
+
+            if (!valid)
+            {
+                return Unauthorized("Vous n'êtes pas autorisé à supprimer un utilisateur.");
+            }
+
             var user = await _context.User.FindAsync(id);
             if (user == null)
             {
@@ -161,6 +179,41 @@ namespace Foot2site_V1.Controllers
         private bool UserExists(int id)
         {
             return _context.User.Any(e => e.Id_User == id);
+        }
+
+
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromForm] string Email, [FromForm] string password)
+        {
+            bool verified = false;
+
+            var user = await _context.User.Include(u => u.Role).FirstOrDefaultAsync(u => u.Email == Email);
+            if (user == null) return BadRequest("Email ou mot de passe invalide.");
+
+            try
+            {
+                // Vérification BCrypt
+                verified = BCrypt.Net.BCrypt.Verify(password, user.Password);
+            }
+
+            catch (BCrypt.Net.SaltParseException)
+            {
+                var ph = new PasswordHasher<User>();
+                var res = ph.VerifyHashedPassword(user, user.Password, password);
+                if (res == PasswordVerificationResult.Success || res == PasswordVerificationResult.SuccessRehashNeeded)
+                {
+                    user.Password = BCrypt.Net.BCrypt.HashPassword(password, workFactor: 12);
+                    _context.User.Update(user);
+                    await _context.SaveChangesAsync();
+                    verified = true;
+                }
+            }
+
+            if (!verified) return BadRequest("Email ou mot de passe invalide.");
+
+            var token = new AuthorizationServices().CreateToken(user);
+            return Ok(new { token });
         }
     }
 }
