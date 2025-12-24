@@ -77,22 +77,6 @@ total = computed(() => this.totalTTCProducts() + this.shippingCost());
     });
   }
 
-  // ======================
-  // QUANTITÉ
-  // ======================
-
-  incrementQuantity(item: Panier): void {
-    const key = this.getKey(item);
-    this.panierService.updateQuantity(key, item.quantite + 1);
-  }
-
-  decrementQuantity(item: Panier): void {
-    if (item.quantite > 1) {
-      const key = this.getKey(item);
-      this.panierService.updateQuantity(key, item.quantite - 1);
-    }
-  }
-
   removeItem(item: Panier): void {
     if (confirm('Retirer cette configuration du panier ?')) {
       this.panierService.removeFromCart(this.getKey(item));

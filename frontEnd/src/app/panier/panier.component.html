@@ -48,9 +48,7 @@
       } @else {
         <div class="cart-items">
           <div class="cart-table-header">
-            <span class="col-product">Produit</span>
-            <span class="col-price">Prix unitaire</span>
-            <span class="col-quantity">Quantité</span>
+            <span class="col-product">Config</span>
             <span class="col-subtotal">Sous-total</span>
             <span class="col-actions"></span>
           </div>
@@ -76,29 +74,6 @@
                       }
                     </div>
                   </div>
-                </div>
-              </div>
-
-              <div class="col-price">
-                <span class="price">{{ getItemSubtotal(item).toFixed(2) }} €</span>
-              </div>
-
-              <div class="col-quantity">
-                <div class="quantity-controls">
-                  <button
-                    (click)="decrementQuantity(item)"
-                    [disabled]="item.quantite <= 1"
-                    class="qty-btn"
-                  >
-                    −
-                  </button>
-                  <span class="quantity">{{ item.quantite }}</span>
-                  <button
-                    (click)="incrementQuantity(item)"
-                    class="qty-btn"
-                  >
-                    +
-                  </button>
                 </div>
               </div>
 
