@@ -98,31 +98,33 @@ export class CompositorComponent implements OnInit {
   }
 
   calculateTotalPrice(): void {
-    const formValues = this.compositionForm.value;
-    let total = 0;
+  const formValues = this.compositionForm.value;
+  let total = 0;
 
-    // Récupérer les prix de chaque composant sélectionné
-    const selectedIds = Object.values(formValues).filter(id => id);
+  const selectedIds = Object.values(formValues).filter(id => id);
 
-    const allComponents = [
-      ...this.cpus(),
-      ...this.motherboards(),
-      ...this.gpus(),
-      ...this.memories(),
-      ...this.psus(),
-      ...this.boxes(),
-      ...this.hardDisks()
-    ];
+  const allComponents = [
+    ...this.cpus(),
+    ...this.motherboards(),
+    ...this.gpus(),
+    ...this.memories(),
+    ...this.psus(),
+    ...this.boxes(),
+    ...this.hardDisks()
+  ];
 
-    selectedIds.forEach(id => {
-      const component = allComponents.find(c => c.id === Number(id));
-      if (component) {
-        total += component.prix;
-      }
-    });
+  selectedIds.forEach(id => {
+    const component = allComponents.find(c => c.id === Number(id));
+    if (component) {
+      total += component.prix;
+    }
+  });
 
-    this.totalPrice.set(total);
-  }
+  // Arrondir à 2 décimales pour éviter les erreurs de précision JS
+  // On multiplie par 100, on arrondit, puis on divise par 100
+  const roundedTotal = Math.round((total + Number.EPSILON) * 100) / 100;
+  this.totalPrice.set(roundedTotal);
+}
 
   onSubmit(mode: 'save' | 'cart'): void {
     if (this.compositionForm.invalid) {
