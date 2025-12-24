@@ -26,7 +26,7 @@ export interface CurrentUser {
   commandeId: any[];
   roles: string;
   // On ajoute l'objet adresse ici (souvent renvoyé par un Include en C#)
-  adresse?: Adress; 
+  adresse?: Adress;
 }
 
 
@@ -66,15 +66,15 @@ export class ConnectionService {
       if (response.token) {
         localStorage.setItem(this.KEY_TOKEN, response.token);
         this.isAuthenticated.set(true);
-        
+
         // CORRECTION : On s'abonne pour déclencher la requête GET /api/Utilisateurs/{id}
         // On charge le user
         this.loadCurrentUser().subscribe({
           next: () => {
             // AJOUT : On force le panier à recharger les données du nouvel utilisateur
-            this.panierService.loadFromStorage(); 
+            this.panierService.loadFromStorage();
           }
-        }); 
+        });
       }
     })
   );
@@ -90,7 +90,7 @@ export class ConnectionService {
  */
 loadCurrentUser(): Observable<CurrentUser> {
   // 1. On récupère l'ID depuis le token décodé
-  const userInfo = this.getUserInfo(); 
+  const userInfo = this.getUserInfo();
   const userId = userInfo?.id;
 
   if (!userId) {
@@ -146,11 +146,11 @@ loadCurrentUser(): Observable<CurrentUser> {
     }
   }
 
-  
-   /* 
-   *Décode le JWT et retourne les claims (payload) 
+
+   /*
+   *Décode le JWT et retourne les claims (payload)
    */
-   
+
 /* * Décode le JWT manuellement sans bibliothèque externe
    */
   private decodeToken(): any {
@@ -205,31 +205,23 @@ loadCurrentUser(): Observable<CurrentUser> {
   isAdmin(): boolean {
     const decoded = this.decodeToken();
     if (!decoded) {
-      console.log('🔍 isAdmin: Token non décodé');
       return false;
     }
 
     // Le backend peut stocker les rôles de différentes manières dans le JWT
     // Vérifier les deux formats possibles
     const roles = decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || decoded['role'];
-
-    console.log('🔍 isAdmin: Rôles trouvés dans le token:', roles);
-    console.log('🔍 isAdmin: Contenu complet du token:', decoded);
-
     if (!roles) {
-      console.log('🔍 isAdmin: Aucun rôle trouvé');
       return false;
     }
 
     // Les rôles peuvent être une string ou un tableau
     if (Array.isArray(roles)) {
       const hasAdmin = roles.some(role => role.toLowerCase() === 'admin');
-      console.log('🔍 isAdmin: Résultat (array):', hasAdmin);
       return hasAdmin;
     }
 
     const hasAdmin = roles.toLowerCase() === 'admin';
-    console.log('🔍 isAdmin: Résultat (string):', hasAdmin);
     return hasAdmin;
   }
 
