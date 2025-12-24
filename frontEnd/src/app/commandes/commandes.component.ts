@@ -15,6 +15,24 @@ export class CommandesComponent implements OnInit {
   commandes: any[] = [];
   isLoading = true;
   expandedOrderId: number | null = null;
+  // --- PAGINATION ---
+  currentPage = 1;
+  itemsPerPage = 5;
+
+  // Utilisation d'un getter pour obtenir uniquement les commandes de la page actuelle
+  get paginatedCommandes() {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.commandes.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+
+  get totalPages() {
+    return Math.ceil(this.commandes.length / this.itemsPerPage);
+  }
+
+  // Permet de générer un tableau [1, 2, 3...] pour le ngFor des boutons
+  get pagesArray() {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
 
   constructor(
     private commandeService: CommandeService,
@@ -52,29 +70,38 @@ export class CommandesComponent implements OnInit {
   }
 
   loadUserOrders(): void {
-    const user = this.authService.currentUser();
-    
-    // Sécurité au cas où l'utilisateur n'est pas encore chargé
-    if (!user) {
-      this.isLoading = false;
-      return;
-    }
+  const user = this.authService.currentUser();
+  
+  if (!user) {
+    this.isLoading = false;
+    return;
+  }
 
-    this.commandeService.getCommandes().subscribe({
-      next: (data) => {
-        // 1. On filtre les commandes appartenant à l'utilisateur connecté
-        // 2. On trie par ID décroissant pour avoir les plus récentes en haut
-        this.commandes = data
-          .filter(c => c.utilisateurId === user.id)
-          .sort((a, b) => b.id - a.id);
-        
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Erreur lors de la récupération des commandes', err);
-        this.isLoading = false;
-      }
-    });
+  this.commandeService.getCommandes().subscribe({
+    next: (data) => {
+      // 1. Filtrage et tri
+      const filteredData = data
+        .filter(c => c.utilisateurId === user.id)
+        .sort((a, b) => b.id - a.id);
+
+      // 2. IMPORTANT : On crée une nouvelle instance de tableau [...]
+      // C'est ce qui déclenche la mise à jour des Getters dans le HTML
+      this.commandes = [...filteredData]; 
+      
+      this.currentPage = 1; // On s'assure de revenir à la page 1
+      this.isLoading = false;
+    },
+    error: (err) => {
+      console.error('Erreur lors de la récupération des commandes', err);
+      this.isLoading = false;
+    }
+  });
+}
+
+  changePage(page: number): void {
+    this.currentPage = page;
+    this.expandedOrderId = null; // Optionnel : referme les détails au changement de page
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // Remonte en haut de la carte
   }
 
   toggleExpand(id: number): void {

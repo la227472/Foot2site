@@ -18,53 +18,66 @@
     <div class="content-card">
       <h1 class="page-title">Mes commandes</h1>
 
-      <div *ngIf="!isLoading && commandes.length === 0" class="empty-state">
+      <div *ngIf="!isLoading && (!commandes || commandes.length === 0)" class="empty-state">
         Vous n'avez pas encore passé de commandes.
       </div>
 
       <div class="config-list" *ngIf="!isLoading">
-        <div *ngFor="let cmd of commandes" 
+        <div *ngFor="let cmd of paginatedCommandes" 
              class="config-group" 
              [class.expanded]="expandedOrderId === cmd.id">
           
           <div class="config-header" (click)="toggleExpand(cmd.id)">
-                <div class="config-info">
-                    <span class="config-name">Commande #{{ cmd.id }} — {{ cmd.nomConfigurationArchive }}</span>
-                    <span class="config-date">
-                    Passée le {{ cmd.dateCommande | date:'dd/MM/yyyy à HH:mm' }}
-                    </span>
-                </div>
+            <div class="config-info">
+              <span class="config-name">Commande #{{ cmd.id }} — {{ cmd.nomConfigurationArchive }}</span>
+              <span class="config-date">
+                Passée le {{ cmd.dateCommande | date:'dd/MM/yyyy à HH:mm' }}
+              </span>
+            </div>
 
-                <div class="order-price-tag">
-                    {{ cmd.prixConfiguration.toFixed(2) }} €
-                </div>
+            <div class="order-price-tag">
+              {{ cmd.prixConfiguration?.toFixed(2) }} €
+            </div>
 
-                <div class="actions">
-                    <mat-icon class="arrow">
-                    {{ expandedOrderId === cmd.id ? 'expand_less' : 'expand_more' }}
-                    </mat-icon>
-                </div>
-        </div>
+            <div class="actions">
+              <mat-icon class="arrow">
+                {{ expandedOrderId === cmd.id ? 'expand_less' : 'expand_more' }}
+              </mat-icon>
+            </div>
+          </div>
           
           <div class="config-details" *ngIf="expandedOrderId === cmd.id">
-  <div class="archive-details-box">
-    <p class="archive-label">Détail des composants au moment de l'achat :</p>
-    
-    <div class="component-row archive-row" *ngFor="let detailStr of splitDetails(cmd.detailsComposantsArchive)">
-      
-      <ng-container *ngIf="parseComponentDetail(detailStr) as comp">
-        <span class="comp-name">{{ comp.nom }}</span>
-        
-        <div class="comp-stats">
-          <span class="comp-price">{{ comp.prix }}</span>
-          <mat-icon style="color: #2ecc71;">check_circle</mat-icon>
+            <div class="archive-details-box">
+              <p class="archive-label">Détail des composants au moment de l'achat :</p>
+              
+              <div class="component-row archive-row" *ngFor="let detailStr of splitDetails(cmd.detailsComposantsArchive)">
+                <ng-container *ngIf="parseComponentDetail(detailStr) as comp">
+                  <span class="comp-name">{{ comp.nom }}</span>
+                  <div class="comp-stats">
+                    <span class="comp-price">{{ comp.prix }}</span>
+                    <mat-icon style="color: #2ecc71;">check_circle</mat-icon>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
         </div>
-      </ng-container>
+      </div>
 
-    </div>
-  </div>
-</div>
+      <div class="pagination-container" *ngIf="!isLoading && commandes && commandes.length > itemsPerPage">
+        <button class="page-nav-btn" [disabled]="currentPage === 1" (click)="changePage(currentPage - 1)">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+
+        <div class="page-numbers">
+          <button *ngFor="let p of pagesArray" class="page-btn" [class.active]="currentPage === p" (click)="changePage(p)">
+            {{ p }}
+          </button>
         </div>
+
+        <button class="page-nav-btn" [disabled]="currentPage === totalPages" (click)="changePage(currentPage + 1)">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
       </div>
 
       <div *ngIf="isLoading" class="loader">Chargement de vos commandes...</div>
