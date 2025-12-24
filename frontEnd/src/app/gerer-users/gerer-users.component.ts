@@ -15,6 +15,7 @@ import { GererUsersService } from '../Service/gerer-users.service';
 import { ConnectionService } from '../Service/connection.service';
 import { Utilisateur } from '../Interface/Utilisateur';
 import { EditUserDialogComponent } from './edit-user-dialog.component';
+import { ConfirmDialogComponent } from '../shared/dialogs/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-gerer-users',
@@ -129,22 +130,31 @@ export class GererUsersComponent implements OnInit {
    * Supprime un utilisateur après confirmation
    */
   deleteUtilisateur(utilisateur: Utilisateur) {
-    const confirmation = confirm(`Êtes-vous sûr de vouloir supprimer l'utilisateur ${utilisateur.prenom} ${utilisateur.nom} ?`);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Confirmer la suppression',
+        message: 'Êtes-vous sûr de vouloir supprimer cet utilisateur ?',
+        composantName: `${utilisateur.prenom} ${utilisateur.nom}`
+      }
+    });
 
-    if (confirmation && utilisateur.id) {
-      this.isLoading = true;
-      this.gererUsersService.deleteUtilisateur(utilisateur.id).subscribe({
-        next: () => {
-          this.snackBar.open('Utilisateur supprimé avec succès', 'Fermer', { duration: 3000 });
-          this.loadUtilisateurs(); // Recharger la liste
-        },
-        error: (error) => {
-          console.error('Erreur lors de la suppression:', error);
-          this.snackBar.open('Erreur lors de la suppression de l\'utilisateur', 'Fermer', { duration: 3000 });
-          this.isLoading = false;
-        }
-      });
-    }
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && utilisateur.id) {
+        this.isLoading = true;
+        this.gererUsersService.deleteUtilisateur(utilisateur.id).subscribe({
+          next: () => {
+            this.snackBar.open('Utilisateur supprimé avec succès', 'Fermer', { duration: 3000 });
+            this.loadUtilisateurs(); // Recharger la liste
+          },
+          error: (error) => {
+            console.error('Erreur lors de la suppression:', error);
+            this.snackBar.open('Erreur lors de la suppression de l\'utilisateur', 'Fermer', { duration: 3000 });
+            this.isLoading = false;
+          }
+        });
+      }
+    });
   }
 
   /**

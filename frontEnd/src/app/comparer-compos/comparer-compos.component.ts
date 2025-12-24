@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs';
 import { Composants } from '../Interface/Composants';
 import { ConnectionService } from '../Service/connection.service';
 import { PanierService } from '../Service/panier.service';
-import Swal from 'sweetalert2'; // <--- IMPORTATION DE SWEETALERT
+import Swal from 'sweetalert2'; 
 
 @Component({
   selector: 'app-comparer-compos',
