@@ -55,7 +55,7 @@ export class GererComposantComponent implements OnInit {
   myControl = new FormControl('');
 
   // Liste des types disponibles pour l'autocomplete
-  options: string[] = ['CPU', 'GPU', 'RAM', 'SSD', 'Carte Mère', 'Alimentation', 'Boîtier', 'Refroidissement'];
+  options: string[] = ['CPU', 'GPU', 'Motherboard', 'Memory', 'PSU', 'Box', 'HardDisk'];
 
   // Observable contenant les options filtrées (utilisé dans le HTML ligne 17)
   filteredOptions!: Observable<string[]>;
