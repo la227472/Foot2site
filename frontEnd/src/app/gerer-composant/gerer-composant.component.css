@@ -1,3 +1,12 @@
+/* Titre de la page */
+.page-title {
+  color: #1a1a1a;
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 30px 0;
+  text-align: center;
+}
+
 /* Conteneur principal */
 .gerer-composant-container {
   padding: 20px;
