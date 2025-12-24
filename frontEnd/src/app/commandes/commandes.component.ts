@@ -47,7 +47,6 @@ export class CommandesComponent implements OnInit {
   splitDetails(fullString: string): string[] {
     if (!fullString) return [];
     // On découpe uniquement quand il y a une virgule suivie d'un espace
-    // Cela évite de couper le "649,99€"
     return fullString.split(/,\s+/);
   }
 
@@ -84,8 +83,7 @@ export class CommandesComponent implements OnInit {
         .filter(c => c.utilisateurId === user.id)
         .sort((a, b) => b.id - a.id);
 
-      // 2. IMPORTANT : On crée une nouvelle instance de tableau [...]
-      // C'est ce qui déclenche la mise à jour des Getters dans le HTML
+      // 2. On crée une nouvelle instance de tableau [...]
       this.commandes = [...filteredData]; 
       
       this.currentPage = 1; // On s'assure de revenir à la page 1
@@ -100,7 +98,7 @@ export class CommandesComponent implements OnInit {
 
   changePage(page: number): void {
     this.currentPage = page;
-    this.expandedOrderId = null; // Optionnel : referme les détails au changement de page
+    this.expandedOrderId = null;
     window.scrollTo({ top: 0, behavior: 'smooth' }); // Remonte en haut de la carte
   }
 

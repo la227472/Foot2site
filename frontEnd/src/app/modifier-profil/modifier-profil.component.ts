@@ -136,7 +136,7 @@ export class ModifierProfilComponent implements OnInit {
               const numSaisi = Number(formValue.numero);
               const codeSaisi = Number(formValue.codePostal);
 
-              // RECHERCHE AMÉLIORÉE : On normalise les données venant de la DB aussi
+              // On normalise les données venant de la DB aussi
               const existingAddr = allAdresses.find(a => {
                 const rueDB = (a.Rue || (a as any).rue || '').toString().trim().toLowerCase();
                 const numDB = Number(a.Numero || (a as any).numero);
@@ -145,7 +145,7 @@ export class ModifierProfilComponent implements OnInit {
               });
 
               if (existingAddr) {
-                // CORRECTION MAJEURE : On vérifie id ET Id
+                
                 const idTrouve = existingAddr.id || (existingAddr as any).Id;
                 console.log("Adresse existante trouvée ! ID utilisé :", idTrouve);
                 this.updateUtilisateurFinal(userBackend, formValue, idTrouve);

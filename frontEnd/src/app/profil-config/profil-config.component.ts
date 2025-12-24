@@ -57,7 +57,7 @@ export class ProfilConfigComponent implements OnInit {
 
     this.configService.getConfigurationsComplete().subscribe({
       next: (configs) => {
-        // IMPORTANT : Utiliser le spread [...] pour forcer le rafraîchissement
+        // Utiliser le spread [...] pour forcer le rafraîchissement
         const filtered = configs.filter(c => c.utilisateurId === user.id);
         this.configurations = [...filtered]; 
         this.currentPage = 1; // Reset à la page 1
@@ -100,13 +100,13 @@ export class ProfilConfigComponent implements OnInit {
       text: `Voulez-vous vraiment supprimer "${config.nomConfiguration}" ? Cette action est irréversible.`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#ff4d4f', // Le rouge de votre bouton
-      cancelButtonColor: '#313761',  // Le bleu de votre sidebar
+      confirmButtonColor: '#ff4d4f', 
+      cancelButtonColor: '#313761',  
       confirmButtonText: 'Oui, supprimer !',
       cancelButtonText: 'Annuler',
-      reverseButtons: true, // Met "Annuler" à gauche
+      reverseButtons: true, 
       customClass: {
-        popup: 'swal-custom-radius' // On peut ajouter une classe pour arrondir les coins
+        popup: 'swal-custom-radius' 
       }
     }).then((result) => {
       if (result.isConfirmed) {
@@ -154,7 +154,7 @@ export class ProfilConfigComponent implements OnInit {
     }
   }).then((result) => {
     if (result.isConfirmed) {
-      // Le reste de la logique reste le même, on utilise comp.id pour le filtre
+      
       const newComposantIds = config.composantIds.filter(id => id !== comp.id);
 
       const updatedConfig = {
