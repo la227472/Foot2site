@@ -8,8 +8,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { Composants } from '../core/interfaces/Composants';
-import { ComposantsService } from '../core/services/composants.service';
+import { Composants } from '../../../Interface/Composants';
+import { ComposantsService } from '../../../Service/composants.service';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
