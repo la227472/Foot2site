@@ -38,15 +38,15 @@ namespace Foot2site_V1.Services
         private ClaimsIdentity generateClaims(User users)
         {
             var claims = new ClaimsIdentity();
-            // Claime obligatoire
+
             claims.AddClaim(new Claim(ClaimTypes.Name, users.Name));
             claims.AddClaim(new Claim(ClaimTypes.Email, users.Email));
             claims.AddClaim(new Claim("username", users.Firstname));
             claims.AddClaim(new Claim("id", users.Id_User.ToString()));
 
-            foreach (var role in users.Role.NomRole)
+            if (users.Role != null)
             {
-                claims.AddClaim(new Claim(ClaimTypes.Role, role.ToString()));
+                claims.AddClaim(new Claim(ClaimTypes.Role, users.Role.NomRole));
             }
 
             return claims;
